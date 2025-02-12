@@ -13,6 +13,6 @@ body {
 }
 
 content {
-    flex-direction: column;
-    display: flex;
+    flex-direction: row;
+    display: block;
 }
