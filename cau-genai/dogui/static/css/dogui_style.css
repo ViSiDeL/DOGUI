@@ -1,0 +1,53 @@
+:root {
+    --dogui-green: #3e947e;
+    --outline: rgba(45, 134, 118, 0.579);
+}
+
+@font-face {
+    font-family: Norwester;
+    src: url("/static/fonts/norwester/norwester.otf") format("opentype");
+}
+
+.content {
+    width: 100vw;
+    height: 100%;
+    background-position: center; /* Center the image */
+    background-repeat: no-repeat; /* Do not repeat the image */
+    background-size:contain; /* Resize the background image to cover the entire container */
+    min-height: 100lvw;
+    font-family: 'Norwester', serif;
+    font-size: 20px;
+    background: none;
+    background-image: url("/static/img/bkg.jpg");
+}
+
+body { margin: 0; }
+
+canvas { 
+    /* display: block;  */
+    /* display: hidden; */
+}
+
+.nav {
+    
+}
+
+.nav a{
+    color: var(--dogui-green);
+    text-decoration: none;
+    -webkit-filter: drop-shadow(0px 0px 0.75rem var(--outline))
+                drop-shadow(-0px 0px 0.75rem var(--outline))
+                drop-shadow(0px -0px 0.75rem var(--outline))
+                drop-shadow(-0px -0px 0.75rem var(--outline));
+
+    filter: drop-shadow(0px 0px 0.75rem var(--outline))
+        drop-shadow(-0px 0px 0.75rem var(--outline))
+        drop-shadow(0px -0px 0.75rem var(--outline))
+        drop-shadow(-0px -0px 0.75rem var(--outline));
+}
+
+#nav #dogui {
+    position: absolute;
+    font-size: 115px;
+    top: 0.5rem;
+}
