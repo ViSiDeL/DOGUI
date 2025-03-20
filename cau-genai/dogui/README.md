@@ -13,7 +13,9 @@ Ensure you have the following installed:
 First, clone the repository from GitHub:
 ```bash
 git clone <your-repo-url>
-cd dogui
+
+# cd into the dogui folder
+cd CAU-GENAI/cau-genai/dogui
 ```
 
 ### **2. Create and Activate a Virtual Environment**
