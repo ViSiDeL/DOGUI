@@ -54,7 +54,20 @@ npm install
 
 This will generate a node_modules folder if it doesn’t already exist.
 
-### **5. Run the Flask Application**
+### **5.: Store SQL Credentials**
+Modify the SQL connection file with your MySQL credentials:
+```bash
+{
+    "host": "", # MODIFY: enter the hostname that the db is hosted on
+    "user": "", # MODIFY: enter your username (by default it's your first name, all lowercase ---> enter as "firstname")
+    "password": "", # MODIFY: your password
+    "database": "dogui", # leave as is
+    "port": "3310" # leave as is
+}
+```
+Save, and rename this file to db_connection.json
+
+### **6. Run the Flask Application**
 Start the Flask server by running:
 
 ```bash
@@ -62,7 +75,7 @@ python app.py
 ```
 The server will start on http://127.0.0.1:5000.
 
-### **6. Access the Application**
+### **7. Access the Application**
 Open your browser and visit:
 
 ```bash
