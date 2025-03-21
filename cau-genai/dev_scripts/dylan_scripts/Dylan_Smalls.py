@@ -17,7 +17,15 @@ speech_to_text = SpeechToTextV1(
 
 speech_to_text.set_service_url('https://api.au-syd.speech-to-text.watson.cloud.ibm.com/instances/a7ee7d91-a159-489b-8dd4-4f4fe0522f9f')
 
-with open(join(dirname(__file__), './.', 'audio-file.flac'),
+
+# record
+    # wait for mic input
+
+    # process to flac
+
+
+# send to cloud
+with open(join(dirname(__file__), './.', 'Recording.flac'),
                'rb') as audio_file:
     speech_recognition_results = speech_to_text.recognize(
         audio=audio_file,
