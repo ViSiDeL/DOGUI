@@ -21,8 +21,4 @@ This folder holds all relevant documentation for the project. Guides, reports, d
 A collection of useful assets, templates, or data files for the project.
 - Samples & Examples
 - Guides & Cheatsheets
-
-### 📁 training
-Training Materials
-- workshop files
-- other training session file
+- Training Materials

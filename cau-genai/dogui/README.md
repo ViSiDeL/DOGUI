@@ -13,7 +13,9 @@ Ensure you have the following installed:
 First, clone the repository from GitHub:
 ```bash
 git clone <your-repo-url>
-cd dogui
+
+# cd into the dogui folder
+cd cau-genai/dogui
 ```
 
 ### **2. Create and Activate a Virtual Environment**
@@ -26,7 +28,16 @@ venv\Scripts\activate
 # On Linux/Mac
 python3 -m venv venv
 source venv/bin/activate
+```
 
+If you run into an error stating that Permission is denied, run the following command: 
+```bash
+
+# to fix the System.UnauthorizedAccessException,Microsoft.PowerShell.Commands.SetExecutionPolicyCommand error
+Set-ExecutionPolicy -ExecutionPolicy AllSigned -Scope CurrentUser
+
+# then activate source
+source venv/bin/activate
 ```
 
 ### **3. Install Python Dependencies**
