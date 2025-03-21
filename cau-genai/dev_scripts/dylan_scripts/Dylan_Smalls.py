@@ -25,7 +25,7 @@ speech_to_text.set_service_url('https://api.au-syd.speech-to-text.watson.cloud.i
 
 
 # send to cloud
-with open(join(dirname(__file__), './.', 'audio-file.flac'),
+with open(join(dirname(__file__), './.', 'Recording.flac'),
                'rb') as audio_file:
     speech_recognition_results = speech_to_text.recognize(
         audio=audio_file,
