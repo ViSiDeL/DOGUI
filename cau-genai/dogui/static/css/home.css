@@ -1,0 +1,51 @@
+#blackBox {
+    position: fixed;  
+    top: 60%;         
+    left: 50%;        
+    width: 100px;     
+    height: 100px;    
+    background-color: rgba(0, 0, 0, 1);  
+    transform: translate(-50%, -50%);  
+    border-radius: 10px;  
+    overflow: hidden;    /* Makes sure the 3D cube doesn't overflow */
+  }
+  
+/* DOGUI Title */
+#dogui {
+    font-family: 'Norwester', serif;
+    font-size: 5rem;
+    color: var(--dogui-green);
+    color: var(--dogui-glow);
+    text-decoration: none;
+    position: absolute;
+    top: 1.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 5;
+    filter: drop-shadow(rgba(21, 159, 124, 0.70) 0px 0px 1.54087px) drop-shadow(rgba(53, 159, 132, 0.75) 0px 0px 12.7043px) drop-shadow(rgba(53, 159, 132, 0.44) 0px 0px 38.113px);
+    user-select: none;
+    -webkit-user-select: none; /* Safari */
+    -moz-user-select: none;    /* Firefox */
+    -ms-user-select: none;     /* Internet Explorer/Edge */
+    cursor: default;           /* Keep normal cursor */
+    display: inline-block;
+    overflow: visible;  /* Hide the part of the text that is not yet revealed */
+    white-space: nowrap;
+    text-align: center; 
+    width: 0;
+    animation: wipe 2s ease-in-out forwards, filter 1s ease-in-out forwards;
+    z-index: 4;
+}
+
+@keyframes wipe {
+    0% {
+        width: 0;
+        filter: none;
+        overflow: hidden;
+    }
+    100% {
+        width: 100%;
+        filter: drop-shadow(rgba(21, 159, 124, 0.70) 0px 0px 1.54087px) drop-shadow(rgba(53, 159, 132, 0.75) 0px 0px 12.7043px) drop-shadow(rgba(53, 159, 132, 0.44) 0px 0px 38.113px);
+        overflow: visible;
+    }
+}
