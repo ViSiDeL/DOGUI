@@ -12,11 +12,19 @@ from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
 
 authenticator = IAMAuthenticator('[SECRET]')
 speech_to_text = SpeechToTextV1(
-    authenticator=authentiscator
+    authenticator=authenticator
 )
 
 speech_to_text.set_service_url('https://api.au-syd.speech-to-text.watson.cloud.ibm.com/instances/[SECRET]')
 
+
+# record
+    # wait for mic input
+
+    # process to flac
+
+
+# send to cloud
 with open(join(dirname(__file__), './.', 'audio-file.flac'),
                'rb') as audio_file:
     speech_recognition_results = speech_to_text.recognize(
