@@ -36,7 +36,7 @@ def synthesize_speech(text, voice, output_file):
 
 # Input your text and choose the voice
 text_input = input("Enter the text you want to convert to speech: ")
-voice_choice = input("Enter the voice language (e.g., en-US_MichaelV3Voice , ja-JP_EmiV3Voice , ar-AR_OmarV3Voice,fr-FR_ReneeV3Voice,es-ES_EnriqueV3Voice,nl-NL_MerelV3Voice,de-DE_DieterV3Voice): ")
+voice_choice = input("Enter the voice language (e.g., English, Japanese, Arabic, French, Dutch, German): ")
 voice_choice = voice_choice.capitalize()
 converted_voice_choice = languages[voice_choice]
 output_filename = 'output_audio.wav'
