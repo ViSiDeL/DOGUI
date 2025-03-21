@@ -3,9 +3,9 @@ import mysql.connector
 # Connect to the MySQL database
 db_connection = mysql.connector.connect(
     host= "visidel.org",             # Your database host (e.g., localhost)
-    user= "workshop_user",           # Your database username
-    password= "visidel2025",         # Your data password
-    database= "workshopDB",          # Your database name
+    user= "dylan",           # Your database username
+    password= "dogui_new@2025",         # Your data password
+    database= "dogui",          # Your database name
     port=  "3310"                  # Your database port
 )
 
