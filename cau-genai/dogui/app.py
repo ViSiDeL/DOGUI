@@ -1,39 +1,37 @@
 from flask import Flask, render_template, send_from_directory
-from models.examples.ex_classes.example_class import ExampleClass
-from routes.example_routes import example_bp
 import os
+
+from routes.user_routes import user_bp
+from routes.ai_routes import ai_bp
+from routes.test_routes import test_bp
 
 app = Flask(__name__)
 
-# Register blueprints for modular routing
-app.register_blueprint(example_bp)
+# creating secret key for session management
+app.config['SECRET_KEY'] = os.urandom(24)
 
-# Define a route
+# register blueprints for other routes
+app.register_blueprint(user_bp)
+app.register_blueprint(ai_bp)
+app.register_blueprint(test_bp)
+
+# home route - handles navigation to home page via /home or / (default)
 @app.route('/')
+@app.route('/home')
 def home():
-    return "Hello, Flask!"
+    return render_template('index.html')
 
-# Example route using the ExampleClass
-@app.route('/example')
-def example():
-    example_instance = ExampleClass("Test Name")
-    return f"ExampleClass says: {example_instance.name}"
+# dashboard
+@app.route('/dashboard')
+def dashboard():
+    return render_template('design/dashboard.html')
 
-# Example route with parameters
-@app.route('/greet/<name>')
-def greet(name):
-    return render_template('greet.html', name=name)
 
-# Example route to load a HTML file
-@app.route('/example-page')
-def example_page():
-    return render_template('example.html')
-
-# Serve node_modules
+# handles node modules - needed for Flask apps with node js libs
 @app.route('/node_modules/<path:filename>')
 def node_modules(filename):
-    return send_from_directory(os.path.join(app.root_path, '../node_modules'), filename)
+    return send_from_directory(os.path.join(app.root_path, 'node_modules'), filename)
 
-# Run the app
+# run - launches application
 if __name__ == '__main__':
     app.run(debug=True)
