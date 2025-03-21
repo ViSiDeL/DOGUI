@@ -1,53 +1,108 @@
+/* Variables */
 :root {
     --dogui-green: #3e947e;
-    --outline: rgba(45, 134, 118, 0.579);
+    --dogui-glow: rgb(146,222,203);
+    --outline: rgba(122, 255, 231, 0.904);
 }
 
+/* Custom Font */
 @font-face {
     font-family: Norwester;
     src: url("/static/fonts/norwester/norwester.otf") format("opentype");
 }
 
+/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Background Styling */
+body, html {
+    height: 100%;
+    width: 100%;
+    overflow: hidden; /* Prevent scrolling */
+}
+
 .content {
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    background: url("/static/img/bkg.jpg") no-repeat center center fixed;
+    background-size: cover; /* Ensures image covers the viewport */
+}
+
+.content::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
-    background-position: center; /* Center the image */
-    background-repeat: no-repeat; /* Do not repeat the image */
-    background-size:contain; /* Resize the background image to cover the entire container */
-    min-height: 100lvw;
-    font-family: 'Norwester', serif;
-    font-size: 20px;
-    background: none;
-    background-image: url("/static/img/bkg.jpg");
+    background: rgba(0, 0, 0, 0.3); /* Dark overlay, adjust the alpha value (0.3 for example) */
+    z-index: 1;
 }
 
-body { margin: 0; }
-
-canvas { 
-    /* display: block;  */
-    /* display: hidden; */
-}
-
+/* Navigation Styling */
 .nav {
-    
-}
-
-.nav a{
-    color: var(--dogui-green);
-    text-decoration: none;
-    -webkit-filter: drop-shadow(0px 0px 0.75rem var(--outline))
-                drop-shadow(-0px 0px 0.75rem var(--outline))
-                drop-shadow(0px -0px 0.75rem var(--outline))
-                drop-shadow(-0px -0px 0.75rem var(--outline));
-
-    filter: drop-shadow(0px 0px 0.75rem var(--outline))
-        drop-shadow(-0px 0px 0.75rem var(--outline))
-        drop-shadow(0px -0px 0.75rem var(--outline))
-        drop-shadow(-0px -0px 0.75rem var(--outline));
-}
-
-#nav #dogui {
     position: absolute;
-    font-size: 115px;
-    top: 0.5rem;
+    top: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    font-family: 'Norwester', serif;
 }
+
+
+/* Navigation Links */
+.nav a {
+    font-family: 'Norwester', serif;
+    font-size: 2rem;
+    color: var(--dogui-green);
+    color: var(--dogui-glow);
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    filter: drop-shadow(rgba(21, 159, 124, 0.95) 0px 0px 2.54087px) drop-shadow(rgba(53, 159, 132, 0.75) 0px 0px 12.7043px) drop-shadow(rgba(53, 159, 132, 0.44) 0px 0px 38.113px);
+    animation: glowEffect 3s ease-in-out infinite;
+    transition: color 1s ease, text-shadow 1s ease, filter 1s ease;
+    z-index: 5;
+}
+
+/* Hover Effect */
+.nav a:hover {
+    animation: none;
+    border-radius: 5px;
+}
+
+/* Top Left and Top Right Buttons */
+.nav a:first-child {
+    position: absolute;
+    top: 3rem;
+    left: 2rem;
+}
+
+.nav a:last-child {
+    position: absolute;
+    top: 3rem;
+    right: 2rem;
+}
+
+@keyframes glowEffect {
+    0% {
+      color: var(--dogui-green);
+      filter: none;
+    }
+    50% {
+      color: var(--dogui-glow);
+      filter: drop-shadow(rgba(21, 159, 124, 0.95) 0px 0px 2.54087px) drop-shadow(rgba(53, 159, 132, 0.75) 0px 0px 12.7043px) drop-shadow(rgba(53, 159, 132, 0.44) 0px 0px 38.113px); 
+    }
+    100% {
+      color: var(--dogui-green);
+      filter: none; 
+    }
+  }
+  
