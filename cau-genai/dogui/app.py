@@ -1,7 +1,9 @@
 from flask import Flask, render_template, send_from_directory
+import os
+
 from routes.user_routes import user_bp
 from routes.ai_routes import ai_bp
-import os
+from routes.test_routes import test_bp
 
 app = Flask(__name__)
 
@@ -11,6 +13,7 @@ app.config['SECRET_KEY'] = os.urandom(24)
 # register blueprints for other routes
 app.register_blueprint(user_bp)
 app.register_blueprint(ai_bp)
+app.register_blueprint(test_bp)
 
 # home route - handles navigation to home page via /home or / (default)
 @app.route('/')
