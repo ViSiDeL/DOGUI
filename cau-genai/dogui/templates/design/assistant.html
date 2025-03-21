@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DOGUI.ai</title>
     <link rel="stylesheet" href="/static/css/dogui_style.css">
+    <link rel="stylesheet" href="/static/css/engineering.css">
 
     <script type="importmap">
         {
@@ -16,14 +17,11 @@
 </head>
 <body>
     <div class="content">
-
+        {% include 'includes/user-nav.html' %}
         <div class="page-content">
-            <h1 class="glow">Login</h1>
-            <form method="POST">
-                <input type="text" name="username" placeholder="Username" required><br>
-                <input type="password" name="password" placeholder="Password" required><br>
-                <button type="submit">Login</button>
-            </form>
+            <img class="ai-logo" src="/static/img/dogui_ai_logo.png">
+            <h1>Hello!</h1>
+            
         </div>
     </div>
 </body>
