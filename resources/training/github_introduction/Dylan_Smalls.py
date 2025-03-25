@@ -12,7 +12,7 @@ from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
 
 authenticator = IAMAuthenticator('VNorTabJSdEnkab0gsmvYQnzcOaO8gkyyDCqTYAh1s0R')
 speech_to_text = SpeechToTextV1(
-    authenticator=authenticator
+    authenticator=authentiscator
 )
 
 speech_to_text.set_service_url('https://api.au-syd.speech-to-text.watson.cloud.ibm.com/instances/a7ee7d91-a159-489b-8dd4-4f4fe0522f9f')
