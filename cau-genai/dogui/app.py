@@ -24,7 +24,6 @@ app = Flask(__name__)
 
 # creating secret key for session management
 app.config['SECRET_KEY'] = os.urandom(24)
-
 # register blueprints for other routes
 app.register_blueprint(user_bp)
 app.register_blueprint(ai_bp)
