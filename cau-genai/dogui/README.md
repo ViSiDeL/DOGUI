@@ -37,7 +37,7 @@ If you run into an error stating that Permission is denied, run the following co
 Set-ExecutionPolicy -ExecutionPolicy AllSigned -Scope CurrentUser
 
 # then activate source
-source venv/bin/activate
+venv\Scripts\activate
 ```
 
 ### **3. Install Python Dependencies**
@@ -54,7 +54,20 @@ npm install
 
 This will generate a node_modules folder if it doesn’t already exist.
 
-### **5. Run the Flask Application**
+### **5.: Store SQL Credentials**
+Modify the SQL connection file with your MySQL credentials:
+```bash
+{
+    "host": "", # MODIFY: enter the hostname that the db is hosted on
+    "user": "", # MODIFY: enter your username (default = your first name, all lowercase)
+    "password": "", # MODIFY: your password
+    "database": "[SECRET]", # leave as is
+    "port": "[SECRET]" # leave as is
+}
+```
+Save, and rename this file to db_connection.json
+
+### **6. Run the Flask Application**
 Start the Flask server by running:
 
 ```bash
@@ -62,7 +75,7 @@ python app.py
 ```
 The server will start on http://127.0.0.1:5000.
 
-### **6. Access the Application**
+### **7. Access the Application**
 Open your browser and visit:
 
 ```bash
@@ -88,12 +101,21 @@ dogui/
  ├── README.md
  ├── requirements.txt      # Python dependencies
 ```
-### **Tips**
-If you add new Python packages, update requirements.txt:
+## **Tips**
+### If you add new Python packages, update requirements.txt:
 ```bash
 pip freeze > requirements.txt
 ```
-To add new Node modules, use:
+### To add new Node modules, use:
 ```bash
 npm install <module-name> --save
+```
+
+### If you have multiple versions of python installed, instead of the command:
+```bash
+python
+```
+use:
+```bash
+py -3.11
 ```
