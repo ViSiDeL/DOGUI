@@ -1,24 +1,26 @@
 """
-User Class - controls user information for an active user session
+
+User Class - Controls user information for an active user session.
+
 """
 
 class User:
-    
-    def __init__(self, sessionid, userid, username, role):
-        self.session = sessionid
-        self.id = userid
+    def __init__(self, user_id: int, username: str, role: str):
+        self.user_id = user_id
         self.username = username
         self.role = role
+        self.session_id = None
 
-    def login():
+    # login routine
+    def login(self, session):
+        self.session_id = session
+
+    # logout routine
+    def logout(self):
         pass
 
-    def logout():
+    def save_project(self):
         pass
 
-    def loadProject():
+    def load_project(self):
         pass
-
-    def saveProject():
-        pass
-
