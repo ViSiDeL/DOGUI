@@ -55,12 +55,14 @@ def register():
 def login():
 
     # logging in (POST)
+    print("test1")
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        
+        print("test123s")
         # connect to database using config
         db_config = load_db_config()
+        print("gedrhfjg")
         connection = mysql.connector.connect(
             host=db_config['host'],
             user=db_config['user'],
@@ -68,7 +70,9 @@ def login():
             database=db_config['database'],
             port=db_config['port']
         )
+        print("ryyry")
         cursor = connection.cursor()
+        print("test2")
         
         # check if username and password match
         cursor.execute("SELECT * FROM users WHERE username = %s AND password = %s", (username, password))
@@ -78,6 +82,7 @@ def login():
         connection.close()
 
         if user:
+            print("test")
             # print(user)
             user_id, username, pwd, role = user
 
@@ -92,6 +97,7 @@ def login():
             flash('Invalid username or password!', 'danger')
             return redirect(url_for('user.login'))
     
+    print("enmd")
     return render_template('accounts/login.html')
 
 
