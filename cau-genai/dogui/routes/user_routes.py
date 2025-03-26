@@ -55,25 +55,11 @@ def register():
 def login():
 
     # logging in (POST)
-    print("test1")
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        print("test123s")
         # connect to database using config
-<<<<<<< Updated upstream
-        db_config = load_db_config()
-        print("gedrhfjg")
-        connection = mysql.connector.connect(
-            host=db_config['host'],
-            user=db_config['user'],
-            password=db_config['password'],
-            database=db_config['database'],
-            port=db_config['port']
-        )
-        print("ryyry")
-=======
-        print("enter")
+
         try:
             db_config = load_db_config()
             connection = pymysql.connect(
@@ -92,13 +78,8 @@ def login():
             print(f"Database connection failed: {err}")
             flash(f"Database error: {err}", "danger")
             return redirect(url_for('user.login'))
-        print("exit")
 
-
-
->>>>>>> Stashed changes
         cursor = connection.cursor()
-        print("test2")
         
         # check if username and password match
         cursor.execute("SELECT * FROM users WHERE username = %s AND password = %s", (username, password))
