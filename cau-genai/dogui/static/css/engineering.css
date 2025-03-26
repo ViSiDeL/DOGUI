@@ -1,0 +1,66 @@
+#dogui {
+    font-family: 'Norwester', serif;
+    font-size: 2rem;
+    color: var(--dogui-green);
+    color: var(--dogui-glow);
+    text-decoration: none;
+    position: absolute;
+    bottom: 1.5rem;
+    z-index: 5;
+    left: 1.5rem;
+    filter: drop-shadow(rgba(21, 159, 124, 0.70) 0px 0px 1.54087px) drop-shadow(rgba(53, 159, 132, 0.75) 0px 0px 12.7043px) drop-shadow(rgba(53, 159, 132, 0.44) 0px 0px 38.113px);
+    user-select: none;
+    -webkit-user-select: none; /* Safari */
+    -moz-user-select: none;    /* Firefox */
+    -ms-user-select: none;     /* Internet Explorer/Edge */
+    cursor: default;           /* Keep normal cursor */
+    display: inline-block;
+    overflow: visible;  /* Hide the part of the text that is not yet revealed */
+    white-space: nowrap;
+    text-align: left; 
+    width: 0;
+    animation: wipe 2s ease-in-out forwards, filter 1s ease-in-out forwards;
+    z-index: 4;
+}
+
+/* Navigation Styling */
+.user-nav {
+    position: absolute;
+    top: 0;
+    right: 0;
+    max-height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: right;
+    text-align: right;
+    padding: 0.5rem 0.5rem;
+    font-family: 'Norwester', serif;
+    margin: 2rem;
+}
+
+
+/* Navigation Links */
+.user-nav a {
+    font-family: 'Norwester', serif;
+    font-size: 2rem;
+    color: var(--dogui-green);
+    color: var(--dogui-glow);
+    text-decoration: none;
+    padding: 0.5rem 00rem;
+    filter: drop-shadow(rgba(21, 159, 124, 0.95) 0px 0px 2.54087px) drop-shadow(rgba(53, 159, 132, 0.75) 0px 0px 12.7043px) drop-shadow(rgba(53, 159, 132, 0.44) 0px 0px 38.113px);
+    animation: glowEffect 3s ease-in-out infinite;
+    transition: color 1s ease, text-shadow 1s ease, filter 1s ease;
+    z-index: 5;
+}
+
+/* Hover Effect */
+.user-nav a:hover {
+    animation: none;
+    border-radius: 5px;
+}
+
+.ai-logo {
+    width: 3rem;
+    height: 3rem;
+}
