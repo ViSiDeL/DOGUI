@@ -37,7 +37,7 @@ If you run into an error stating that Permission is denied, run the following co
 Set-ExecutionPolicy -ExecutionPolicy AllSigned -Scope CurrentUser
 
 # then activate source
-source venv/bin/activate
+venv\Scripts\activate
 ```
 
 ### **3. Install Python Dependencies**
@@ -59,7 +59,7 @@ Modify the SQL connection file with your MySQL credentials:
 ```bash
 {
     "host": "", # MODIFY: enter the hostname that the db is hosted on
-    "user": "", # MODIFY: enter your username (by default it's your first name, all lowercase ---> enter as "firstname")
+    "user": "", # MODIFY: enter your username (default = your first name, all lowercase)
     "password": "", # MODIFY: your password
     "database": "dogui", # leave as is
     "port": "3310" # leave as is
@@ -101,12 +101,21 @@ dogui/
  ├── README.md
  ├── requirements.txt      # Python dependencies
 ```
-### **Tips**
-If you add new Python packages, update requirements.txt:
+## **Tips**
+### If you add new Python packages, update requirements.txt:
 ```bash
 pip freeze > requirements.txt
 ```
-To add new Node modules, use:
+### To add new Node modules, use:
 ```bash
 npm install <module-name> --save
+```
+
+### If you have multiple versions of python installed, instead of the command:
+```bash
+python
+```
+use:
+```bash
+py -3.11
 ```
