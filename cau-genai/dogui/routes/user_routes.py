@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session
-import mysql.connector
+import pymysql
 import json
 from models.user import User
 from engine_instance import design_engine
@@ -22,12 +22,12 @@ def register():
         
         # connect to database using config
         db_config = load_db_config()
-        connection = mysql.connector.connect(
+        connection = pymysql.connect(
             host=db_config['host'],
             user=db_config['user'],
             password=db_config['password'],
             database=db_config['database'],
-            port=db_config['port']
+            port=int(db_config['port'])
         )
         cursor = connection.cursor()
         
@@ -61,6 +61,7 @@ def login():
         password = request.form['password']
         print("test123s")
         # connect to database using config
+<<<<<<< Updated upstream
         db_config = load_db_config()
         print("gedrhfjg")
         connection = mysql.connector.connect(
@@ -71,6 +72,31 @@ def login():
             port=db_config['port']
         )
         print("ryyry")
+=======
+        print("enter")
+        try:
+            db_config = load_db_config()
+            connection = pymysql.connect(
+                host=db_config['host'],
+                user=db_config['user'],
+                password=db_config['password'],
+                database=db_config['database'],
+                port=int(db_config['port'])
+            )
+            print("Database connection successful!") 
+        except pymysql.Error as err:
+            print(f"Database connection failed: {err}")
+            flash(f"Database error: {err}", "danger")
+            return redirect(url_for('user.login'))
+        except Exception as err:
+            print(f"Database connection failed: {err}")
+            flash(f"Database error: {err}", "danger")
+            return redirect(url_for('user.login'))
+        print("exit")
+
+
+
+>>>>>>> Stashed changes
         cursor = connection.cursor()
         print("test2")
         
