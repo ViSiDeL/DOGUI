@@ -54,6 +54,12 @@ npm install
 
 This will generate a node_modules folder if it doesn’t already exist.
 
+If you run into an error stating that you are not allowed to run scripts on the system, run the following command: 
+```bash
+
+# to fix the System.UnauthorizedAccessException,Microsoft.PowerShell.Commands.SetExecutionPolicyCommand error
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+
 ### **5.: Store SQL Credentials**
 Modify the SQL connection file with your MySQL credentials:
 ```bash
@@ -118,4 +124,11 @@ python
 use:
 ```bash
 py -3.11
+```
+
+### If you need to run a module like pip or venv with your specific version, use the -m flag:
+```bash
+py -3.11 -m pip
+# or
+py -3.11 -m venv
 ```
