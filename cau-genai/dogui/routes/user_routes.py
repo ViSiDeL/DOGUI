@@ -1,6 +1,8 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask import Blueprint, render_template, request, redirect, url_for, flash, session
 import mysql.connector
 import json
+from models.user import User
+from engine_instance import design_engine
 
 user_bp = Blueprint('user', __name__)
 
@@ -76,7 +78,15 @@ def login():
         connection.close()
 
         if user:
+            # print(user)
+            user_id, username, pwd, role = user
+
+            # create session
+            session['session_id'] = str(user_id)
+            design_engine.add_user(session['session_id'], user_id=user_id, username=username, role=role)
+
             flash('Login successful!', 'success')
+            print(f"User '{username}' (ID: {user_id}, Role: {role}) has logged in.")
             return redirect(url_for('dashboard'))
         else:
             flash('Invalid username or password!', 'danger')
@@ -88,5 +98,11 @@ def login():
 # login page        
 @user_bp.route('/logout', methods=['GET'])
 def logout():
-    # TODO, implement proper logout functionalities
-    return render_template('accounts/login.html')
+    session_id = session.get('session_id')
+    
+    if session_id:
+        design_engine.remove_user(session_id)
+        session.pop('session_id', None)
+        flash('You have been logged out.', 'success')
+
+    return redirect(url_for('user.login'))
