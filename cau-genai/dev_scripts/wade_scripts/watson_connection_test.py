@@ -18,7 +18,8 @@ model = Model(
 )
 
 # Simple request-response test
-prompt = "Hello my name is Wade, what can you do"
+# prompt = "Hello my name is DOGUI.AI, what can you do"
+prompt = "What is 2 + 2?"
 response = model.generate_text(prompt)
 
 print(response)
