@@ -1,8 +1,51 @@
+main{
+    /* width: 100vw; */
+    z-index: 99;
+    position: absolute;
+    color: white;
+    width: 50%;
+    margin: 0px auto;
+    padding: 120px 0px;
+
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+}
+h1, h2, h3, blockquote{
+    font-family: elevon, sans-serif;
+    /* src: url("/static/fonts/norwester/norwester.otf") format("opentype"); */
+    font-weight: 700;
+    font-style: normal;
+}
+
 canvas {
     position: fixed;
     /* background-color: black; */
-    width: 100%;
-    height: 100%;
+    /* width: 100%;
+    height: 100%; */
     top: 0;
     left: 0;
+}
+
+header{
+    background: darkcyan;
+    grid-column: 2 / span 5;
+    font-size: 2/5rem;
+    padding: 2rem;
+    margin-bottom: 20px;
+}
+
+section{
+    grid-column: 2 / 8;
+    padding: 1rem;
+    background: darkcyan;
+    font-size: 1.25rem;
+    line-height: 1.5;
+    margin-bottom: 20px;
+}
+
+blockquote{
+    margin: 0;
+    padding: 0;
+    grid-column: 2 / span 9;
+    margin-bottom: 20px;
 }
