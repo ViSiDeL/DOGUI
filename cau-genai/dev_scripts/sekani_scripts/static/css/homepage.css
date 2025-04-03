@@ -49,3 +49,38 @@ blockquote{
     grid-column: 2 / span 9;
     margin-bottom: 20px;
 }
+
+#cockpit-ui {
+    font-family: 'Courier New', monospace;
+    text-shadow: 0 0 5px #0f0;
+    user-select: none;
+}
+
+#cockpit-ui div {
+    border-radius: 3px;
+    box-shadow: 0 0 10px rgba(0,255,0,0.3);
+}
+
+.ship-screen {
+    position: absolute;
+    width: 300px;
+    height: 150px;
+    background: rgba(10, 20, 10, 0.8);
+    border: 2px solid #0f0;
+    color: #0f0;
+    font-family: 'Courier New', monospace;
+    padding: 15px;
+    pointer-events: none;
+}
+
+.screen-header {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #0f0;
+    padding-bottom: 5px;
+}
+
+.screen-metric {
+    margin: 5px 0;
+    font-size: 0.9em;
+}
