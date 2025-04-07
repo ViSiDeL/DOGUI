@@ -26,8 +26,6 @@ model = ModelInference(
 )
 
 def clean_generated_code(raw_code):
-    # raw_code = raw_code.split('\n\n')[0]
-
     for marker in ['```javascript', '```', '[RESP]', '// THREE.JS CODE START', '// THREE.JS CODE END']:
         raw_code = raw_code.replace(marker, '')
     
@@ -73,30 +71,6 @@ def generate():
         
         # cleanup
         generated_code = clean_generated_code(response['results'][0]['generated_text'])
-
-        # messages = [
-        #     {"role": "system", "content": """
-        #         You are a three.js generator, meant to generate the code needed to create a 3d model in three.js for a user based on a description of their engineering project in three.js.
-        # Respond with ONLY the three.js code the creates the objects and adds them to the scence. 
-        # limit size to about 10x10x10 units
-        # Assume that parameters (scence, camera, renderer) are already provided.
-        # DO NOT include any intro, outro, explanations, comments, description or text outside the code. respond with ONLY code and no sentences.
-        # DO NOT include any test cases or examples.
-        # ONLY generate code that creates and adds 3D objects to the scene with described materials, colors, position, etc..
-        # You can include multiple objects/shapes/meshes/geometry/color as necessary, try to result as close as possible to what the user wants
-        # Your response should ONLY be the code, no other text.
-        #     """},
-        #     {"role": "user", "content": f"{user_description}"}
-        # ]
-        # generated_response = model.chat(messages=messages)
-
-        # # Print all response
-        # print(generated_response)
-
-        # # Print only content
-        # print(generated_response['choices'][0]['message']['content'])
-
-        # generated_code = clean_generated_code(generated_response['choices'][0]['message']['content'])
 
         #print(generated_code)
         print(f"\nresponse:\n---------------\n{generated_code}\n---------------")
