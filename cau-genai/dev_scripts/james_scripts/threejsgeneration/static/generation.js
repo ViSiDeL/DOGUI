@@ -14,7 +14,8 @@ class ModelGenerator {
     initThreeJS() {
         // scene
         this.scene = new THREE.Scene();
-        this.scene.background = new THREE.Color(0xf0f0f0);
+        // this.scene.background = new THREE.Color(0xf0f0f0);
+        this.scene.background = null;
         
         // camera
         this.camera = new THREE.PerspectiveCamera(
@@ -29,8 +30,10 @@ class ModelGenerator {
         const canvas = document.getElementById('threejs-canvas');
         this.renderer = new THREE.WebGLRenderer({ 
             canvas, 
+            alpha: true,
             antialias: true 
         });
+        canvas.style.backgroundColor = 'transparent';
         
         // orbit controls
         this.controls = new OrbitControls(
@@ -39,11 +42,24 @@ class ModelGenerator {
         );
         
         // lighting
-        const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-        directionalLight.position.set(2, 1, 1);
-        this.scene.add(directionalLight);
-        
-        this.scene.add(new THREE.AmbientLight(0x404040));
+        // Ambient light - soft white light
+        this.scene.add(new THREE.AmbientLight(0x404040, 0.5)); // Reduced intensity
+
+        // Directional light - main key light
+        const keyLight = new THREE.DirectionalLight(0xffffff, 1);
+        keyLight.position.set(5, 10, 7);
+        keyLight.castShadow = true; // Enable shadows if needed
+        this.scene.add(keyLight);
+
+        // Fill light - softer light from opposite side
+        const fillLight = new THREE.DirectionalLight(0xffffff, 0.5);
+        fillLight.position.set(-5, 5, 5);
+        this.scene.add(fillLight);
+
+        // Back light - helps separate object from background
+        const backLight = new THREE.DirectionalLight(0xffffff, 0.3);
+        backLight.position.set(0, 5, -10);
+        this.scene.add(backLight);
         
         // grid
         this.grid = new THREE.GridHelper(10, 10)
@@ -117,6 +133,7 @@ class ModelGenerator {
         // Clear previous model objects (keep lights and helpers)
         this.scene.children = this.scene.children.filter(obj => 
             obj.isLight || obj.isGridHelper || this.grid == obj
+            // obj.isLight || obj.isGridHelper
         );
         
         try {
