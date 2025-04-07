@@ -1,15 +1,17 @@
 from flask import Flask, render_template, send_from_directory, jsonify, request
-import os
+import os, re
 from ibm_watsonx_ai import APIClient
 from ibm_watsonx_ai import Credentials
 from ibm_watsonx_ai.foundation_models import ModelInference
 from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
+from dotenv import load_dotenv
 
 app = Flask(__name__)
 
+load_dotenv() 
 credentials = Credentials(
     url = "https://us-south.ml.cloud.ibm.com",
-    api_key = "APIKEY"
+    api_key = os.getenv("IBM_API_KEY")
 )
 model_id = "ibm/granite-8b-code-instruct"
 
@@ -19,13 +21,25 @@ model = ModelInference(
     project_id="8d70c9a1-49ae-4848-81e4-0d1c34fc320a",
     params= {
 		"decoding_method": "greedy",
-		"max_new_tokens": 500,
+		"max_new_tokens": 900,
 		"min_new_tokens": 0,
 		"repetition_penalty": 1
 	},
 )
 
 def clean_generated_code(raw_code):
+    unwanted_patterns = [
+        r'var\s+scene\s*=\s*new\s+THREE\.Scene\(\);?',
+        r'var\s+camera\s*=\s*new\s+THREE\.PerspectiveCamera\([^;]*\);?',
+        r'var\s+renderer\s*=\s*new\s+THREE\.WebGLRenderer\([^;]*\);?',
+        r'renderer\.setSize\([^;]*\);?',
+        r'document\.body\.appendChild\([^;]*\);?',
+        r'renderer\.render\([^;]*\);?',
+    ]
+    
+    for pattern in unwanted_patterns:
+        raw_code = re.sub(pattern, '', raw_code, flags=re.IGNORECASE)
+
     for marker in ['```javascript', '```', '[RESP]', '// THREE.JS CODE START', '// THREE.JS CODE END']:
         raw_code = raw_code.replace(marker, '')
     
@@ -55,13 +69,13 @@ def generate():
         # prompt for watson
         prompt = f"""
         You are a three.js generator, meant to generate the code needed to create a 3d model in three.js for a user based on a description of their engineering project in three.js.
-        Here is their description "{user_description}"
-        Respond with ONLY the three.js code the creates the objects and adds them to the scence. 
-        limit size to about 10x10x10 units.
-        Assume that parameters (scence, camera, renderer) are already provided.
-        DO NOT include any intro, outro, explanations, comments, description or text outside the code. respond with ONLY code and no sentences.
+        Here is their description "{user_description}". 
+        try to result as close as possible to what the user wants.
+        limit size to about 10x10x10 units. Use MeshStandardMaterial when relevant so the material will interact with the scene's lights.
+        Include multiple objects/shapes/meshes/geometry/color as necessary.
+        Assume that parameters (scence, camera, renderer) are already provided so do not define a new instance of any of these.
+        DO NOT include any intro, outro, explanations, comments, description or text outside the code. respond with ONLY the three.js code the creates the objects and adds them to the scence.
         ONLY generate the code that creates and adds 3D objects to the scene with described materials, colors, position, etc..
-        You can include multiple objects/shapes/meshes/geometry/color as necessary, try to result as close as possible to what the user wants.
         """
         #print(prompt)
 
