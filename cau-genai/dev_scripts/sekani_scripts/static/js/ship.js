@@ -37,7 +37,7 @@ const gridHelper = new THREE.GridHelper(100,50);
 // Load model
 const gltfLoader = new GLTFLoader();
 gltfLoader.load(
-    '/cau-genai/dev_scripts/sekani_scripts/models/ship.glb',
+    './models/ship.glb',
     (gltf) => {
         const model = gltf.scene;
 
