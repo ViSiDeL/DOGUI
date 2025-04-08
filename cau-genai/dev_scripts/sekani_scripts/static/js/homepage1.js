@@ -16,7 +16,7 @@ camera.position.setZ(30);
 const controls = new OrbitControls(camera, renderer.domElement);
 
 // Torus setup - 10,3,16,100
-const geometry = new THREE.TorusKnotGeometry( 10, 3, 100, 16);
+const geometry = new THREE.TorusKnotGeometry(10,3,16,100);
 const material = new THREE.MeshStandardMaterial({
     color: 0x3e947e,
     wireframe: true

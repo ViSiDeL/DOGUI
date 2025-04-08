@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { CSS3DRenderer, CSS3DObject } from 'three/addons/renderers/CSS3DRenderer.js';
 
 // Scene setup
 const scene = new THREE.Scene();
@@ -10,6 +11,13 @@ const renderer = new THREE.WebGLRenderer({
     antialias: true,
     powerPreference: "high-performance"
 });
+// HTML Renderer
+const cssRenderer = new CSS3DRenderer();
+cssRenderer.setSize(window.innerWidth, window.innerHeight);
+cssRenderer.domElement.style.position = 'absolute';
+cssRenderer.domElement.style.top = '0';
+cssRenderer.domElement.style.pointerEvents = 'none';
+document.body.appendChild(cssRenderer.domElement);
 renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setSize(window.innerWidth, window.innerHeight);
 
@@ -34,7 +42,7 @@ directionalLight.position.set(1, 1, 1).normalize();
 scene.add(directionalLight);
 
 // Create screen plane
-const screenMaterial = new THREE.TextureLoader().load('/cau-genai/dev_scripts/sekani_scripts/static/img/dgui.png')
+const screenMaterial = new THREE.TextureLoader().load('./static/img/bkg.jpg')
 const screen = new THREE.Mesh(
     new THREE.PlaneGeometry(50, 20),
     new THREE.MeshBasicMaterial({ map: screenMaterial})
@@ -45,11 +53,26 @@ scene.add(screen);
 // Model reference
 let model = null;
 
+// Create iframe element
+const iframe = document.createElement('iframe');
+iframe.src = 'http://127.0.0.1:5500/dev_scripts/sekani_scripts/test.html'; // Your webpage URL
+iframe.style.width = '2048px';
+iframe.style.height = '768px';
+iframe.style.border = 'none';
+iframe.style.backgroundColor = '#000';
+
+// Create CSS3DObject
+const htmlScreen = new CSS3DObject(iframe);
+htmlScreen.scale.set(0.02, 0.02, 0.02); // Adjust scale as needed
+htmlScreen.position.set(0, 1.8, -0.3); // Same position as your plane
+htmlScreen.rotation.set(0, Math.PI, 0); // Adjust rotation to face camera
+scene.add(htmlScreen);
+
 // Load model
 const gltfLoader = new GLTFLoader();
 const gltfLoader2 = new GLTFLoader();
 gltfLoader.load(
-    '/cau-genai/dev_scripts/sekani_scripts/models/ship.glb',
+    './models/ship.glb',
     (gltf) => {
         model = gltf.scene;
         scene.add(model);
@@ -60,7 +83,7 @@ gltfLoader.load(
 );
 
 gltfLoader2.load(
-    '/cau-genai/dev_scripts/sekani_scripts/models/helmet.glb',
+    './models/helmet.glb',
     (gltf) => {
         model = gltf.scene;
         scene.add(model);
@@ -105,6 +128,7 @@ function animate() {
 
     controls.update();
     renderer.render(scene, camera);
+    cssRenderer.render(scene, camera);
 }
 animate();
 
@@ -115,4 +139,5 @@ window.addEventListener('resize', () => {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
+    cssRenderer.setSize(window.innerWidth, window.innerHeight);
 });

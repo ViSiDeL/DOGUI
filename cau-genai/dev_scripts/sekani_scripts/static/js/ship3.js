@@ -61,7 +61,7 @@ let model = null;
 const gltfLoader = new GLTFLoader();
 const gltfLoader2 = new GLTFLoader();
 gltfLoader.load(
-    '/cau-genai/dev_scripts/sekani_scripts/models/ship.glb',
+    './models/ship.glb',
     (gltf) => {
         model = gltf.scene;
         scene.add(model);
@@ -72,7 +72,7 @@ gltfLoader.load(
 );
 
 gltfLoader2.load(
-    '/cau-genai/dev_scripts/sekani_scripts/models/helmet.glb',
+    './models/helmet.glb',
     (gltf) => {
         model = gltf.scene;
         scene.add(model);
