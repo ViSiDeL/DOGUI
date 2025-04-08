@@ -1,29 +1,31 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DOGUI.ai</title>
-    <link rel="stylesheet" href="/static/css/dogui_style.css">
-    <link rel="stylesheet" href="/static/css/engineering.css">
-
-    <script type="importmap">
-        {
-            "imports": {
-                "three": "/node_modules/three/build/three.module.js",
-            }
-        }
-    </script>
+    <title>Test AI Assistant</title>
 </head>
 <body>
-    <div class="content">
-        {% include 'includes/user-nav.html' %}
-        <div class="page-content">
-            <h1>Welcome to the Dashboard!</h1>
-            <p>Hello, <strong>{{ user.username }}</strong>!</p>
-        </div>
-    </div>
 
+    <h3>IBM AI Assistant w/ watsonx Assistant</h3>
+    <!-- <script>
+        let userMessages = []; // Store user messages
+
+        function handleUserInput() {
+            let inputField = document.getElementById("userInput");
+            let message = inputField.value.trim();
+
+            console.log("🔍 Captured Input:", message); // Debugging
+
+            if (message) {
+                userMessages.push(message);
+                console.log("✅ User Messages Array:", userMessages); // Check if messages are stored correctly
+                inputField.value = ""; // Clear input field
+            } else {
+                console.log("⚠️ No input detected. Try typing a message.");
+            }
+        }
+    </script> -->
     <script>
         window.watsonAssistantChatOptions = {
             integrationID: "bb767d9b-65ed-4412-aaee-7c36d0792c8c", // The ID of this integration.
@@ -41,6 +43,5 @@
             document.head.appendChild(t);
         }, 1000);
     </script>
-</body>
+    </body>
 </html>
-
