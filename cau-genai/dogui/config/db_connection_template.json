@@ -1,0 +1,7 @@
+{
+    "host": "HOSTNAME",
+    "user": "USERNAME",
+    "password": "PASSWORD",
+    "database": "dogui",
+    "port": "3310"
+}

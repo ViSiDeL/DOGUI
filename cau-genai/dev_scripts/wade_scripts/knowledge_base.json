@@ -1,12 +1,12 @@
 {
   "questions": [
     {
-      "question": "Hello",
-      "answer": "Hey There"
+      "question": "whats 4 + 4",
+      "answer": "4"
     },
     {
-      "question": "What is 2 + 2",
-      "answer": "4"
+      "question": "& C:/Users/WadeWideman/AppData/Local/Microsoft/WindowsApps/python3.13.exe \"c:/Users/WadeWideman/Documents/GitHub/CAU-GenAI/cau-genai/dev_scripts/wade_scripts/chatbot test.py\"",
+      "answer": "& C:/Users/WadeWideman/AppData/Local/Microsoft/WindowsApps/python3.13.exe \"c:/Users/WadeWideman/Documents/GitHub/CAU-GenAI/cau-genai/dev_scripts/wade_scripts/chatbot test.py\""
     }
   ]
 }

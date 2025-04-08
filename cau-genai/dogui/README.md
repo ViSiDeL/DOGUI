@@ -54,6 +54,25 @@ npm install
 
 This will generate a node_modules folder if it doesn’t already exist.
 
+**NOTE** - If npm isn't running, and you installed NodeJS, you may need to close VSCode and reopen the terminal. Then run npm install.
+
+Navigate back into the folder, activate your venv, and try again:
+```bash
+# cd into the dogui folder
+cd cau-genai/dogui
+
+# then activate source
+venv\Scripts\activate
+
+# then install
+npm install 
+```
+
+**NOTE** - If you run into an error stating that you are not allowed to run scripts on the system, run the following command: 
+```bash
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+```
+
 ### **5.: Store SQL Credentials**
 Modify the SQL connection file with your MySQL credentials:
 ```bash
@@ -102,6 +121,17 @@ dogui/
  ├── requirements.txt      # Python dependencies
 ```
 ## **Tips**
+### Any time you want to run the website, run app.py inside the venv that you setup:
+# cd into the dogui folder
+cd cau-genai/dogui
+
+# then activate source
+venv\Scripts\activate
+
+# then run the file
+python app.py
+
+
 ### If you add new Python packages, update requirements.txt:
 ```bash
 pip freeze > requirements.txt
@@ -118,4 +148,11 @@ python
 use:
 ```bash
 py -3.11
+```
+
+### If you need to run a module like pip or venv with your specific version, use the -m flag:
+```bash
+py -3.11 -m pip
+# or
+py -3.11 -m venv
 ```
