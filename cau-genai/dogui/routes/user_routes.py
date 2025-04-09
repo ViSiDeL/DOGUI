@@ -1,0 +1,121 @@
+from flask import Blueprint, render_template, request, redirect, url_for, flash, session
+import pymysql
+import json
+from models.user import User
+from engine_instance import design_engine
+
+user_bp = Blueprint('user', __name__)
+
+# loading db config
+def load_db_config():
+    with open('config/db_connection.json') as config_file:
+        return json.load(config_file)
+
+# registration page
+@user_bp.route('/register', methods=['GET', 'POST'])
+def register():
+
+    # registering (POST)
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        
+        # connect to database using config
+        db_config = load_db_config()
+        connection = pymysql.connect(
+            host=db_config['host'],
+            user=db_config['user'],
+            password=db_config['password'],
+            database=db_config['database'],
+            port=int(db_config['port'])
+        )
+        cursor = connection.cursor()
+        
+        # check if the username already exists
+        cursor.execute("SELECT * FROM users WHERE username = %s", (username,))
+        existing_user = cursor.fetchone()
+        
+        if existing_user:
+            flash('Username already exists!', 'danger')
+            return redirect(url_for('user.register'))
+        
+        # insert new user
+        cursor.execute("INSERT INTO users (username, password) VALUES (%s, %s)", (username, password))
+        connection.commit()
+        cursor.close()
+        connection.close()
+        
+        flash('User registered successfully!', 'success')
+        return redirect(url_for('user.login'))
+    
+    return render_template('accounts/register.html')
+
+# login page
+@user_bp.route('/login', methods=['GET', 'POST'])
+def login():
+
+    # logging in (POST)
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        # connect to database using config
+
+        try:
+            db_config = load_db_config()
+            connection = pymysql.connect(
+                host=db_config['host'],
+                user=db_config['user'],
+                password=db_config['password'],
+                database=db_config['database'],
+                port=int(db_config['port'])
+            )
+            print("Database connection successful!") 
+        except pymysql.Error as err:
+            print(f"Database connection failed: {err}")
+            flash(f"Database error: {err}", "danger")
+            return redirect(url_for('user.login'))
+        except Exception as err:
+            print(f"Database connection failed: {err}")
+            flash(f"Database error: {err}", "danger")
+            return redirect(url_for('user.login'))
+
+        cursor = connection.cursor()
+        
+        # check if username and password match
+        cursor.execute("SELECT * FROM users WHERE username = %s AND password = %s", (username, password))
+        user = cursor.fetchone()
+        
+        cursor.close()
+        connection.close()
+
+        if user:
+            print("test")
+            # print(user)
+            user_id, username, pwd, role = user
+
+            # create session
+            session['session_id'] = str(user_id)
+            design_engine.add_user(session['session_id'], user_id=user_id, username=username, role=role)
+
+            flash('Login successful!', 'success')
+            print(f"User '{username}' (ID: {user_id}, Role: {role}) has logged in.")
+            return redirect(url_for('dashboard'))
+        else:
+            flash('Invalid username or password!', 'danger')
+            return redirect(url_for('user.login'))
+    
+    print("enmd")
+    return render_template('accounts/login.html')
+
+
+# login page        
+@user_bp.route('/logout', methods=['GET'])
+def logout():
+    session_id = session.get('session_id')
+    
+    if session_id:
+        design_engine.remove_user(session_id)
+        session.pop('session_id', None)
+        flash('You have been logged out.', 'success')
+
+    return redirect(url_for('user.login'))
