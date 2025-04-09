@@ -68,7 +68,7 @@ function animate() {
     updateCameraPositionSmooth();
 
     // Rotate the cube (optional)
-    cube.rotation.x += 0.01;
+    cube.rotation.x += 0.01;  
     cube.rotation.y += 0.01;
 
     // Render the scene
@@ -85,6 +85,12 @@ function updateCameraPositionSmooth() {
     camera.position.x += (targetX - camera.position.x) * smoothingFactor;
     camera.position.y += (targetY - camera.position.y) * smoothingFactor;
 }
+
+// Background Music SetUp
+
+<audio src="/music/good_enough.mp3" controls>
+<p>If you are reading this, it is because your browser does not support the audio element.</p>
+</audio>
 
 
 // Handle window resizing
