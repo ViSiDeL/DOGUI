@@ -44,7 +44,7 @@ new THREE.TextureLoader().load('./static/img/bkg.jpg', texture => {
 // HTML Screen Setup
 function createHTMLScreen() {
     const iframe = document.createElement('iframe');
-    iframe.src = './dogui/templates/index.html';
+    iframe.src = 'http://127.0.0.1:5000/';
     iframe.style.width = '1024px';
     iframe.style.height = '768px';
     iframe.style.border = 'none';
@@ -57,7 +57,7 @@ function createHTMLScreen() {
     const htmlScreen = new CSS3DObject(iframe);
     htmlScreen.scale.set(0.02, 0.02, 0.02);
     htmlScreen.position.set(0, 1.8, -0.3);
-    htmlScreen.rotation.set(0, Math.PI, 0); // Face the camera
+    htmlScreen.rotation.set(0, Math.PI * 10, 0); // Face the camera
 
     return htmlScreen;
 }
