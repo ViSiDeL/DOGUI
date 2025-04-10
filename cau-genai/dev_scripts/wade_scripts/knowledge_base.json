@@ -1,12 +1,20 @@
 {
   "questions": [
     {
-      "question": "whats 4 + 4",
+      "question": "Hello",
+      "answer": "Hey There"
+    },
+    {
+      "question": "What is 2 + 2",
       "answer": "4"
     },
     {
-      "question": "& C:/Users/WadeWideman/AppData/Local/Microsoft/WindowsApps/python3.13.exe \"c:/Users/WadeWideman/Documents/GitHub/CAU-GenAI/cau-genai/dev_scripts/wade_scripts/chatbot test.py\"",
-      "answer": "& C:/Users/WadeWideman/AppData/Local/Microsoft/WindowsApps/python3.13.exe \"c:/Users/WadeWideman/Documents/GitHub/CAU-GenAI/cau-genai/dev_scripts/wade_scripts/chatbot test.py\""
+      "question": "where is africa",
+      "answer": "it is a continent on the eastern hemisphere of the world"
+    },
+    {
+      "question": "what 9 x 9",
+      "answer": "81"
     }
   ]
 }
