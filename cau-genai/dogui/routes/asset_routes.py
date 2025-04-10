@@ -50,6 +50,8 @@ gen_model = ModelInference(
 	},
 )
 
+""" -------------------------------- ASSET MANAGEMENT -------------------------------- """
+
 @asset_bp.route('/')
 def assets():
     session_id = session.get('session_id')
@@ -202,6 +204,54 @@ def upload_asset(asset_type):
     
     print('loaded upload page')
     return render_template('design/upload_asset.html', user=user, asset_type=asset_type)
+
+@asset_bp.route('/download/<asset_type>/<filename>')
+def download_asset(asset_type, filename):
+    session_id = session.get('session_id')
+    if not session_id:
+        return redirect(url_for('user.login'))
+    
+    user = design_engine.get_user(session_id)
+    if not user:
+        return redirect(url_for('user.login'))
+    
+    # Verify user has permission to download
+    db_config = load_db_config()
+    try:
+        connection = pymysql.connect(
+            host=db_config['host'],
+            user=db_config['user'],
+            password=db_config['password'],
+            database=db_config['database'],
+            port=int(db_config['port'])
+        )
+        with connection.cursor() as cursor:
+            cursor.execute(
+                "SELECT 1 FROM assets WHERE asset_url = %s AND (user_id = %s OR user_id IS NULL)",
+                (filename, user.user_id)
+            )
+            if not cursor.fetchone():
+                flash('Asset not found or permission denied', 'error')
+                return redirect(url_for('asset.assets'))
+        
+        # Serve the file
+        directory = os.path.join('static', 'assets', f"{asset_type}s")
+        return send_from_directory(
+            directory=directory,
+            path=filename,
+            as_attachment=True
+        )
+        
+    except Exception as e:
+        flash(f'Error downloading asset: {str(e)}', 'error')
+        print(f'Error downloading asset: {str(e)}', 'error')
+        return redirect(url_for('asset.assets'))
+    
+    finally:
+        if 'connection' in locals():
+            connection.close()
+
+""" -------------------------------- MODEL GENERATION -------------------------------- """
 
 @asset_bp.route('/generate-model')
 def generate_model():
