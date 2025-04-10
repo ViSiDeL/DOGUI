@@ -1,6 +1,8 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash
-import mysql.connector
+from flask import Blueprint, render_template, request, redirect, url_for, flash, session
+import pymysql
 import json
+from models.user import User
+from engine_instance import design_engine
 
 user_bp = Blueprint('user', __name__)
 
@@ -20,12 +22,12 @@ def register():
         
         # connect to database using config
         db_config = load_db_config()
-        connection = mysql.connector.connect(
+        connection = pymysql.connect(
             host=db_config['host'],
             user=db_config['user'],
             password=db_config['password'],
             database=db_config['database'],
-            port=db_config['port']
+            port=int(db_config['port'])
         )
         cursor = connection.cursor()
         
@@ -56,16 +58,27 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        
         # connect to database using config
-        db_config = load_db_config()
-        connection = mysql.connector.connect(
-            host=db_config['host'],
-            user=db_config['user'],
-            password=db_config['password'],
-            database=db_config['database'],
-            port=db_config['port']
-        )
+
+        try:
+            db_config = load_db_config()
+            connection = pymysql.connect(
+                host=db_config['host'],
+                user=db_config['user'],
+                password=db_config['password'],
+                database=db_config['database'],
+                port=int(db_config['port'])
+            )
+            print("Database connection successful!") 
+        except pymysql.Error as err:
+            print(f"Database connection failed: {err}")
+            flash(f"Database error: {err}", "danger")
+            return redirect(url_for('user.login'))
+        except Exception as err:
+            print(f"Database connection failed: {err}")
+            flash(f"Database error: {err}", "danger")
+            return redirect(url_for('user.login'))
+
         cursor = connection.cursor()
         
         # check if username and password match
@@ -76,17 +89,33 @@ def login():
         connection.close()
 
         if user:
+            print("test")
+            # print(user)
+            user_id, username, pwd, role = user
+
+            # create session
+            session['session_id'] = str(user_id)
+            design_engine.add_user(session['session_id'], user_id=user_id, username=username, role=role)
+
             flash('Login successful!', 'success')
+            print(f"User '{username}' (ID: {user_id}, Role: {role}) has logged in.")
             return redirect(url_for('dashboard'))
         else:
             flash('Invalid username or password!', 'danger')
             return redirect(url_for('user.login'))
     
+    print("enmd")
     return render_template('accounts/login.html')
 
 
 # login page        
 @user_bp.route('/logout', methods=['GET'])
 def logout():
-    # TODO, implement proper logout functionalities
-    return render_template('accounts/login.html')
+    session_id = session.get('session_id')
+    
+    if session_id:
+        design_engine.remove_user(session_id)
+        session.pop('session_id', None)
+        flash('You have been logged out.', 'success')
+
+    return redirect(url_for('user.login'))

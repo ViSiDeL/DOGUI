@@ -1,0 +1,8 @@
+
+{
+    "host": "visidel.org",
+    "user": "sekani",
+    "password": "visidel",
+    "database": "dogui",
+    "port": "3310"
+}
