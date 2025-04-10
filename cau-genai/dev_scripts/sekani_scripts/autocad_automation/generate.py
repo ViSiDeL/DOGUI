@@ -5,16 +5,26 @@ from config import ProjectConfig
 
 
 def prompt_user_for_project_details():
+    project_types = ["floorplan", "", "",]
     print("Let's create a new CAD project.")
     name = input("Project Name: ")
     project_type = input("Project Type (e.g., floorplan, part): ")
     width = float(input("Width: "))
     height = float(input("Height: "))
     unit = input("Units (feet, meters, etc.): ")
+    description = input("")
 
     return ProjectConfig(name, width, height, unit, project_type)
 
-def ideation():
+def next_action():
+    print("\nWhat would you like to do next?")
+    print("1. ✅ Generate a preliminary model using AI")
+    print("2. ✏️ Begin manual modeling with a prefilled template")
+    print("3. 📁 Open and edit an existing design")
+    choice = input("Enter 1, 2, or 3: ").strip()
+    return choice
+
+def CADideation():
     print('Initializing Ideation - Stage 1\n')
     try:
         config = prompt_user_for_project_details()
@@ -50,6 +60,10 @@ def ideation():
 
 #     return full_path
 if __name__ == "__main__":
-    phase1 = ideation()
-    print("\n>>>>>>>>Ideation Stage Complete<<<<<<<<\n")
-    print(phase1)
+    phase1 = CADideation()
+    next_action()
+    # print("\n>>>>>>>>Ideation Stage Complete<<<<<<<<\n")
+    # print(phase1)
+    # phase1.to_json('./examples/test1.txt')
+    print(phase1.from_json('./examples/test.txt'))
+
