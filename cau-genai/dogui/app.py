@@ -12,6 +12,7 @@ from routes.user_routes import user_bp
 from routes.ai_routes import ai_bp
 from routes.test_routes import test_bp
 from routes.project_routes import project_bp
+from routes.asset_routes import asset_bp
 
 # DOGUI CLASS IMPORTS
 from models.engine import DesignEngine
@@ -25,11 +26,13 @@ app = Flask(__name__)
 
 # creating secret key for session management
 app.config['SECRET_KEY'] = os.urandom(24)
+
 # register blueprints for other routes
 app.register_blueprint(user_bp)
 app.register_blueprint(ai_bp)
 app.register_blueprint(test_bp)
 app.register_blueprint(project_bp)
+app.register_blueprint(asset_bp)
 
 """
 ------------------ METHODS/FUNCTIONS ------------------
