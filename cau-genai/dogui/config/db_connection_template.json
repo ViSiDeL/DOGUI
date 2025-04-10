@@ -1,8 +1,7 @@
-
 {
     "host": "[SECRET]",
-    "user": "[SECRET]",
-    "password": "[SECRET]",
+    "user": "USERNAME",
+    "password": "PASSWORD",
     "database": "[SECRET]",
     "port": "[SECRET]"
 }

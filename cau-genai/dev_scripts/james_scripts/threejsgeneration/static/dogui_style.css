@@ -1,0 +1,199 @@
+/* Variables */
+:root {
+    --dogui-green: #3e947e;
+    --dogui-glow: rgb(146,222,203);
+    --outline: rgba(122, 255, 231, 0.904);
+}
+
+/* Custom Font */
+@font-face {
+    font-family: Norwester;
+    src: url("/static/fonts/norwester/norwester.otf") format("opentype");
+}
+
+/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Norwester', serif;
+}
+
+/* Background Styling */
+body, html {
+    height: 100%;
+    width: 100%;
+    overflow: hidden; /* Prevent scrolling */
+}
+
+.content {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: url("/static/img/bkg.jpg") no-repeat center center fixed;
+    background-size: cover; 
+    justify-content: center; 
+    align-items: center; 
+    overflow: auto;
+    display: flex;
+}
+
+.page-content {
+    max-width: 100%;
+    max-height: 100%;
+    overflow-y: auto; 
+    padding: 20px; 
+    box-sizing: border-box;
+    text-align: center;
+    font-size: 2rem;
+    color: var(--dogui-green);
+    background-color: rgba(0, 0, 0, 0.7);
+    border-radius: 10px; 
+    margin: 20px; 
+}
+
+/* Navigation Styling */
+.nav {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    font-family: 'Norwester', serif;
+}
+
+
+/* Navigation Links */
+.nav a {
+    font-family: 'Norwester', serif;
+    font-size: 2rem;
+    color: var(--dogui-green);
+    color: var(--dogui-glow);
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    filter: drop-shadow(rgba(21, 159, 124, 0.95) 0px 0px 2.54087px) drop-shadow(rgba(53, 159, 132, 0.75) 0px 0px 12.7043px) drop-shadow(rgba(53, 159, 132, 0.44) 0px 0px 38.113px);
+    animation: glowEffect 3s ease-in-out infinite;
+    transition: color 1s ease, text-shadow 1s ease, filter 1s ease;
+    z-index: 5;
+}
+
+/* Hover Effect */
+.nav a:hover {
+    animation: none;
+    border-radius: 5px;
+}
+
+/* Top Left and Top Right Buttons */
+.nav a:first-child {
+    position: absolute;
+    top: 3rem;
+    left: 2rem;
+}
+
+.nav a:last-child {
+    position: absolute;
+    top: 3rem;
+    right: 2rem;
+}
+
+.page-content {
+    background-color: rgba(0, 0, 0, 0.7); 
+    border-radius: 10px; 
+    padding: 30px; 
+    margin: 20px; 
+    color: var(--dogui-glow); 
+    min-width: 400px; /* Limit width for better readability */
+    max-width: 100%;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    z-index: 2; 
+    position: relative; 
+}
+
+h1 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+}
+
+
+/* forms / inputs */
+
+input[type="text"],
+input[type="password"], textarea {
+    width: 100%; 
+    padding: 12px 20px; 
+    border: 2px solid #ccc; 
+    border-radius: 8px; 
+    background-color: #fff; 
+    color: #333;
+    font-size: 1rem; 
+    transition: border-color 0.3s ease, box-shadow 0.3s ease; 
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus {
+    border-color: var(--dogui-glow); 
+    box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
+    outline: none; 
+}
+
+button {
+    background-color: var(--dogui-green); 
+    color: white; 
+    padding: 12px 20px; 
+    border: none; 
+    border-radius: 8px; 
+    font-size: 1rem; 
+    cursor: pointer; 
+    transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth transitions */
+    width: 100%; 
+}
+
+button:hover {
+    background-color: var(--dogui-glow); /* Darken green on hover */
+    transform: scale(1.05); /* Slightly enlarge button */
+    color: black;
+}
+
+button:active {
+    transform: scale(1); 
+}
+
+/* other */
+.glow {
+    filter: drop-shadow(rgba(21, 159, 124, 0.95) 0px 0px 2.54087px) drop-shadow(rgba(53, 159, 132, 0.75) 0px 0px 12.7043px) drop-shadow(rgba(53, 159, 132, 0.44) 0px 0px 38.113px);
+}
+
+
+@keyframes glowEffect {
+    0% {
+      color: var(--dogui-green);
+      filter: none;
+    }
+    50% {
+      color: var(--dogui-glow);
+      filter: drop-shadow(rgba(21, 159, 124, 0.95) 0px 0px 2.54087px) drop-shadow(rgba(53, 159, 132, 0.75) 0px 0px 12.7043px) drop-shadow(rgba(53, 159, 132, 0.44) 0px 0px 38.113px); 
+    }
+    100% {
+      color: var(--dogui-green);
+      filter: none; 
+    }
+}
+  
+@keyframes wipe {
+    0% {
+        width: 0;
+        filter: none;
+        overflow: hidden;
+    }
+    100% {
+        width: 100%;
+        filter: drop-shadow(rgba(21, 159, 124, 0.70) 0px 0px 1.54087px) drop-shadow(rgba(53, 159, 132, 0.75) 0px 0px 12.7043px) drop-shadow(rgba(53, 159, 132, 0.44) 0px 0px 38.113px);
+        overflow: visible;
+    }
+}

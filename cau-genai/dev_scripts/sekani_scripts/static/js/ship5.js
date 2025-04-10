@@ -27,7 +27,7 @@ document.body.appendChild(cssRenderer.domElement);
 // Camera setup
 camera.position.set(0.247, -1.315, 18.505);
 const controls = new OrbitControls(camera, renderer.domElement);
-controls.target.set(0, 1.5, 0);
+
 
 // Lighting - reduced intensity
 const ambientLight = new THREE.AmbientLight(0xffffff, 1.0);

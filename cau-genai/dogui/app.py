@@ -2,6 +2,7 @@
 IMPORTS
 """
 
+
 from flask import Flask, render_template, send_from_directory, session, redirect, url_for
 import os
 import random
@@ -11,6 +12,7 @@ from routes.user_routes import user_bp
 from routes.ai_routes import ai_bp
 from routes.test_routes import test_bp
 from routes.project_routes import project_bp
+from routes.asset_routes import asset_bp
 
 # DOGUI CLASS IMPORTS
 from models.engine import DesignEngine
@@ -30,6 +32,7 @@ app.register_blueprint(user_bp)
 app.register_blueprint(ai_bp)
 app.register_blueprint(test_bp)
 app.register_blueprint(project_bp)
+app.register_blueprint(asset_bp)
 
 """
 ------------------ METHODS/FUNCTIONS ------------------
