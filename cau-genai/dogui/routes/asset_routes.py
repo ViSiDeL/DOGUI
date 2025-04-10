@@ -116,10 +116,17 @@ def new_asset():
                                 user=user,
                                 asset_type=asset_type)
         
+        if asset_type == 'drawing' and not creation_method:
+            return render_template('design/drawing_creation_method.html', 
+                                user=user,
+                                asset_type=asset_type)
+        
         if creation_method == 'upload':
             return redirect(url_for('asset.upload_asset', asset_type=asset_type))
         elif creation_method == 'generate':
             return redirect(url_for('asset.generate_model'))
+        elif creation_method == 'CAD':
+            return redirect(url_for('asset.cad_assist'))
         
     return render_template('design/new_asset.html', user=user)
 
@@ -270,3 +277,15 @@ def generate():
     
     except Exception as e:
         return jsonify({'error': str(e), 'status': 'error'}), 500
+    
+@asset_bp.route('/cad-assist')
+def cad_assist():
+    session_id = session.get('session_id')
+    if not session_id:
+        return redirect(url_for('user.login'))
+    
+    user = design_engine.get_user(session_id)
+    if not user:
+        return redirect(url_for('user.login'))
+    
+    return render_template('design/cad_assist.html', user=user)
