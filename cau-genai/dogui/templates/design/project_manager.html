@@ -19,7 +19,41 @@
     <div class="content">
         {% include 'includes/user-nav.html' %}
         <div class="page-content">
-            <h1>{{ user.username }}'s Projects:</h1>
+            <h1>{{ user.username }}'s Projects</h1>
+            
+            <div class="projects-grid">
+                {% for project in projects %}
+                <a href="/project/{{ user.username }}/{{ project[2] }}">
+                    <div class="project-card glow">
+                        <h3 class="project-title">{{ project[0] }}</h3>
+                        <div class="project-content">
+                            <div class="project-logo">
+                                <img src="/static/img/dogui_ai_logo.png" alt="Project Logo">
+                            </div>
+                            <div class="project-desc">
+                                {{ project[1][:45] }}{% if project[1]|length > 45 %}...{% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </a>
+                {% else %}
+                <div class="no-projects">
+                    <p>No projects yet. Create your first project!</p>
+                </div>
+                {% endfor %}
+                <a href="/new-project">
+                    <div id="new-project" class="project-card glow">
+                        <div class="project-content">
+                            <div class="project-logo">
+                                <img src="/static/img/navicons/plus.png" alt="Project Logo">
+                            </div>
+                            <div class="project-desc">
+                                New Project
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
         </div>
     </div>
 </body>

@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session
-import mysql.connector
+import pymysql
 import json
 from models.user import User
 from engine_instance import design_engine
@@ -22,12 +22,12 @@ def register():
         
         # connect to database using config
         db_config = load_db_config()
-        connection = mysql.connector.connect(
+        connection = pymysql.connect(
             host=db_config['host'],
             user=db_config['user'],
             password=db_config['password'],
             database=db_config['database'],
-            port=db_config['port']
+            port=int(db_config['port'])
         )
         cursor = connection.cursor()
         
@@ -58,16 +58,27 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        
         # connect to database using config
-        db_config = load_db_config()
-        connection = mysql.connector.connect(
-            host=db_config['host'],
-            user=db_config['user'],
-            password=db_config['password'],
-            database=db_config['database'],
-            port=db_config['port']
-        )
+
+        try:
+            db_config = load_db_config()
+            connection = pymysql.connect(
+                host=db_config['host'],
+                user=db_config['user'],
+                password=db_config['password'],
+                database=db_config['database'],
+                port=int(db_config['port'])
+            )
+            print("Database connection successful!") 
+        except pymysql.Error as err:
+            print(f"Database connection failed: {err}")
+            flash(f"Database error: {err}", "danger")
+            return redirect(url_for('user.login'))
+        except Exception as err:
+            print(f"Database connection failed: {err}")
+            flash(f"Database error: {err}", "danger")
+            return redirect(url_for('user.login'))
+
         cursor = connection.cursor()
         
         # check if username and password match
@@ -78,6 +89,7 @@ def login():
         connection.close()
 
         if user:
+            print("test")
             # print(user)
             user_id, username, pwd, role = user
 
@@ -92,6 +104,7 @@ def login():
             flash('Invalid username or password!', 'danger')
             return redirect(url_for('user.login'))
     
+    print("enmd")
     return render_template('accounts/login.html')
 
 
