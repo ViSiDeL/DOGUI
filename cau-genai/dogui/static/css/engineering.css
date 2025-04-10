@@ -43,7 +43,7 @@
 /* Navigation Links */
 .user-nav a {
     font-family: 'Norwester', serif;
-    font-size: 2rem;
+    font-size: 1.5rem;
     color: var(--dogui-green);
     color: var(--dogui-glow);
     text-decoration: none;
@@ -63,4 +63,101 @@
 .ai-logo {
     width: 3rem;
     height: 3rem;
+}
+
+/* Projects Grid Layout */
+.projects-grid {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 3rem;
+    padding: 20px;
+    max-width: 100%;
+    align-items: center;
+    text-align: center;
+    align-content: center;
+    justify-content: center;
+}
+
+/* Project Card Styling */
+.project-card {
+    background-color: rgba(0, 0, 0, 0.7);
+    width: 20rem;
+    border-radius: 10px;
+    padding: 20px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid var(--dogui-green);
+    text-decoration: none;
+}
+
+.project-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(62, 148, 126, 0.3);
+}
+
+.project-title {
+    color: var(--dogui-glow);
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+    text-align: center;
+    border-bottom: 1px solid var(--dogui-green);
+    padding-bottom: 10px;
+    text-decoration: none;
+}
+
+.project-content {
+    display: grid;
+    grid-template-columns: 5rem 1fr;
+    gap: 15px;
+    align-items: center;
+    text-decoration: none;
+}
+
+.project-logo img {
+    width: 100%;
+    height: auto;
+    border-radius: 5px;
+    border: 2px solid var(--dogui-green);
+}
+
+.project-desc {
+    color: #ccc;
+    font-size: 1rem;
+    line-height: 1.4;
+}
+
+.no-projects {
+    color: var(--dogui-glow);
+    font-size: 1.5rem;
+}
+
+.projects-grid a {
+    text-decoration: none !important;
+}
+
+.projects-grid a:visited {
+    text-decoration: none !important;
+}
+
+.projects-grid a, 
+.projects-grid a:link, 
+.projects-grid a:visited, 
+.projects-grid a:hover, 
+.projects-grid a:active {
+    text-decoration: none;
+    color: inherit;
+}
+
+@media (max-width: 768px) {
+    .projects-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .project-content {
+        grid-template-columns: 1fr;
+    }
+    
+    .project-logo {
+        justify-self: center;
+    }
 }
