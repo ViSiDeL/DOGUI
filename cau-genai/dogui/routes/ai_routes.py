@@ -33,6 +33,7 @@ chatbot_model = ModelInference(
 		"repetition_penalty": 1
 	},
 )
+print("Watson Connection Built.")
 
 """ ------------------- KNOWLEDGE BASE ------------------- """
 def load_knowledge_base(file_path: str) -> dict:

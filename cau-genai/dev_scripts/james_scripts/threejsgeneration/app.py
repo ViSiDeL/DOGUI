@@ -77,7 +77,7 @@ def generate():
         DO NOT include any intro, outro, explanations, comments, description or text outside the code. respond with ONLY the three.js code the creates the objects and adds them to the scence.
         ONLY generate the code that creates and adds 3D objects to the scene with described materials, colors, position, etc..
         """
-        #print(prompt)
+        print(prompt)
 
         # generate code
         response = model.generate(prompt=prompt)
