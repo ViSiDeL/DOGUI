@@ -1,0 +1,731 @@
+MASTER FILE 
+
+LISP FILE
+
+ADE 1:
+;
+;  STUD FRAME WALL PROGRAM
+;
+;
+;  Function ade:
+;     Begin actual drawing of structure. (Part 1 of 6)
+;
+; Date: Nov. 17 1984
+;
+(defun C:ade1 ()
+;
+;  Set sole plate (sp) variables.
+;
+   (setq sp-length (getstring "Set sole plate length (IN DECIMAL FEET): "))
+;
+   (setq stud-space
+       (getreal "Set center-to-center distance between studs (1.5' or 2') : "))
+   (while (and (/= stud-space 1.5) (/= stud-space 2))
+       (progn
+       (prompt "\n")
+       (prompt "No, dummy, wrong value. Enter number with no units.")
+       (prompt "\n")
+       (setq stud-space
+       (getreal "Set center-to-center distance between studs (1.5' or 2') : "))
+       )
+   )
+;
+   (while (> (atof sp-length) 90)
+       (progn
+       (prompt "\n")
+       (prompt "No, dummy, that's too big. Enter number with no units.")
+       (prompt "\n")
+       (setq sp-length (getstring "Set sole plate length (IN DECIMAL FEET): "))
+       )
+   )
+   (setq number-of-studs (/ (- (atof sp-length) 0.1667) stud-space))
+   (setq save-number-of-studs number-of-studs)
+   (setq number-of-studs (+ number-of-studs 1))
+;
+   (setq number-of-studs (atoi (rtos number-of-studs 2 2)))
+;
+   (setq sp-thickness 0.1667)
+   (setq sp-elev 0)
+   (setq sp-width "0.25")
+;
+   (setq set-limits (rtos (+ (atof sp-length) 20) 2 4))
+   (setq upper-limits (strcat set-limits "," set-limits))
+;
+;
+;
+)
+
+
+ADE 2:
+
+;
+;  STUD FRAME WALL PROGRAM
+;  GENERIC
+;
+;
+;  Function ade2:
+;     Begin actual drawing of structure. (Part 2 of 6)
+;
+;  Date: Nov. 20 1984
+;
+;
+(defun C:ade2 ()
+;
+;  Set up drawing parameters.
+;
+   (command "LIMITS" "0,0" upper-limits)
+   (if (<= (atof set-limits) 30) (setq set-grid "1"))
+   (if (and (<= (atof set-limits) 50) (> (atof set-limits) 30))
+       (setq set-grid "2"))
+   (if (and (<= (atof set-limits) 100) (> (atof set-limits) 50))
+       (setq set-grid "5"))
+   (command "GRID" set-grid)
+;
+;  Set up start point according to sole plate size.
+;
+   (setq start-pt-y (- (/ (atof set-limits) 2) 0.125))
+   (setq start-pt-x 5)
+   (setq start-pt (list start-pt-x start-pt-y))
+;
+;  Begin drawing sole plate.
+;
+   (command "ELEV" sp-elev sp-thickness)
+   (command "PLINE" start-pt (strcat "@" sp-length "<0")
+			     (strcat "@" sp-width "<90")
+			     (strcat "@" sp-length "<180")
+			     "close")
+;
+;  Set up start point for leader.
+;
+   (setq star-pt-y (- (/ (atof set-limits) 2) 0.0625))
+   (setq star-pt-x (+ start-pt-x (atof sp-length)))
+   (setq star-pt (list star-pt-x star-pt-y))
+;
+   (command "ELEV" "0" "0")
+   (command "DIM" "LEADER" star-pt (strcat "@" "2.345" "<0")
+				   ""
+				   "2 x 4 WOOD STUD SYSTEM"
+				   "EXIT")
+;
+;
+;  Set up view point.
+;
+   (command "GRID" "OFF")
+   (command "VPOINT" "2,-2,2")
+   (command "ZOOM" "ALL")
+)
+
+ADE 3:
+;
+;  STUD FRAME WALL PROGRAM
+;  GENERIC
+;
+;
+;  Function ade3:
+;     Begin actual drawing of structure. (Part 3 of 6)
+;
+;  Date: Nov. 30 1989
+;
+;
+(defun C:ade3 ()
+;
+;  Set stud variables.
+;
+   (setq stud-thickness (getint "Set stud height (8' or 10') : "))
+   (while (and (/= stud-thickness 8) (/= stud-thickness 10))
+      (progn
+      (prompt "\n")
+      (prompt "Wrong value, dummy. Enter number with no unit.")
+      (prompt "\n")
+      (setq stud-thickness (getint "Set stud height (8' or 10') : "))
+      )
+   )
+   (setq stud-elev 0.1667)
+   (setq stud-width "0.25")
+   (setq stud-length "0.1667")
+;
+;  Begin drawing studs.
+;
+   (command "ELEV" stud-elev stud-thickness)
+   (setq counter (1- number-of-studs))
+;
+;  Save value of initial start point, START-PT.
+;
+   (setq save-start-pt start-pt)
+;
+   (while (> counter 0)
+      (command "PLINE" start-pt (strcat "@" stud-length "<0")
+				(strcat "@" stud-width "<90")
+				(strcat "@" stud-length "<180")
+				"close")
+;
+;  Set X-START-PT to the x-value of START-PT plus STUD-SPACE.
+;  (car START-PT) gets the x-value of START-PT (x,y).
+;  (cadr START-PT) gets the y-value of START-PT (x,y).
+;  x-value increases and y-value stays the same.
+;  (LIST X-START-PT Y-START-PT) creates these values into an (x,y) pair.
+;
+      (setq x-start-pt (+ (car start-pt) stud-space))
+      (setq y-start-pt (cadr start-pt))
+      (setq start-pt (list x-start-pt y-start-pt))
+      (setq counter (1- counter))
+   )
+;
+;  Draw the last stud beginning at the lower right point of the sole plate.
+;
+   (setq lower-right-x (+ 5 (atof sp-length)))
+   (setq lower-right-y start-pt-y)
+   (setq lower-right-pt (list lower-right-x lower-right-y))
+;
+   (command "PLINE" lower-right-pt (strcat "@" stud-width "<90")
+				   (strcat "@" stud-length "<180")
+				   (strcat "@" stud-width "<-90")
+				   "close")
+;
+;  Make view easier to look at.
+;
+   (command "ELEV" "0" "0")
+   (command "ZOOM" "All")
+;
+)
+
+ADE 4:
+;
+;  STUD FRAME WALL PROGRAM
+;  GENERIC
+;
+;
+;  Function ade4:
+;     Begin actual drawing of structure. (Part 4 of 6)
+;
+;  Date: Nov. 30 1989
+;
+;
+(defun C:ade4 ()
+;
+;  Set header plate variables.
+;
+   (setq hd-length sp-length)
+   (setq hd-width sp-width)
+   (setq hd-elev (+ sp-thickness stud-thickness))
+   (setq hd-thickness sp-thickness)
+;
+;  Begin drawing header plate one.
+;
+   (command "ELEV" hd-elev hd-thickness)
+;
+   (command "PLINE" save-start-pt (strcat "@" hd-length "<0")
+				  (strcat "@" hd-width "<90")
+				  (strcat "@" hd-length "<180")
+				  "close")
+;
+;  Set second header plate variables.
+;
+   (setq hd2-elev (+ hd-elev hd-thickness))
+;
+;  Begin drawing header plate two.
+;
+   (command "ELEV" hd2-elev hd-thickness)
+   (command "PLINE" save-start-pt (strcat "@" hd-length "<0")
+				  (strcat "@" hd-width "<90")
+				  (strcat "@" hd-length "<180")
+				  "close")
+;
+;  Make view easier to look at.
+;
+   (command "ELEV" "0" "0")
+   (command "ZOOM" "All")
+;
+)
+
+ADE 5:
+;
+;  STUD FRAME WALL PROGRAM
+;  GENERIC
+;
+;
+;  Function ade5:
+;     Begin actual drawing of structure. (Part 5 of 6)
+;
+;  Date: Nov. 30 1989
+;
+;
+(defun C:ade5 ()
+;
+;  Set gypsum board variables.
+;
+;  Get gypsum board thickness.
+;
+   (setq gyp-width (getstring "Set gypsum board thickness (IN DECIMAL FEET): "))
+
+;
+   (setq gp-length sp-length)
+   (setq gp-width gyp-width)
+   (setq gp-elev sp-elev)
+   (setq gp-thickness (+ sp-thickness stud-thickness))
+;
+;  Begin drawing the gypsum board.
+;
+   (command "ELEV" gp-elev gp-thickness)
+   (command "PLINE" save-start-pt (strcat "@" gp-length "<0")
+				  (strcat "@" gp-width "<-90")
+				  (strcat "@" gp-length "<180")
+				  "close")
+;
+;
+;  Set up start point for leader.
+;
+   (setq star-pt1-y (- (/ (atof set-limits) 2) 0.139))
+   (setq star-pt1-x (+ start-pt-x (atof sp-length)))
+   (setq star-pt1 (list star-pt1-x star-pt1-y))
+;
+;  Begin drawing leader and label.
+;
+   (command "ELEV" "0" "0")
+   (command "DIM" "LEADER" star-pt1 (strcat "@" "1.300" "<340")
+				    (strcat "@" "1.277" "<0")
+				    ""
+				    "GYPSUM BOARD"
+				    "EXIT")
+;
+;
+;  Get sheathing (insulation) thickness.
+;
+   (setq ins-width (getstring "Set insulation thickness (IN DECIMAL FEET): "))
+
+;
+   (setq ins-length sp-length)
+   (setq ins-width gyp-width)
+   (setq ins-elev sp-elev)
+   (setq ins-thickness (+ sp-thickness stud-thickness))
+;
+;  Begin drawing the sheathing.
+;
+   (command "ELEV" gp-elev gp-thickness)
+;
+   (setq start-pt-y (+ start-pt-y 0.25))
+   (setq st-pt (list start-pt-x start-pt-y))
+   (command "PLINE" st-pt (strcat "@" ins-length "<0")
+			  (strcat "@" ins-width "<90")
+			  (strcat "@" ins-length "<180")
+			  "close")
+;
+   (setq save-start-pt-y start-pt-y)
+;
+;  Set up start point for leader.
+;
+   (setq star-pt2-y (+ start-pt-y 0.01))
+   (setq star-pt2-x (+ start-pt-x (atof sp-length)))
+   (setq star-pt2 (list star-pt2-x star-pt2-y))
+;
+;
+;  Begin drawing leader and label.
+;
+   (command "ELEV" "0" "0")
+   (command "DIM" "LEADER" star-pt2 (strcat "@" "1.300" "<30")
+				    (strcat "@" "1.277" "<0")
+				    ""
+				    "INSULATION"
+				    "EXIT")
+;
+;
+;  Make view easier to look at.
+;
+   (command "ZOOM" "All")
+;
+)
+
+ADE 6:
+;
+;  STUD FRAME WALL PROGRAM
+;  GENERIC
+;
+;
+;  Function ade6:
+;     Begin actual drawing of structure. (Part 6 of 6)
+;
+;  Date: Nov. 1989
+;
+;
+(defun C:ade6 ()
+;
+;  Set air space variables.
+;
+;  Get air space thickness.
+;
+   (setq air-width (getstring "Set air space thickness (IN DECIMAL FEET): "))
+;
+   (setq as-length sp-length)
+   (setq as-width air-width)
+   (setq as-elev sp-elev)
+   (setq as-thickness (+ sp-thickness stud-thickness))
+;
+;
+;  Begin drawing the air space.
+;
+   (command "ELEV" as-elev gp-thickness)
+;
+
+   (setq start-pt-y (+ start-pt-y (atof ins-width)))
+   (setq save-st-pt-y start-pt-y)
+   (setq st-pt2 (list start-pt-x start-pt-y))
+   (command "PLINE" st-pt2 (strcat "@" ins-length "<0")
+			   (strcat "@" ins-width "<90")
+			   (strcat "@" ins-length "<180")
+			   "close")
+;
+;
+;  Set up start point for leader.
+;
+;
+   (setq star-pt4-y (+ save-start-pt-y 0.065))
+   (setq star-pt4-x (+ start-pt-x (atof sp-length)))
+   (setq star-pt4 (list star-pt4-x star-pt4-y))
+;
+;  Begin drawing leader and label.
+;
+   (command "ELEV" "0" "0")
+   (command "DIM" "LEADER" star-pt4 (strcat "@" "1.65" "<50")
+				    (strcat "@" "1.277" "<0")
+				    ""
+				    "AIR SPACE"
+				    "EXIT")
+;
+;
+;  Set brick variables.
+;
+   (setq brick-length sp-length)
+   (setq brick-width "0.25")
+   (setq brick-elev sp-elev)
+   (setq brick-thickness (- (+ sp-thickness stud-thickness) 0.75))
+;
+;
+;  Begin drawing the brick.
+;
+   (command "ELEV" brick-elev gp-thickness)
+;
+   (setq start-pt-y (+ save-st-pt-y (- (atof air-width) 0.02)))
+   (setq st-pt3 (list start-pt-x start-pt-y))
+   (command "PLINE" st-pt3 (strcat "@" brick-length "<0")
+			   (strcat "@" brick-width "<90")
+			   (strcat "@" brick-length "<180")
+			   "close")
+;
+;
+;  Set up start point for leader.
+;
+;
+   (setq star-pt5-y (+ save-start-pt-y 0.3))
+   (setq star-pt5-x (+ start-pt-x (atof sp-length)))
+   (setq star-pt5 (list star-pt5-x star-pt5-y))
+;
+;  Begin drawing leader and label.
+;
+   (command "ELEV" "0" "0")
+   (command "DIM" "LEADER" star-pt5 (strcat "@" "1.69" "<70")
+				    (strcat "@" "1.577" "<0")
+				    ""
+				    "BRICK FACADE"
+				    "EXIT")
+;
+;
+;  Make view easier to look at.
+;
+   (command "ELEV" "0" "0")
+   (command "ZOOM" "All")
+;
+)
+
+
+CALC:
+;
+;  STUD FRAME WALL PROGRAM
+;
+;
+;  Function CALC:
+;     Begin calculating dimensions and prices.
+;
+;  Written:  March 1988
+;
+;
+(defun C:CALC ()
+;
+;  Calculate dimensions of materials.
+;  Calculate number of board feet of lumber.
+;
+   (setq length-of-lumber (+ (atof sp-length) (* save-number-of-studs
+			  (atof stud-length)) (* 2 (atof hd-length))))
+
+   (setq volume-of-lumber (* length-of-lumber sp-thickness (atof sp-width)))
+   (setq volume-in-inches (* volume-of-lumber 1728))
+   (setq number-of-bdft (/ volume-in-inches 144))
+;
+;  Calculate square feet of sheet rock.
+;
+   (setq sqft-sheet-rock (* gp-thickness (atof gp-length)))
+;
+;  Calculate square feet of insulation.
+;
+   (setq sqft-insulation (* ins-thickness (atof ins-length)))
+;
+;  Calculate square feet of brick and mortar.
+;
+   (setq sqft-brick-mortar (* brick-thickness (atof brick-length)))
+;
+;
+;
+;  Draw border lines around wall statistics area.
+;
+;
+   (command "VPOINT" "0,0,1")
+   (command "ZOOM" "C" "4,5.5" "11")
+   (command "PLINE" "0,0" (strcat "@" "10" "<0")
+			  (strcat "@" "11.0" "<90")
+			  (strcat "@" "10" "<180")
+			  "close")
+;
+;
+   (command "PLINE" "0.2,0.2" (strcat "@" "9.6" "<0")
+			      (strcat "@" "10.6" "<90")
+			      (strcat "@" "9.6" "<180")
+			      "close")
+
+
+;  Print dimensions to screen.
+;
+   (setq p1 (rtos number-of-bdft 2 2))
+   (setq p2 (rtos sqft-sheet-rock 2 2))
+   (setq p3 (rtos sqft-insulation 2 2))
+   (setq p4 (rtos sqft-brick-mortar 2 2))
+;
+   (command "TEXT" "C" "4.25,10" "0.3376" "0" "DIMENSIONS")
+   (command "TEXT" "0.5,9.5" "0.20" "0" "NUMBER OF BOARD FEET OF LUMBER =")
+   (command "TEXT" "C" "7.4,9.5" "0.20" "0" p1)
+   (command "TEXT" "0.5,9" "0.20" "0" "SQUARE FEET OF SHEET ROCK      =")
+   (command "TEXT" "C" "7.4,9" "0.20" "0" p2)
+   (command "TEXT" "0.5,8.5" "0.20" "0" "SQUARE FEET OF INSULATION      =")
+   (command "TEXT" "C" "7.4,8.5" "0.20" "0" p3)
+   (command "TEXT" "0.5,8" "0.20" "0" "SQUARE FEET OF BRICK/MORTOR    =")
+   (command "TEXT" "C" "7.4,8" "0.20" "0" p4)
+;
+;
+;
+)
+
+
+COST:
+;
+;  STUD FRAME WALL PROGRAM
+;
+;
+;  Function COST:
+;     Get user's unit cost for materials.
+;
+;  Written: March 1988
+;
+;
+;
+(defun C:COST ()
+;
+;  Get unit cost of lumber in board feet.
+;
+;
+   (setq wood-cost (getreal "Set unit cost of wood per board foot : "))
+;
+;
+;  Get unit cost of gypsum board in square feet.
+;
+   (setq gyp-cost (getreal "Set unit cost of gyp board per square foot : "))
+;
+;
+;  Get unit cost of insulation in square feet.
+;
+   (setq ins-cost (getreal "Set unit cost of insulation per square foot : "))
+;
+;
+;  Get unit cost of the brick and mortar in square feet.
+;
+   (setq brk-cost (getreal "Set unit cost of brick/mortar per square foot : "))
+;
+;
+;
+;  Print dimensions to screen.
+;
+;
+;  Change the real variables to strings for printing.
+;
+   (setq p5 (rtos wood-cost 2 2))
+   (setq p6 (rtos gyp-cost 2 2))
+   (setq p7 (rtos ins-cost 2 2))
+   (setq p8 (rtos brk-cost 2 2))
+;
+;
+;
+ (command "TEXT" "C" "4.25,7" "0.3376" "0" "MATERIAL UNIT COST")
+ (command "TEXT" "0.5,6.5" "0.20" "0" "COST OF WOOD PER BOARD FOOT          = $")
+ (command "TEXT" "8.9,6.5" "0.20" "0" p5)
+ (command "TEXT" "0.5,6" "0.20" "0" "COST OF GYPSUM BOARD PER SQUARE FOOT = $")
+ (command "TEXT" "8.9,6" "0.20" "0" p6)
+ (command "TEXT" "0.5,5.5" "0.20" "0" "COST OF INSULATION PER SQUARE FOOT   = $")
+ (command "TEXT" "8.9,5.5" "0.20" "0" p7)
+ (command "TEXT" "0.5,5" "0.20" "0" "COST OF BRICK/MORTAR PER SQUARE FOOT = $")
+ (command "TEXT" "8.9,5" "0.20" "0" p8)
+;
+)
+
+COST A:
+;
+;  STUD FRAME WALL PROGRAM
+;
+;
+;  Function COSTA:
+;     Begin calculating the cost of installation for this structure.
+;
+;  Written: March 1988
+;
+;
+;
+(defun C:COSTA ()
+;
+;  Calculate cost of the structure.
+;
+;  Calculate the cost of the sole plate/studs/header plate-stud system.
+;     The cost to install the stud system is wood-cost.
+;
+   (setq stud-system (* number-of-bdft wood-cost))
+;
+;
+;  Calculate the cost of the gypsum board.
+;     The cost to install the gypsum board is gyp-cost.
+;
+   (setq gyp-board (* sqft-sheet-rock gyp-cost))
+;
+;
+;  Calculate the cost of the insulation-sheathing.
+;     The cost to install the sheathing is ins-cost.
+;
+   (setq sheathing (* sqft-insulation ins-cost))
+;
+;
+;  Calculate the cost of the brick and mortar.
+;     The cost to install the brick and the mortar is brk-cost.
+;
+   (setq brick (* sqft-brick-mortar brk-cost))
+;
+;
+;
+;  Print dimensions to screen.
+;
+;
+;  Change the real variables to strings for printing.
+;
+   (setq p9 (rtos stud-system 2 2))
+   (setq p10 (rtos gyp-board 2 2))
+   (setq p11 (rtos sheathing 2 2))
+   (setq p12 (rtos brick 2 2))
+   (setq p13 (rtos (+ (atof p9) (atof p10) (atof p11) (atof p12)) 2 2))
+;
+;
+;
+   (command "TEXT" "C" "4.25,4" "0.3376" "0" "COST TO BUILD THIS WALL")
+   (command "TEXT" "0.5,3.5" "0.20" "0" "COST TO INSTALL STUD SYSTEM   = $")
+   (command "TEXT" "C" "7.6,3.5" "0.20" "0" p9)
+   (command "TEXT" "0.5,3" "0.20" "0" "COST TO INSTALL GYPSUM BOARD  = $")
+   (command "TEXT" "C" "7.6,3" "0.20" "0" p10)
+   (command "TEXT" "0.5,2.5" "0.20" "0" "COST TO INSTALL INSULATION    = $")
+   (command "TEXT" "C" "7.6,2.5" "0.20" "0" p11)
+   (command "TEXT" "0.5,2" "0.20" "0" "COST TO INSTALL BRICK/MORTAR  = $")
+   (command "TEXT" "C" "7.6,2" "0.20" "0" p12)
+   (command "TEXT" "C" "7.6,1.8" "0.20" "0" "_________")
+   (command "TEXT" "0.5,1" "0.20" "0" "TOTAL COST OF THIS WALL IS    = $")
+   (command "TEXT" "C" "7.6,1" "0.20" "0" p13)
+;
+;
+;
+;
+   (setq continue (getstring "You have finished. <CR> to continue :"))
+   (if (= continue "")
+       (command "ZOOM" "C" "10,10" "23"))
+;
+)
+
+
+.PY FILES
+
+ADE 1:
+def ade1():
+    # Set sole plate (sp) variables.
+    sp_length = input("Set sole plate length (IN DECIMAL FEET): ")
+
+    stud_space = float(input("Set center-to-center distance between studs (1.5' or 2') : "))
+    while stud_space != 1.5 and stud_space != 2:
+        print("\nNo, dummy, wrong value. Enter number with no units.")
+        stud_space = float(input("Set center-to-center distance between studs (1.5' or 2') : "))
+
+    while float(sp_length) > 90:
+        print("\nNo, dummy, that's too big. Enter number with no units.")
+        sp_length = input("Set sole plate length (IN DECIMAL FEET): ")
+
+    number_of_studs = (float(sp_length) - 0.1667) / stud_space
+    save_number_of_studs = number_of_studs
+    number_of_studs += 1
+
+    number_of_studs = round(number_of_studs)
+
+    sp_thickness = 0.1667
+    sp_elev = 0
+    sp_width = "0.25"
+
+    set_limits = f"{round(float(sp_length) + 20, 2):.4f}"
+    upper_limits = f"{set_limits},{set_limits}"
+
+ADE 2:
+def ade2():
+    # Set up drawing parameters.
+    command("LIMITS", "0,0", upper_limits)
+    
+    set_limits_float = float(set_limits)
+    if set_limits_float <= 30:
+        set_grid = "1"
+    elif 30 < set_limits_float <= 50:
+        set_grid = "2"
+    elif 50 < set_limits_float <= 100:
+        set_grid = "5"
+    
+    command("GRID", set_grid)
+
+    # Set up start point according to sole plate size.
+    start_pt_y = (- (set_limits_float / 2) - 0.125)
+    start_pt_x = 5
+    start_pt = [start_pt_x, start_pt_y]
+
+    # Begin drawing sole plate.
+    command("ELEV", sp_elev, sp_thickness)
+    command("PLINE", start_pt, f"@{sp_length}<0", f"@{sp_width}<90", f"@{sp_length}<180", "close")
+
+    # Set up start point for leader.
+    star_pt_y = (- (set_limits_float / 2) - 0.0625)
+    star_pt_x = start_pt_x + float(sp_length)
+    star_pt = [star_pt_x, star_pt_y]
+
+    command("ELEV", "0", "0")
+    command("DIM", "LEADER", star_pt, f"@2.345<0", "", "2 x 4 WOOD STUD SYSTEM", "EXIT")
+
+    # Set up view point.
+    command("GRID", "OFF")
+    command("VPOINT", "2,-2,2")
+    command("ZOOM", "ALL")
+
+ADE 3:
+
+ADE 4:
+
+ADE 5:
+
+ADE 6:
+
+CALC:
+
+COST:
+
+COST A:

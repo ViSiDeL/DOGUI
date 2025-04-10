@@ -1,15 +1,15 @@
 #blackBox {
-    position: fixed;  
-    top: 60%;         
-    left: 50%;        
-    width: 100px;     
-    height: 100px;    
-    background-color: rgba(0, 0, 0, 1);  
-    transform: translate(-50%, -50%);  
-    border-radius: 10px;  
-    overflow: hidden;    /* Makes sure the 3D cube doesn't overflow */
-  }
-  
+    position: fixed;
+    top: 60%;
+    left: 50%;
+    width: 100px;
+    height: 100px;
+    background-color: rgba(0, 0, 0, 1);
+    transform: translate(-50%, -50%);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
 /* DOGUI Title */
 #dogui {
     font-family: 'Norwester', serif;
@@ -36,3 +36,4 @@
     animation: wipe 2s ease-in-out forwards, filter 1s ease-in-out forwards;
     z-index: 4;
 }
+

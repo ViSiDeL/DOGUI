@@ -1,5 +1,5 @@
 {
-    "host": "HOSTNAME",
+    "host": "visidel.org",
     "user": "USERNAME",
     "password": "PASSWORD",
     "database": "dogui",
