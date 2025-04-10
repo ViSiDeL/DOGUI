@@ -52,4 +52,4 @@ def ideation():
 if __name__ == "__main__":
     phase1 = ideation()
     print("\n>>>>>>>>Ideation Stage Complete<<<<<<<<\n")
-    print(phase1.name)
+    print(phase1)
