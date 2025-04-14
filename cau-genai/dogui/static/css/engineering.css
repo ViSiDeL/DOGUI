@@ -13,7 +13,6 @@
     -webkit-user-select: none; /* Safari */
     -moz-user-select: none;    /* Firefox */
     -ms-user-select: none;     /* Internet Explorer/Edge */
-    cursor: default;           /* Keep normal cursor */
     display: inline-block;
     overflow: visible;  /* Hide the part of the text that is not yet revealed */
     white-space: nowrap;

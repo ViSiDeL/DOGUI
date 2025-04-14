@@ -6,9 +6,6 @@
     <title>DOGUI.ai</title>
     <link rel="stylesheet" href="/static/css/dogui_style.css">
     {% block css %}{% endblock %}
-    <audio id="sound1" src="/static/audio/back.mp3" preload="auto"></audio>
-    <audio id="sound2" src="/static/audio/Next.mp3" preload="auto"></audio>
-
     <script type="importmap">
         {
             "imports": {
@@ -20,11 +17,17 @@
 </head>
 <body>
     <div class="content">
-        {% block nav %}{% endblock %}
-        <div class="page-content" id="main-content">
+        {% block nav %}{% include 'includes/nav.html' %}{% endblock %}
+        {% if not hide_page_content %}
+        <div class="page-content transition-target" id="main-content">
             {% block content %}{% endblock %}
         </div>
+        {% endif %}
     </div>
+    
+    <audio id="sound1" src="/static/audio/back.mp3" preload="auto"></audio>
+    <audio id="sound2" src="/static/audio/Next.mp3" preload="auto"></audio>
+    
     <script src="/static/js/dogui.js"></script>
     {% block js %}{% endblock %}
 </body>

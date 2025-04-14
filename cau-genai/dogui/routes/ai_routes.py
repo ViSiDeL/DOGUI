@@ -58,7 +58,7 @@ def get_answer_for_question(question: str, knowledge_base: dict) -> Optional[str
 # loading assistant page
 @ai_bp.route('/assistant', methods=['GET'])
 def assistant():
-    return render_template('design/assistant.html')
+    return render_template('assistant.html')
 
 # handles responses from watson
 @ai_bp.route('/chatbot', methods=['POST'])
