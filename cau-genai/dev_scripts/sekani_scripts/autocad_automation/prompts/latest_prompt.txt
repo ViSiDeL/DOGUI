@@ -1,0 +1,5 @@
+
+    I am designing a Draw a stud wall.
+    Please determine what dimensions, specs, or materials are required.
+    Then return a PyAutoCAD-compatible Python script that draws the object in 2D or 3D.
+    
