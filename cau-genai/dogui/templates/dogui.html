@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DOGUI.ai</title>
+
+    <title>{% block title %}{% endblock %}DOGUI.ai</title>
     <link rel="stylesheet" href="/static/css/dogui_style.css">
     {% block css %}{% endblock %}
     <script type="importmap">
@@ -17,12 +18,14 @@
 </head>
 <body>
     <div class="content">
-        {% block nav %}{% include 'includes/nav.html' %}{% endblock %}
-        {% if not hide_page_content %}
-        <div class="page-content transition-target" id="main-content">
-            {% block content %}{% endblock %}
-        </div>
-        {% endif %}
+        {% block nav %}
+            {% include 'includes/nav.html' %}
+        {% endblock %}
+        {% block content %}
+            <div class="page-content">
+                
+            </div>
+        {% endblock %}
     </div>
     
     <audio id="sound1" src="/static/audio/back.mp3" preload="auto"></audio>
