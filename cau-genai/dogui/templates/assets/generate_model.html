@@ -12,35 +12,17 @@
 
 {% block content %}
 <div class="page-content">
-    <h1>Create CAD Drawing</h1>
-    
-    <div class="creation-flow">
-        
-        <div class="step active">
-            <h3>Choose Creation Method</h3>
-            <div class="options-grid">
-                <form method="POST" action="{{ url_for('asset.new_asset') }}">
-                    <input type="hidden" name="asset_type" value="drawing">
-                    <input type="hidden" name="creation_method" value="upload">
-                    <button type="submit" class="option-card">
-                        <div class="option-icon">
-                            <img src="/static/img/navicons/upload.png" alt="Upload Drawing">
-                        </div>
-                        <div class="option-label">Upload Drawing</div>
-                    </button>
-                </form>
-                
-                <form method="POST" action="{{ url_for('asset.new_asset') }}">
-                    <input type="hidden" name="asset_type" value="drawing">
-                    <input type="hidden" name="creation_method" value="CAD">
-                    <button type="submit" class="option-card">
-                        <div class="option-icon">
-                            <img src="/static/img/navicons/cad.png" alt="CAD Assist">
-                        </div>
-                        <div class="option-label">watson CAD Assist</div>
-                    </button>
-                </form>
-            </div>
+    <div id="container">
+        <div id="sidebar">
+            <h2 style="font-size: 1.2rem;">AI 3D Model Generator</h2>
+            <p style="font-size: 1rem;">Describe your engineering project or model:</p>
+            <textarea id="description" placeholder="e.g., 'A red ball'"></textarea>
+            <button id="generate-btn">Generate 3D Model</button>
+            <div id="status"></div>
+        </div>
+        <div id="canvas-container">
+            <canvas id="threejs-canvas"></canvas>
+            <button id="save-model">Save As Asset</button>
         </div>
     </div>
 </div>
