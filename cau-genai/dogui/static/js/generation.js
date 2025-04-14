@@ -62,9 +62,9 @@ class ModelGenerator {
         this.scene.add(backLight);
         
         // grid
-        this.grid = new THREE.GridHelper(10, 10)
-        this.grid.position.y = -3 
-        this.scene.add(this.grid);
+        // this.grid = new THREE.GridHelper(10, 10)
+        // this.grid.position.y = -3 
+        // this.scene.add(this.grid);
         
         // animation loop
         const animate = () => {

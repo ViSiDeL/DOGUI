@@ -41,6 +41,11 @@
                             <span class="asset-public">Public</span>
                         {% endif %}
                     </div>
+                    <div class="asset-actions">
+                        <a href="{{ url_for('asset.download_asset', asset_type=asset[1], filename=asset[0]) }}" class="download-btn" title="Download {{ asset[2] }}">
+                            <img src="/static/img/navicons/download.png" alt="Download">
+                        </a>
+                    </div>
                 </div>
                 {% endfor %}
                 
