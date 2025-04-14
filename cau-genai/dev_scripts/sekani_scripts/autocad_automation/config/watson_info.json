@@ -1,0 +1,6 @@
+{
+    "url": "https://us-south.ml.cloud.ibm.com",
+    "IBM_API_KEY": "[SECRET]",
+    "model_id": "ibm/granite-20b-multilingual",
+    "project_id": "[SECRET]"
+}
