@@ -2,8 +2,8 @@
 window.playSound = function(soundId) {
     const audio = document.getElementById(soundId);
     if (audio) {
-        audio.currentTime = 0; // restart if already playing
-        audio.play();
+        audio.currentTime = 0;
+        audio.play().catch(e => console.log("Audio play prevented:", e));
     }
 };
 
@@ -13,40 +13,18 @@ document.addEventListener('DOMContentLoaded', function() {
         const link = e.target.closest('a[href]');
         if (!link) return;
         
-        // dogui links
         const href = link.getAttribute('href');
         if (href.startsWith('/') && !href.startsWith('//') && !href.startsWith('/#')) {
             e.preventDefault();
             
-            // play sound if sound specified
+            // play sound
             const soundId = link.getAttribute('data-sound');
             if (soundId) playSound(soundId);
             
-            // load page
-            loadPage(href);
-            
-            // history
-            history.pushState({}, '', href);
+            // navigate after (delay)
+            setTimeout(() => {
+                window.location.href = href;
+            }, 500);
         }
     });
-    
-    // back/forward navigation
-    window.addEventListener('popstate', function() {
-        loadPage(window.location.pathname);
-    });
 });
-
-async function loadPage(url) {
-    try {
-        // loading class
-        document.body.classList.add('page-transition');
-        
-        
-        
-    } catch (error) {
-        console.error('Page load error:', error);
-        window.location.href = url; // traditional navigation if error
-    } finally {
-        document.body.classList.remove('page-transition');
-    }
-}

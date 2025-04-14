@@ -38,11 +38,11 @@ def projects():
             )
             projects = cursor.fetchall()
             
-        return render_template('design/project_manager.html', user=user, projects=projects)
+        return render_template('projects/project_manager.html', user=user, projects=projects)
         
     except Exception as e:
         flash('Error loading projects', 'error')
-        return render_template('design/project_manager.html', user=user, projects=[])
+        return render_template('projects/project_manager.html', user=user, projects=[])
     
     finally:
         if 'connection' in locals():
@@ -124,7 +124,7 @@ def project_details(username, project_id):
                 return redirect(url_for('project.projects'))
             
             return render_template(
-                'design/project_dashboard.html',
+                'projects/project_dashboard.html',
                 user=user,
                 project={
                     'id': project_id,
