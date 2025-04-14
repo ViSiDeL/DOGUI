@@ -1,55 +1,46 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DOGUI.ai</title>
-    <link rel="stylesheet" href="/static/css/dogui_style.css">
+{% extends "dogui.html" %}
+
+{% block title %}Assistant | {% endblock %}
+
+{% block css %}
     <link rel="stylesheet" href="/static/css/engineering.css">
     <link rel="stylesheet" href="/static/css/chatbot.css">
-    <script src="/static/js/chatbot.js" defer></script>
+{% endblock %}
 
-    <script type="importmap">
-        {
-            "imports": {
-                "three": "/node_modules/three/build/three.module.js",
-            }
-        }
-    </script>
-</head>
-<body>
-    <div class="content">
-        {% include 'includes/user-nav.html' %}
+{% block nav %}{% include 'includes/user-nav.html' %}{% endblock %}
 
-        <div class="page-content assistant-page">
-            <div class="chat-header">
-                <img class="ai-logo" src="/static/img/dogui_ai_logo.png" alt="DOGUI AI Logo">
-                <h1>Assistant Chat</h1>
-            </div>
+{% block content %}
+<div class="page-content assistant-page">
+    <div class="chat-header">
+        <img class="ai-logo" src="/static/img/dogui_ai_logo.png" alt="DOGUI AI Logo">
+        <h1>Assistant Chat</h1>
+    </div>
 
-            <!-- chat display area -->
-            <div id="chat-container">
-                <div id="chat-messages">
-                    <!-- welcome message -->
-                    <div class="message ai-message">
-                        <div class="message-avatar">DOGUI</div>
-                        <div class="message-content">
-                            Hello! I'm DOGUI AI. How can I assist you with your engineering project today?
-                        </div>
-                    </div>
+    <!-- chat display area -->
+    <div id="chat-container">
+        <div id="chat-messages">
+            <!-- welcome message -->
+            <div class="message ai-message">
+                <div class="message-avatar">DOGUI</div>
+                <div class="message-content">
+                    Hello! I'm DOGUI AI. How can I assist you with your engineering project today?
                 </div>
             </div>
-
-            <!-- chat input -->
-            <div id="chat-input-container">
-                <div id="chat-input">
-                    <input type="text" id="userMessage" placeholder="Type your message..." />
-                    <button id="micButton" class="icon-button" title="Voice Input">
-                        <img src="/static/img/navicons/mic.png" alt="Microphone">
-                    </button>
-                    <button id="sendButton" class="primary-button">Send</button>
-                </div>
         </div>
     </div>
-</body>
-</html>
+
+    <!-- chat input -->
+    <div id="chat-input-container">
+        <div id="chat-input">
+            <input type="text" id="userMessage" placeholder="Type your message..." />
+            <button id="micButton" class="icon-button" title="Voice Input">
+                <img src="/static/img/navicons/mic.png" alt="Microphone">
+            </button>
+            <button id="sendButton" class="primary-button">Send</button>
+        </div>
+</div>
+{% endblock %}
+
+{% block js %}
+    <script src="/static/js/chatbot.js" defer></script>
+{% endblock %}
