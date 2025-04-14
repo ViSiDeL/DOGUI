@@ -149,12 +149,14 @@
     cursor: pointer;
     transition: all 0.3s ease;
     width: 9rem;
+    color: var(--dogui-glow);
 }
 
 .option-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 5px 15px rgba(62, 148, 126, 0.3);
     border-color: var(--dogui-glow);
+    color: white;
 }
 
 .option-icon {
@@ -171,7 +173,6 @@
 
 .option-label {
     font-size: 1.2rem;
-    color: var(--dogui-glow);
 }
 
 /* Upload Form */

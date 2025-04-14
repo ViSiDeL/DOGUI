@@ -147,6 +147,20 @@
     color: inherit;
 }
 
+.project-menuoption {
+    width: auto;
+    display: flex;
+    border-radius: 5px;
+    border: 2px solid var(--dogui-green);
+    gap: 1rem;
+    align-items: center;
+}
+
+.project-menuoption img {
+    width: 3rem;
+    height: auto;
+}
+
 @media (max-width: 768px) {
     .projects-grid {
         grid-template-columns: 1fr;

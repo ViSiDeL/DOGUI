@@ -1,86 +1,104 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ project.name }} DOGUI.ai</title>
-    <link rel="stylesheet" href="/static/css/dogui_style.css">
-    <link rel="stylesheet" href="/static/css/engineering.css">
+{% extends "dogui.html" %}
 
-    <script type="importmap">
-        {
-            "imports": {
-                "three": "/node_modules/three/build/three.module.js",
-            }
-        }
-    </script>
-</head>
-<body>
-    <div class="content">
-        {% include 'includes/user-nav.html' %}
-        <div class="project-header">
-            <h1>{{ project.name }}</h1>
+{% block title %}{{ project.name }} | {% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" href="/static/css/engineering.css">
+{% endblock %}
+
+{% block nav %}
+{% include 'includes/user-nav.html' %}
+<div class="project-header">
+    <h1>{{ project.name }}</h1>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="page-content">
+    <!-- Phase Tabs -->
+    <div class="phase-tabs">
+        <button class="tab-button {% if project.phase == 'ideation' %}active{% endif %}" 
+                data-phase="ideation">Ideation</button>
+        <button class="tab-button {% if project.phase == 'simulation' %}active{% endif %}" 
+                data-phase="simulation">Simulation</button>
+        <button class="tab-button {% if project.phase == 'implementation' %}active{% endif %}" 
+                data-phase="implementation">Implementation</button>
+    </div>
+    
+    <div class="tab-content">
+        <div id="ideation-content" class="tab-pane {% if project.phase == 'ideation' %}active{% endif %}">
+            <p id="ideation-prompt">Please describe your new project:</p>
+            <form id="ideation-form" method="POST" action="/update-project/{{ user.username }}/{{ project.id }}">
+                <textarea name="description" placeholder="Describe your project in detail...">{{ project.description }}</textarea>
+                <button type="submit">Save Description</button>
+            </form>
         </div>
 
-        <div class="page-content">
-            <!-- Phase Tabs -->
-            <div class="phase-tabs">
-                <button class="tab-button {% if project.phase == 'ideation' %}active{% endif %}" 
-                        data-phase="ideation">Ideation</button>
-                <button class="tab-button {% if project.phase == 'simulation' %}active{% endif %}" 
-                        data-phase="simulation">Simulation</button>
-                <button class="tab-button {% if project.phase == 'implementation' %}active{% endif %}" 
-                        data-phase="implementation">Implementation</button>
+        <div id="simulation-content" class="tab-pane {% if project.phase == 'simulation' %}active{% endif %}">
+            <div class="projects-grid">
+                <button onclick="window.location.href='#'" class="project-card glow project-menuoption">
+                    <img src="/static/img/navicons/generate.png">
+                    <div class="project-desc">View 3D Environment</div>
+                </button>
+                <button onclick="window.location.href='/assistant'" class="project-card glow project-menuoption">
+                    <img src="/static/img/dogui_ai_logo.png">
+                    <div class="project-desc">DOGUI Assistant</div>
+                </button>
+                <form method="POST" action="{{ url_for('asset.new_asset') }}">
+                    <input type="hidden" name="asset_type" value="model">
+                    <input type="hidden" name="project_context" value="">
+                    <button type="submit" class="project-card glow project-menuoption">
+                        <img src="/static/img/navicons/cube.png" alt="3D Model">
+                        <div class="project-desc">Create 3D Model</div>
+                    </button>
+                </form>
+                <button onclick="window.location.href='/assets'" class="project-card glow project-menuoption">
+                    <img src="/static/img/navicons/upload.png" alt="Asset">
+                    <div class="project-desc">Add Asset</div>
+                </button>
+                <button onclick="window.location.href='/assets/cad-assist'" class="project-card glow project-menuoption">
+                    <img src="/static/img/navicons/cad.png" alt="Project Logo">
+                    <div class="project-desc">CAD Assist</div>
+                </button>
             </div>
-            
-            <!-- Tab Content -->
-            <div class="tab-content">
-                <!-- Ideation Tab -->
-                <div id="ideation-content" class="tab-pane {% if project.phase == 'ideation' %}active{% endif %}">
-                    <p id="ideation-prompt">Please describe your new project:</p>
-                    <form id="ideation-form" method="POST" action="/update-project/{{ user.username }}/{{ project.id }}">
-                        <textarea name="description" placeholder="Describe your project in detail...">{{ project.description }}</textarea>
-                        <button type="submit">Save Description</button>
-                    </form>
-                </div>
-                
-                <!-- Simulation Tab -->
-                <div id="simulation-content" class="tab-pane {% if project.phase == 'simulation' %}active{% endif %}">
-                    <div class="under-construction">
-                        <p>Simulation phase coming soon!</p>
-                    </div>
-                </div>
-                
-                <!-- Implementation Tab -->
-                <div id="implementation-content" class="tab-pane {% if project.phase == 'implementation' %}active{% endif %}">
-                    <div class="under-construction">
-                        <p>Implementation phase coming soon!</p>
-                    </div>
-                </div>
+        </div>
+
+        <div id="implementation-content" class="tab-pane {% if project.phase == 'implementation' %}active{% endif %}">
+            <div class="projects-grid">
+                <button onclick="window.location.href='/assets'" class="project-card glow project-menuoption">
+                    <img src="/static/img/navicons/money.png" alt="Asset">
+                    <div class="project-desc">Cost Analysis</div>
+                </button>
+                <button onclick="window.location.href='/assets/cad-assist'" class="project-card glow project-menuoption">
+                    <img src="/static/img/navicons/code.png" alt="Project Logo">
+                    <div class="project-desc">Code Assist</div>
+                </button>
+            </div>
+            <div class="under-construction">
+                <p>More implementation features coming soon!</p>
             </div>
         </div>
     </div>
-    <script>
-        // Tab switching functionality
-        document.querySelectorAll('.tab-button').forEach(button => {
-            button.addEventListener('click', function() {
-                const phase = this.dataset.phase;
-                
-                // Update active tab
-                document.querySelectorAll('.tab-button').forEach(btn => {
-                    btn.classList.remove('active');
-                });
-                this.classList.add('active');
-                
-                // Update active content
-                document.querySelectorAll('.tab-pane').forEach(pane => {
-                    pane.classList.remove('active');
-                });
-                document.getElementById(`${phase}-content`).classList.add('active');
-                
-                // TODO: Add AJAX call to update project phase in database
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+    // tab switching
+    document.querySelectorAll('.tab-button').forEach(button => {
+        button.addEventListener('click', function() {
+            const phase = this.dataset.phase;
+            
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active');
             });
+            this.classList.add('active');
+            
+            document.querySelectorAll('.tab-pane').forEach(pane => {
+                pane.classList.remove('active');
+            });
+            document.getElementById(`${phase}-content`).classList.add('active');
         });
-    </script>
-</body>
-</html>
+    });
+</script>
+{% endblock %}

@@ -1,40 +1,51 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generate Model - DOGUI.ai</title>
-    <link rel="stylesheet" href="/static/css/dogui_style.css">
+{% extends "dogui.html" %}
+
+{% block title %}Generate 3D Model | {% endblock %}
+
+{% block css %}
     <link rel="stylesheet" href="/static/css/engineering.css">
+    <link rel="stylesheet" href="/static/css/assets.css">
     <link rel="stylesheet" href="/static/css/three.css">
-    <script type="importmap">
-        {
-            "imports": {
-                "three": "/node_modules/three/build/three.module.js",
-                "three-orbitcontrols": "/node_modules/three/examples/jsm/controls/OrbitControls.js"
-            }
-        }
-    </script>
-</head>
-<body>
-    <div class="content">
-        {% include 'includes/user-nav.html' %}
-        <div class="page-content">
-            <div id="container">
-                <div id="sidebar">
-                    <h2 style="font-size: 1.2rem;">AI 3D Model Generator</h2>
-                    <p style="font-size: 1rem;">Describe your engineering project or model:</p>
-                    <textarea id="description" placeholder="e.g., 'A red ball'"></textarea>
-                    <button id="generate-btn">Generate 3D Model</button>
-                    <div id="status"></div>
-                </div>
-                <div id="canvas-container">
-                    <canvas id="threejs-canvas"></canvas>
-                </div>
-                <button id="save-model">Save As Asset</button>
-            </div>          
+{% endblock %}
+
+{% block nav %}{% include 'includes/user-nav.html' %}{% endblock %}
+
+{% block content %}
+<div class="page-content">
+    <h1>Create CAD Drawing</h1>
+    
+    <div class="creation-flow">
+        
+        <div class="step active">
+            <h3>Choose Creation Method</h3>
+            <div class="options-grid">
+                <form method="POST" action="{{ url_for('asset.new_asset') }}">
+                    <input type="hidden" name="asset_type" value="drawing">
+                    <input type="hidden" name="creation_method" value="upload">
+                    <button type="submit" class="option-card">
+                        <div class="option-icon">
+                            <img src="/static/img/navicons/upload.png" alt="Upload Drawing">
+                        </div>
+                        <div class="option-label">Upload Drawing</div>
+                    </button>
+                </form>
+                
+                <form method="POST" action="{{ url_for('asset.new_asset') }}">
+                    <input type="hidden" name="asset_type" value="drawing">
+                    <input type="hidden" name="creation_method" value="CAD">
+                    <button type="submit" class="option-card">
+                        <div class="option-icon">
+                            <img src="/static/img/navicons/cad.png" alt="CAD Assist">
+                        </div>
+                        <div class="option-label">watson CAD Assist</div>
+                    </button>
+                </form>
+            </div>
         </div>
     </div>
-    <script type="module" src="/static/js/generation.js"></script>
-</body>
-</html>
+</div>
+{% endblock %}
+
+{% block js %}
+<script type="module" src="/static/js/generation.js"></script>
+{% endblock %}

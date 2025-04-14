@@ -1,72 +1,64 @@
+{% extends "dogui.html" %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DOGUI.ai</title>
-    <link rel="stylesheet" href="/static/css/dogui_style.css">
+{% block title %}Upload Asset | {% endblock %}
+
+{% block css %}
     <link rel="stylesheet" href="/static/css/engineering.css">
     <link rel="stylesheet" href="/static/css/assets.css">
+{% endblock %}
 
-    <script type="importmap">
-        {
-            "imports": {
-                "three": "/node_modules/three/build/three.module.js",
-            }
-        }
-    </script>
-</head>
-<body>
-    <div class="content">
-        {% include 'includes/user-nav.html' %}
-        <div class="page-content">
-            <h1>Upload {{ asset_type|capitalize }}</h1>
-            
-            <div class="creation-flow">
-                <!-- <div class="step completed">
-                    <h2>Asset Type Selected</h2>
+{% block nav %}{% include 'includes/user-nav.html' %}{% endblock %}
+
+{% block content %}
+<div class="page-content">
+    <h1>Upload {{ asset_type|capitalize }}</h1>
+    
+    <div class="creation-flow">
+        <!-- <div class="step completed">
+            <h2>Asset Type Selected</h2>
+        </div> -->
+        
+        <div class="step active">
+            <!-- <h2>2. Upload File</h2> -->
+            <form method="POST" enctype="multipart/form-data" class="upload-form">
+                <!-- <div class="form-group">
+                    <label for="asset_type">Asset Type:</label>
+                    <select id="asset_type" name="asset_type" required>
+                        <option value="model" {% if asset_type == 'model' %}selected{% endif %}>3D Model</option>
+                        <option value="drawing" {% if asset_type == 'drawing' %}selected{% endif %}>CAD Drawing</option>
+                        <option value="image" {% if asset_type == 'image' %}selected{% endif %}>Image</option>
+                    </select>
                 </div> -->
+                <input type="hidden" name="asset_type" value="model">
                 
-                <div class="step active">
-                    <!-- <h2>2. Upload File</h2> -->
-                    <form method="POST" enctype="multipart/form-data" class="upload-form">
-                        <!-- <div class="form-group">
-                            <label for="asset_type">Asset Type:</label>
-                            <select id="asset_type" name="asset_type" required>
-                                <option value="model" {% if asset_type == 'model' %}selected{% endif %}>3D Model</option>
-                                <option value="drawing" {% if asset_type == 'drawing' %}selected{% endif %}>CAD Drawing</option>
-                                <option value="image" {% if asset_type == 'image' %}selected{% endif %}>Image</option>
-                            </select>
-                        </div> -->
-                        <input type="hidden" name="asset_type" value="model">
-                        
-                        <div class="form-group">
-                            <label for="asset_name">{{ asset_type|capitalize }} Name:</label>
-                            <input type="text" id="asset_name" name="asset_name" required>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="file">Select File:</label>
-                            <input type="file" id="file" name="file" required>
-                            <div class="file-requirements">
-                                Allowed extensions: 
-                                {% if asset_type == 'model' %}.stl, .obj, .blend, .gltf, .glb{% endif %}
-                                {% if asset_type == 'drawing' %}.dwg, .dxf, .step, .iges{% endif %}
-                                {% if asset_type == 'image' %}.png, .jpg, .jpeg, .gif{% endif %}
-                            </div>
-                        </div>
-                        
-                        <div class="form-group checkbox">
-                            <input type="checkbox" id="is_public" name="is_public">
-                            <label for="is_public">Make this asset public</label>
-                        </div>
-                        
-                        <button style="margin-bottom: 3rem;" type="submit" class="submit-btn">Upload Asset</button>
-                    </form>
+                <div class="form-group">
+                    <label for="asset_name">{{ asset_type|capitalize }} Name:</label>
+                    <input type="text" id="asset_name" name="asset_name" required>
                 </div>
-            </div>
+                
+                <div class="form-group">
+                    <label for="file">Select File:</label>
+                    <input type="file" id="file" name="file" required>
+                    <div class="file-requirements">
+                        Allowed extensions: 
+                        {% if asset_type == 'model' %}.stl, .obj, .blend, .gltf, .glb{% endif %}
+                        {% if asset_type == 'drawing' %}.dwg, .dxf, .step, .iges{% endif %}
+                        {% if asset_type == 'image' %}.png, .jpg, .jpeg, .gif{% endif %}
+                    </div>
+                </div>
+                
+                <div class="form-group checkbox">
+                    <input type="checkbox" id="is_public" name="is_public">
+                    <label for="is_public">Make this asset public</label>
+                </div>
+                
+                <button style="margin-bottom: 3rem;" type="submit" class="submit-btn">Upload Asset</button>
+            </form>
         </div>
     </div>
-</body>
-</html>
+</div>
+{% endblock %}
+
+{% block js %}
+
+{% endblock %}
