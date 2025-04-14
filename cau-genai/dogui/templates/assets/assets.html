@@ -1,64 +1,57 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Assets - DOGUI.ai</title>
-    <link rel="stylesheet" href="/static/css/dogui_style.css">
+{% extends "dogui.html" %}
+
+{% block title %}Assets | {% endblock %}
+
+{% block css %}
     <link rel="stylesheet" href="/static/css/engineering.css">
     <link rel="stylesheet" href="/static/css/assets.css">
+{% endblock %}
 
-    <script type="importmap">
-        {
-            "imports": {
-                "three": "/node_modules/three/build/three.module.js",
-            }
-        }
-    </script>
-</head>
-<body>
-    <div class="content">
-        {% include 'includes/user-nav.html' %}
-        <div class="page-content">
-            <h1>Assets</h1>
+{% block nav %}{% include 'includes/user-nav.html' %}{% endblock %}
 
-            <div class="assets-grid">
-                {% for asset in assets %}
-                <div class="asset-card glow">
-                    <div class="asset-icon">
-                        {% if asset[1] == 'image' %}
-                            <img src="/static/assets/images/{{ asset[0] }}" alt="{{ asset[2] }}">
-                        {% elif asset[1] == 'model' %}
-                            <img src="/static/img/navicons/cube.png" alt="3D Model">
-                        {% else %}
-                            <img src="/static/img/navicons/drawing.png" alt="CAD Drawing">
-                        {% endif %}
-                    </div>
-                    <div class="asset-info">
-                        <h3>{{ asset[2] }}</h3>
-                        <span class="asset-type {{ asset[1] }}">{{ asset[1]|capitalize }}</span>
-                        {% if not asset[3] %}
-                            <span class="asset-public">Public</span>
-                        {% endif %}
-                    </div>
-                    <div class="asset-actions">
-                        <a href="{{ url_for('asset.download_asset', asset_type=asset[1], filename=asset[0]) }}" class="download-btn" title="Download {{ asset[2] }}">
-                            <img src="/static/img/navicons/download.png" alt="Download">
-                        </a>
-                    </div>
-                </div>
-                {% endfor %}
-                
-                <a href="{{ url_for('asset.new_asset') }}" class="asset-card new-asset glow">
-                    <div class="asset-icon">
-                        <img src="/static/img/navicons/plus.png" alt="Add Asset">
-                    </div>
-                    <div class="asset-info">
-                        <h3>Add New Asset</h3>
-                    </div>
+{% block content %}
+<div class="page-content">
+    <h1>Assets</h1>
+
+    <div class="assets-grid">
+        {% for asset in assets %}
+        <div class="asset-card glow">
+            <div class="asset-icon">
+                {% if asset[1] == 'image' %}
+                    <img src="/static/assets/images/{{ asset[0] }}" alt="{{ asset[2] }}">
+                {% elif asset[1] == 'model' %}
+                    <img src="/static/img/navicons/cube.png" alt="3D Model">
+                {% else %}
+                    <img src="/static/img/navicons/drawing.png" alt="CAD Drawing">
+                {% endif %}
+            </div>
+            <div class="asset-info">
+                <h3>{{ asset[2] }}</h3>
+                <span class="asset-type {{ asset[1] }}">{{ asset[1]|capitalize }}</span>
+                {% if not asset[3] %}
+                    <span class="asset-public">Public</span>
+                {% endif %}
+            </div>
+            <div class="asset-actions">
+                <a href="{{ url_for('asset.download_asset', asset_type=asset[1], filename=asset[0]) }}" class="download-btn" title="Download {{ asset[2] }}">
+                    <img src="/static/img/navicons/download.png" alt="Download">
                 </a>
             </div>
         </div>
+        {% endfor %}
+        
+        <a href="{{ url_for('asset.new_asset') }}" class="asset-card new-asset glow">
+            <div class="asset-icon">
+                <img src="/static/img/navicons/plus.png" alt="Add Asset">
+            </div>
+            <div class="asset-info">
+                <h3>Add New Asset</h3>
+            </div>
+        </a>
     </div>
-</body>
-</html>
+</div>
+{% endblock %}
+
+{% block js %}
+
+{% endblock %}
