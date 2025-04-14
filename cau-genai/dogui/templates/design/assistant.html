@@ -6,6 +6,7 @@
     <title>DOGUI.ai</title>
     <link rel="stylesheet" href="/static/css/dogui_style.css">
     <link rel="stylesheet" href="/static/css/engineering.css">
+    <link rel="stylesheet" href="/static/css/chatbot.css">
     <script src="/static/js/chatbot.js" defer></script>
 
     <script type="importmap">
@@ -20,21 +21,34 @@
     <div class="content">
         {% include 'includes/user-nav.html' %}
 
-        <div class="page-content">
-            <img class="ai-logo" src="/static/img/dogui_ai_logo.png" alt="DOGUI AI Logo">
-            
-            <h1>Assistant Chat</h1>
+        <div class="page-content assistant-page">
+            <div class="chat-header">
+                <img class="ai-logo" src="/static/img/dogui_ai_logo.png" alt="DOGUI AI Logo">
+                <h1>Assistant Chat</h1>
+            </div>
 
             <!-- chat display area -->
             <div id="chat-container">
-                <div id="chat-messages"></div>
+                <div id="chat-messages">
+                    <!-- welcome message -->
+                    <div class="message ai-message">
+                        <div class="message-avatar">DOGUI</div>
+                        <div class="message-content">
+                            Hello! I'm DOGUI AI. How can I assist you with your engineering project today?
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- chat input -->
-            <div id="chat-input">
-                <input type="text" id="userMessage" placeholder="Type your message..." />
-                <button id="sendButton">Send</button>
-            </div>
+            <div id="chat-input-container">
+                <div id="chat-input">
+                    <input type="text" id="userMessage" placeholder="Type your message..." />
+                    <button id="micButton" class="icon-button" title="Voice Input">
+                        <img src="/static/img/navicons/mic.png" alt="Microphone">
+                    </button>
+                    <button id="sendButton" class="primary-button">Send</button>
+                </div>
         </div>
     </div>
 </body>

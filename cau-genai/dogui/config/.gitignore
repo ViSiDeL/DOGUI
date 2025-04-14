@@ -3,3 +3,4 @@ env
 *.env
 apple.py
 !db_connection_template.json
+!knowledge_base.json
