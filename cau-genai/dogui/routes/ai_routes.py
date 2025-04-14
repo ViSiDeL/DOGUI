@@ -73,7 +73,12 @@ def chatbot():
 
         # get response, process as needed
         prompt = f"{user_message}"
-        response = chatbot_model.generate_text(prompt=prompt)
+        full_prompt=f"""
+        You are Dogui AI, an engineering-focused AI meant to create a very descriptive response based of the users question to guide them through their given engineering projects and ideas.
+        Your primary purpose is to craft highly vivid, engaging, and richly detailed responses based on the user's questions.
+        Here is their description"{prompt}". Your response:"""
+
+        response = chatbot_model.generate_text(prompt=full_prompt)
 
         reply = response
         return jsonify({'response': reply})
