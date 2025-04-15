@@ -1,6 +1,7 @@
 {
-    "url": "https://us-south.ml.cloud.ibm.com",
-    "IBM_API_KEY": "[SECRET]",
-    "model_id": "ibm/granite-20b-multilingual",
-    "project_id": "[SECRET]"
+    "IBM_API_KEY": "KgeoHQnU3ZROR1fNrEjCAT-AowXczXrR15qV-oACiiZZ",
+    "model_id": "ibm/granite-8b-code-instruct",
+    "project_id": "[SECRET]",
+    "url": "https://us-south.ml.cloud.ibm.com"
 }
+
