@@ -1,0 +1,222 @@
+{% extends "dogui.html" %}
+
+{% block title %}{{ project.name }} | {% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" href="/static/css/engineering.css">
+{% endblock %}
+
+{% block nav %}
+{% include 'includes/user-nav.html' %}
+<div class="project-header">
+    <h1>{{ project.name }}</h1>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="page-content">
+    <!-- Phase Tabs -->
+    <div class="phase-tabs">
+        <button class="tab-button {% if project.phase == 'ideation' %}active{% endif %}" 
+                data-phase="ideation">Ideation</button>
+        <button class="tab-button {% if project.init == 0 %}disabled{% endif %} {% if project.phase == 'simulation' %}active{% endif %}" 
+                data-phase="simulation">Simulation</button>
+        <button class="tab-button {% if project.init == 0 %}disabled{% endif %} {% if project.phase == 'implementation' %}active{% endif %}" 
+                data-phase="implementation">Implementation</button>
+    </div>
+    
+    <div class="tab-content">
+
+        <div id="ideation-content" class="tab-pane {% if project.phase == 'ideation' %}active{% endif %}">
+            {% if project.init == 0 %}
+            <p id="ideation-prompt">Please describe your new project:</p>
+            <form id="ideation-form" method="POST" action="/update-project/{{ user.username }}/{{ project.id }}">
+                <textarea name="description" rows="1" placeholder="Describe your project in detail..."></textarea>
+                <button type="submit">Initialize Project</button>
+            </form>
+            {% else %}
+
+            <form id="project-details-form" method="POST" action="/update-project/{{ user.username }}/{{ project.id }}">
+                <div class="project-details">
+                    <input type="text" name="name" value="{{ project.name }}" class="project-name" disabled>
+                    <p style="font-size: 1rem; text-align: center; opacity: 70%;">Details:</p>
+                    <textarea name="description" class="project-description" disabled>{{ project.description }}</textarea>
+                    <div class="project-meta">
+                        <span>Created: {{ project.created_at.strftime('%b %d, %Y %I:%M %p') }}</span>
+                        <span> • </span>
+                        <span>Last edited: {{ project.last_edited.strftime('%b %d, %Y %I:%M %p') }}</span>
+                        <span> • </span>
+                        <span class="project-phase phase-{{ project.phase }}">
+                            {{ project.phase|title }}
+                        </span>
+                    </div>
+                    <div class="project-details-controls">
+                        <button type="button" class="btn-edit">Edit Details</button>
+                        <button type="submit" class="btn-save" style="display:none">Save Changes</button>
+                        <button type="button" class="btn-cancel" style="display:none">Cancel</button>
+                    </div>
+                    
+                </div>
+            </form>
+
+            <div class="projects-grid">
+                <button onclick="window.location.href='#'" class="project-card glow project-menuoption">
+                    <img src="/static/img/navicons/brain.png" alt="Asset">
+                    <div class="project-desc">Solution Brainstorming</div>
+                </button>
+                <button onclick="window.location.href='#'" class="project-card glow project-menuoption">
+                    <img src="/static/img/navicons/research.png" alt="Project Logo">
+                    <div class="project-desc">Market Research</div>
+                </button>
+                <button onclick="window.location.href='/assistant'" class="project-card glow project-menuoption">
+                    <img src="/static/img/dogui_ai_logo.png">
+                    <div class="project-desc">DOGUI Assistant</div>
+                </button>
+                <form method="POST" action="/update-project/{{ user.username }}/{{ project.id }}">
+                    <input type="hidden" name="description" value="{{ project.description }}"></input>
+                    <input type="hidden" name="regen" value="true"></input>
+                    <button type="submit" class="project-card glow project-menuoption">
+                        <img src="/static/img/navicons/redo.png">
+                        <div class="project-desc">Regenerate Name</div>
+                    </button>
+                </form>
+            </div>
+
+            <div class="phase-control">
+                <form method="POST" action="/update-project/{{ user.username }}/{{ project.id }}">
+                    <input type="hidden" name="phase" value="ideation">
+                    <button type="submit" {% if project.phase == 'ideation' %}class="current-phase"{% endif %}>
+                        {% if project.phase == 'ideation' %}Currently in Ideation{% else %}Set to Ideation Phase{% endif %}
+                    </button>
+                </form>
+            </div>
+            {% endif %}
+        </div>
+
+        <div id="simulation-content" class="tab-pane {% if project.phase == 'simulation' %}active{% endif %}">
+            <div class="projects-grid">
+                <button onclick="window.location.href='#'" class="project-card glow project-menuoption" disabled>
+                    <img src="/static/img/navicons/generate.png">
+                    <div class="project-desc">View 3D Environment</div>
+                </button>
+                <form method="POST" action="{{ url_for('asset.new_asset') }}">
+                    <input type="hidden" name="asset_type" value="model">
+                    <input type="hidden" name="project_context" value="">
+                    <button type="submit" class="project-card glow project-menuoption">
+                        <img src="/static/img/navicons/cube.png" alt="3D Model">
+                        <div class="project-desc">Create 3D Model</div>
+                    </button>
+                </form>
+                <button onclick="window.location.href='/assets'" class="project-card glow project-menuoption">
+                    <img src="/static/img/navicons/upload.png" alt="Asset">
+                    <div class="project-desc">Add Asset</div>
+                </button>
+                <button onclick="window.location.href='/assets/cad-assist'" class="project-card glow project-menuoption">
+                    <img src="/static/img/navicons/cad.png" alt="Project Logo">
+                    <div class="project-desc">CAD Assist</div>
+                </button>
+            </div>
+            <div class="phase-control">
+                <form method="POST" action="/update-project/{{ user.username }}/{{ project.id }}">
+                    <input type="hidden" name="phase" value="simulation">
+                    <button type="submit" {% if project.phase == 'simulation' %}class="current-phase"{% endif %}>
+                        {% if project.phase == 'simulation' %}Currently in Simulation{% else %}Set to Simulation Phase{% endif %}
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <div id="implementation-content" class="tab-pane {% if project.phase == 'implementation' %}active{% endif %}">
+            <div class="projects-grid">
+                <button onclick="window.location.href='/assets'" class="project-card glow project-menuoption">
+                    <img src="/static/img/navicons/money.png" alt="Asset">
+                    <div class="project-desc">Cost Analysis</div>
+                </button>
+                <button onclick="window.location.href='/assets/cad-assist'" class="project-card glow project-menuoption">
+                    <img src="/static/img/navicons/code.png" alt="Project Logo">
+                    <div class="project-desc">Code Assist</div>
+                </button>
+            </div>
+            <div class="under-construction">
+                <p>More implementation features coming soon!</p>
+            </div>
+            <div class="phase-control">
+                <form method="POST" action="/update-project/{{ user.username }}/{{ project.id }}">
+                    <input type="hidden" name="phase" value="implementation">
+                    <button type="submit" {% if project.phase == 'implementation' %}class="current-phase"{% endif %}>
+                        {% if project.phase == 'implementation' %}Currently in Implementation{% else %}Set to Implementation Phase{% endif %}
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+    // tab switching
+    document.querySelectorAll('.tab-button').forEach(button => {
+        button.addEventListener('click', function() {
+            const phase = this.dataset.phase;
+            
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            this.classList.add('active');
+            
+            document.querySelectorAll('.tab-pane').forEach(pane => {
+                pane.classList.remove('active');
+            });
+            document.getElementById(`${phase}-content`).classList.add('active');
+        });
+    });
+</script>
+
+<script>
+    // project detail edits
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('project-details-form');
+        const nameInput = form.querySelector('.project-name');
+        const descInput = form.querySelector('.project-description');
+        const editBtn = form.querySelector('.btn-edit');
+        const saveBtn = form.querySelector('.btn-save');
+        const cancelBtn = form.querySelector('.btn-cancel');
+        
+        if (editBtn) {
+            editBtn.addEventListener('click', function() {
+                nameInput.disabled = false;
+                descInput.disabled = false;
+                editBtn.style.display = 'none';
+                saveBtn.style.display = 'block';
+                cancelBtn.style.display = 'block';
+                nameInput.focus();
+            });
+        }
+        
+        if (cancelBtn) {
+            cancelBtn.addEventListener('click', function() {
+                nameInput.disabled = true;
+                descInput.disabled = true;
+                nameInput.value = "{{ project.name }}";
+                descInput.value = "{{ project.description }}";
+                editBtn.style.display = 'block';
+                saveBtn.style.display = 'none';
+                cancelBtn.style.display = 'none';
+            });
+        }
+        
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                // TODO validation
+                
+                //nameInput.disabled = true;
+                //descInput.disabled = true;
+                saveBtn.disabled = true;
+                
+                saveBtn.textContent = 'Saving...';
+            });
+        }
+    });
+</script>
+{% endblock %}

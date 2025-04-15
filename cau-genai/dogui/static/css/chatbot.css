@@ -2,19 +2,17 @@
 .assistant-page {
     display: flex;
     flex-direction: column;
-    height: calc(100vh - 120px);
+    height: calc(100vh - 3rem);
     padding: 20px;
 }
 
 .chat-header {
     text-align: center;
-    margin-bottom: 20px;
 }
 
 .chat-header .ai-logo {
-    width: 80px;
-    height: 80px;
-    margin-bottom: 10px;
+    width: 3rem;
+    height: 3rem;
 }
 
 #chat-container {
@@ -43,7 +41,7 @@
     display: flex;
     gap: 10px;
     max-width: 100%;
-    font-size: 1.4rem;
+    font-size: 1rem;
 }
 
 .user-message {
@@ -68,6 +66,13 @@
 
 .message-content {
     flex-grow: 1;
+}
+
+.ai-message .message-content {
+    text-align: left;
+}
+.user-message .message-content {
+    text-align: right;
 }
 
 #chat-input-container {

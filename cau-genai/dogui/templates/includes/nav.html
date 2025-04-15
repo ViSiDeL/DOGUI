@@ -1,22 +1,7 @@
 <div id="nav" class="nav">
-    <!-- Register button with click sound -->
-    <a href="/register" onclick="playSound('sound1')">register</a>
-    
-    <!-- Login button with a different click sound -->
-    <a href="/login" onclick="playSound('sound2')">login</a>
+    <a href="/register" data-sound="sound1">register</a>
+    <a href="/login" data-sound="sound2">login</a>
 </div>
 
 <h1 id="dogui">DOGUI.ai</h1>
-
-<!-- Audio elements moved outside to prevent shifting -->
-<audio id="sound1" src="/static/audio/back.mp3" preload="auto"></audio>
-<audio id="sound2" src="/static/audio/Next.mp3" preload="auto"></audio>
-
-<script>
-    function playSound(soundId) {
-        var audio = document.getElementById(soundId);
-        if (audio) {
-            audio.play();
-        }
-    }
-</script>
+<h2 id="dogui-tag">CAU's Design-Oriented Graphical User Interface</h2>

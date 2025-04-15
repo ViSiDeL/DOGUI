@@ -1,0 +1,58 @@
+{% extends "dogui.html" %}
+
+{% block title %}New Asset | {% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" href="/static/css/engineering.css">
+    <link rel="stylesheet" href="/static/css/assets.css">
+{% endblock %}
+
+{% block nav %}{% include 'includes/user-nav.html' %}{% endblock %}
+
+{% block content %}
+<div class="page-content">
+    <h1>Create New Asset</h1>
+    
+    <div class="creation-flow">
+        <div class="step active">
+            <h3 style="margin-bottom: 2rem;">Select Asset Type</h3>
+            <div class="options-grid">
+                <form method="POST" action="{{ url_for('asset.new_asset') }}">
+                    <input type="hidden" name="asset_type" value="model">
+                    <button type="submit" class="option-card dogui-option">
+                        <div class="option-icon">
+                            <img src="/static/img/navicons/cube.png" alt="3D Model">
+                        </div>
+                        <div class="option-label">3D Model</div>
+                    </button>
+                </form>
+                
+                <form method="POST" action="{{ url_for('asset.new_asset') }}">
+                    <input type="hidden" name="asset_type" value="drawing">
+                    <button type="submit" class="option-card dogui-option">
+                        <div class="option-icon">
+                            <img src="/static/img/navicons/drawing.png" alt="CAD Drawing">
+                        </div>
+                        <div class="option-label">CAD Drawing</div>
+                    </button>
+                </form>
+                
+                <form method="POST" action="{{ url_for('asset.new_asset') }}">
+                    <input type="hidden" name="asset_type" value="image">
+                    <input type="hidden" name="creation_method" value="upload">
+                    <button type="submit" class="option-card dogui-option">
+                        <div class="option-icon">
+                            <img src="/static/img/navicons/image.png" alt="Image">
+                        </div>
+                        <div class="option-label">Image</div>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+
+{% endblock %}

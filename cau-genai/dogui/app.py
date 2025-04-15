@@ -3,7 +3,7 @@ IMPORTS
 """
 
 
-from flask import Flask, render_template, send_from_directory, session, redirect, url_for
+from flask import Flask, request, render_template, send_from_directory, session, redirect, url_for
 import os
 import random
 
@@ -61,7 +61,7 @@ def dashboard():
     if session_id:
         user = design_engine.get_user(session_id)
         if user:
-            return render_template('design/dashboard.html', user=user)
+            return render_template('dashboard.html', user=user)
     
     # redirect to login if no active session
     return redirect(url_for('user.login'))
