@@ -1,25 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DOGUI.ai</title>
-    <link rel="stylesheet" href="/static/css/dogui_style.css">
-    <link rel="stylesheet" href="/static/css/home.css">
-    <script type="importmap">
-        {
-            "imports": {
-                "three": "/node_modules/three/build/three.module.js",
-                "three-orbitcontrols": "/node_modules/three/examples/jsm/controls/OrbitControls.js"
-            }
-        }
-    </script>
-</head>
-<body>
-    <div class="content">
-        {% include 'includes/nav.html' %}
-    </div>
+{% extends "dogui.html" %}
 
-    <script type="module" src="/static/homepage.js"></script>
-</body>
-</html>
+{% block css %}
+    <link rel="stylesheet" href="/static/css/home.css">
+{% endblock %}
+
+{% block content %}
+{% endblock %}
+
+{% block js %}
+    <script type="module" src="/static/js/homepage.js"></script>
+{% endblock %}
