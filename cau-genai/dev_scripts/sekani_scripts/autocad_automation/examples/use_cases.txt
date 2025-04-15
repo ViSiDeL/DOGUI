@@ -1,0 +1,112 @@
+Use Cases for AutoCAD Capabilities in Your AI CAD Platform
+
+🚀 1. AI-Driven Preliminary Design Generator
+Input: Project type (e.g. floor plan, product casing, bridge layout), dimensions, constraints, preferred materials.
+
+AI Output: Auto-generates a preliminary drawing with dimensions and objects placed.
+
+Workflow:
+
+User enters project specs via GUI/web form.
+
+AI suggests layout with automated CAD drawing.
+
+User opens the file to adjust further if needed.
+
+✏️ 2. Interactive Editing & Smart Suggestion Mode
+Input: Existing DWG file.
+
+AI Role: Analyze geometry and suggest:
+
+Symmetry alignment.
+
+Redundant entities.
+
+Unclosed polylines or inconsistent spacing.
+
+Workflow:
+
+User uploads DWG.
+
+AI overlays visual suggestions (maybe using color-coded hints).
+
+One-click fixes or human override options.
+
+📦 3. Component/Template Library Integration
+Input: User selects from a smart catalog (e.g., door types, brackets, piping).
+
+AI Role: Inserts components with optimized placement and orientation.
+
+Workflow:
+
+Library loads as drag-and-drop or context-aware suggestion.
+
+AutoCAD draws and snaps objects into place.
+
+🔄 4. Version Control + AI Diff Checker
+AI Role: Compares two versions of a drawing and describes changes (visually and in plain English).
+
+Use Case: Helpful for design review, approvals, and collaboration.
+
+Workflow:
+
+User selects two .dwg files.
+
+AI generates change report + visual diff.
+
+Option to accept/reject modifications.
+
+📐 5. Parametric Design Assistant
+Input: Change in one parameter (e.g., room size, pipe diameter).
+
+AI Role: Automatically adjusts related objects to maintain logic/spacing.
+
+Workflow:
+
+User selects parametric object (like a modular wall).
+
+Changes one parameter.
+
+All dependent entities adjust instantly.
+
+🧪 6. Simulation/Testing Prep Automation
+Input: Drawing for testing (e.g. structural, airflow, thermal).
+
+AI Role: Ensures drawing meets simulation software requirements.
+
+Workflow:
+
+User finishes CAD drawing.
+
+AI checks for simulation-readiness (e.g., closed volumes, naming conventions).
+
+Auto-export to simulation format or reroute to internal simulation tool.
+
+🌐 7. Multi-format Export & Upload Automation
+AI Role: Export DWG to user-specified formats (DXF, STL, SVG, PDF).
+
+Workflow:
+
+User completes drawing.
+
+AI prompts: “Export for fabrication, presentation, or simulation?”
+
+Based on intent, exports in ideal formats and optionally uploads to cloud/server.
+
+🗂 8. Project Lifecycle + Stage Management
+AI Role: Track stages — concept, preliminary design, approval, finalization, testing, fabrication.
+
+Workflow:
+
+Based on project state, the CAD environment loads custom UI/tools.
+
+AutoCAD + AI shows relevant tasks, requirements, and drawing templates.
+
+🛠️ Potential AI Features to Power These Workflows:
+Feature	Description
+🧠 Prompt-to-CAD Conversion	Text → Drawing using NLP + constraints
+🔍 AutoCAD Geometry Analysis	Detect inconsistencies or optimize design
+🏗 Smart Snapping & Dimensioning	Auto-align and dimension intelligently
+🧩 CAD Component Recommender	Suggest parts/components based on context
+🪄 AI Voice Assistant	“Add a 3x3 meter room here” → Draws room
+📊 Metrics Dashboard	Total area, volume, costs, and material lists
