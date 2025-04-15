@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
         micButton.style.display = 'none';
     }
 
-    // send
+        // send
     async function sendMessage() {
         const message = messageInput.value.trim();
         if (message === '') return;
@@ -56,26 +56,43 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             // typing indicator
             const typingIndicator = displayMessage('DOGUI', '...', 'ai-message', true);
-            
+        
             // send for response, wait for it
             const response = await fetch('/chatbot', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ message: message })
+                body: JSON.stringify({ message: message, voice: "English" }) // Voice should match keys in your Python `languages` dictionary
             });
 
             const data = await response.json();
-            
-            // output message when recieved
+
+            // output message when received
             typingIndicator.querySelector('.message-content').textContent = data.response;
-            
+            console.log(data)
+            // 🔊 PLAY AUDIO IF AVAILABLE
+            if (data.audio_url) {
+                console.log("ghfdhdfhf")
+                const audio = new Audio(data.audio_url);
+                audio.play();
+
+                // Optional: Add an icon or visual cue
+                const speakerIcon = document.createElement("span");
+                speakerIcon.textContent = " 🔊";
+                typingIndicator.querySelector('.message-content').appendChild(speakerIcon);
+
+                audio.onended = () => {
+                    speakerIcon.remove();
+                };
+            }
+
         } catch (error) {
             console.error('Error:', error);
             displayMessage('DOGUI', 'Error: Could not get response.', 'ai-message');
         }
     }
+
 
     // display message in chat
     function displayMessage(sender, message, messageClass = '', isTyping = false) {

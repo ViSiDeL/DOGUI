@@ -7,6 +7,9 @@ from ibm_watsonx_ai import APIClient
 from ibm_watsonx_ai import Credentials
 from ibm_watsonx_ai.foundation_models import ModelInference
 from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
+from ibm_watson import TextToSpeechV1
+from ibm_watson import SpeechToTextV1
+import speech_recognition as sr
 
 ai_bp = Blueprint('ai', __name__)
 
@@ -57,21 +60,34 @@ def get_answer_for_question(question: str, knowledge_base: dict) -> Optional[str
 
 """ ------------------- LLM USAGE ------------------- """
 
+
 # loading assistant page
 @ai_bp.route('/assistant', methods=['GET'])
 def assistant():
     return render_template('assistant.html')
 
-# handles responses from watson
+
+languages = {
+    "English": "en-US_MichaelV3Voice",
+    "Japanese": "ja-JP_EmiV3Voice",
+    "Arabic": "ar-AR_OmarV3Voice",
+    "Spanish":"es-ES_EnriqueV3Voice",
+    "French":"fr-FR_ReneeV3Voice",
+    "Dutch":"nl-NL_MerelV3Voice",
+    "German": "de-DE_DieterV3Voice"
+}
 @ai_bp.route('/chatbot', methods=['POST'])
 def chatbot():
     data = request.get_json()
     user_message = data.get('message')
+    voice_choice = data.get('voice')  # frontend must send this
 
     if not user_message:
         return jsonify({'response': 'No message received.'})
+
     try:
-        knowledge_base: dict = load_knowledge_base('config/knowledge_base.json')
+        knowledge_base = load_knowledge_base('config/knowledge_base.json')
+
 
         # get response, process as needed
         prompt = f"{user_message}"
@@ -82,9 +98,36 @@ def chatbot():
         Here is their message"{prompt}". Your response:"""
 
         response = chatbot_model.generate_text(prompt=full_prompt)
+        # print(response)
 
-        reply = response
-        return jsonify({'response': reply})
+        # Voice choice handling
+        voice_choice = voice_choice.capitalize()
+        if voice_choice not in languages:
+            return jsonify({'response': response, 'error': 'Invalid voice choice.'})
+        converted_voice_choice = languages[voice_choice]
+
+        # Watson TTS setup
+        authenticator = IAMAuthenticator(watson_config['IBM_API_KEY'])
+        text_to_speech = TextToSpeechV1(authenticator=authenticator)
+        text_to_speech.set_service_url('https://api.au-syd.text-to-speech.watson.cloud.ibm.com/instances/[SECRET]')
+        # speech_to_text = SpeechToTextV1(
+        # authenticator=authenticator
+        # )
+        # speech_to_text.set_service_url('https://api.au-syd.speech-to-text.watson.cloud.ibm.com/instances/[SECRET]')
+
+        audio = text_to_speech.synthesize(
+            text=response,
+            voice=converted_voice_choice,
+            accept='audio/wav'
+        ).get_result().content
+
+        output_filename = 'static/audio/dogui_audio.wav'
+        with open(output_filename, 'wb') as f:
+            f.write(audio)
+
+
+
+        return jsonify({'response': response, 'audio_url': f'/' + output_filename})
 
     except Exception as e:
         print(f"Error: {e}")
