@@ -84,14 +84,14 @@ def assets():
             print(assets)
             
             return render_template(
-                'design/assets.html',
+                'assets/assets.html',
                 user=user,
                 assets=assets
             )
             
     except Exception as e:
         print(f"Error loading assets: {e}")
-        return render_template('design/assets.html', user=user, assets=[])
+        return render_template('assets/assets.html', user=user, assets=[])
     
     finally:
         if 'connection' in locals():
@@ -114,12 +114,12 @@ def new_asset():
         
         # model creation creation method
         if asset_type == 'model' and not creation_method:
-            return render_template('design/model_creation_method.html', 
+            return render_template('assets/model_creation_method.html', 
                                 user=user,
                                 asset_type=asset_type)
         
         if asset_type == 'drawing' and not creation_method:
-            return render_template('design/drawing_creation_method.html', 
+            return render_template('assets/drawing_creation_method.html', 
                                 user=user,
                                 asset_type=asset_type)
         
@@ -130,7 +130,7 @@ def new_asset():
         elif creation_method == 'CAD':
             return redirect(url_for('asset.cad_assist'))
         
-    return render_template('design/new_asset.html', user=user)
+    return render_template('assets/new_asset.html', user=user)
 
 @asset_bp.route('/upload/<asset_type>', methods=['GET', 'POST'])
 def upload_asset(asset_type):
@@ -203,7 +203,7 @@ def upload_asset(asset_type):
             return redirect(request.url)
     
     print('loaded upload page')
-    return render_template('design/upload_asset.html', user=user, asset_type=asset_type)
+    return render_template('assets/upload_asset.html', user=user, asset_type=asset_type)
 
 @asset_bp.route('/download/<asset_type>/<filename>')
 def download_asset(asset_type, filename):
@@ -263,7 +263,7 @@ def generate_model():
     if not user:
         return redirect(url_for('user.login'))
     
-    return render_template('design/generate_model.html', user=user)
+    return render_template('assets/generate_model.html', user=user)
 
 def clean_generated_code(raw_code):
     unwanted_patterns = [
@@ -338,4 +338,4 @@ def cad_assist():
     if not user:
         return redirect(url_for('user.login'))
     
-    return render_template('design/cad_assist.html', user=user)
+    return render_template('assets/cad_assist.html', user=user)

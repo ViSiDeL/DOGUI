@@ -1,0 +1,53 @@
+{% extends "dogui.html" %}
+
+{% block title %}New 3D Model | {% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" href="/static/css/engineering.css">
+    <link rel="stylesheet" href="/static/css/assets.css">
+{% endblock %}
+
+{% block nav %}{% include 'includes/user-nav.html' %}{% endblock %}
+
+{% block content %}
+<div class="page-content">
+    <h1>Create 3D Model</h1>
+    
+    <div class="creation-flow">
+        <!-- <div class="step completed">
+            <h3 style="margin-bottom: 2rem;">✓ Asset Type Selected</h3>
+        </div> -->
+        
+        <div class="step active">
+            <h3>Choose Creation Method</h3>
+            <div class="options-grid">
+                <form method="POST" action="{{ url_for('asset.new_asset') }}">
+                    <input type="hidden" name="asset_type" value="model">
+                    <input type="hidden" name="creation_method" value="upload">
+                    <button type="submit" class="option-card">
+                        <div class="option-icon">
+                            <img src="/static/img/navicons/upload.png" alt="Upload Model">
+                        </div>
+                        <div class="option-label">Upload Model</div>
+                    </button>
+                </form>
+                
+                <form method="POST" action="{{ url_for('asset.new_asset') }}">
+                    <input type="hidden" name="asset_type" value="model">
+                    <input type="hidden" name="creation_method" value="generate">
+                    <button type="submit" class="option-card">
+                        <div class="option-icon">
+                            <img src="/static/img/navicons/generate.png" alt="Generate Model">
+                        </div>
+                        <div class="option-label">Generate With watson</div>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+
+{% endblock %}

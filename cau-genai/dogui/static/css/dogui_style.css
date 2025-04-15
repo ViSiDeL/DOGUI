@@ -158,14 +158,14 @@ button {
     border-radius: 8px; 
     font-size: 1rem; 
     cursor: pointer; 
-    transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth transitions */
+    transition: all 0.3s ease;
     width: 100%; 
 }
 
 button:hover {
-    background-color: var(--dogui-glow); /* Darken green on hover */
-    transform: scale(1.05); /* Slightly enlarge button */
-    color: black;
+    transform: scale(1.05);
+    box-shadow: 0 5px 15px rgba(62, 148, 126, 0.3);
+    border-color: var(--dogui-glow);
 }
 
 button:active {
