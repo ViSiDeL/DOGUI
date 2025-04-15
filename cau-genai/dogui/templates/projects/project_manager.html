@@ -25,6 +25,12 @@
                         {{ project[1][:45] }}{% if project[1]|length > 45 %}...{% endif %}
                     </div>
                 </div>
+                <div class="project-meta">
+                    <div>Last edited: {{ project[5].strftime('%b %d, %Y %I:%M %p') }}</div>
+                    <div class="project-phase phase-{{ project[3] }}">
+                        {{ project[3] }}
+                    </div>
+                </div>
             </div>
         </a>
         {% else %}
