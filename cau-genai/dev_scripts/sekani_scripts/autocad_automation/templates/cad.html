@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>AI CAD Workflow</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f4f4f4;
+    }
+    header {
+      background: #2b2b88;
+      color: white;
+      padding: 1em;
+      text-align: center;
+    }
+    .tabs {
+      display: flex;
+      background: #e0e0e0;
+    }
+    .tab-button {
+      flex: 1;
+      padding: 1em;
+      text-align: center;
+      cursor: pointer;
+      background: #ccc;
+      border: none;
+      outline: none;
+    }
+    .tab-button.active {
+      background: #2b2b88;
+      color: white;
+    }
+    .tab-content {
+      display: none;
+      padding: 2em;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    textarea {
+      width: 100%;
+      height: 150px;
+      margin-bottom: 1em;
+    }
+    button {
+      margin-right: 1em;
+      padding: 0.5em 1em;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>AI-Powered CAD Workflow</h1>
+  </header>
+
+  <div class="tabs">
+    <button class="tab-button active" onclick="openTab('ideation')">Ideation</button>
+    <button class="tab-button" onclick="openTab('simulation')">Simulation</button>
+    <button class="tab-button" onclick="openTab('implementation')">Implementation</button>
+  </div>
+
+  <div id="ideation" class="tab-content active">
+    <h2>CAD Ideation</h2>
+    <textarea id="chatBox" placeholder="Conversation with AI model..."></textarea><br>
+    <div style="margin-top: 1em;">
+      <textarea id="userInput" placeholder="Describe your design..." rows="3" style="width: 90%; font-size: 16px; padding: 10px;"></textarea>
+    </div>
+    <div style="margin-top: 0.5em;">
+      <button onclick="sendPrompt()">Send</button>
+    </div>
+    <br><br>
+    <button onclick="generateDesign()">Generate CAD Design</button>
+    <button onclick="modifyDesign()">Modify Existing Design</button>
+    <button onclick="restartSession()">Restart Session</button>
+    <button onclick="endSession()">End Without Saving</button>
+    <button onclick="saveSession()">Save Session</button>
+    <button onclick="proceedToSimulation()">Proceed to Simulation</button>
+  </div>
+
+  <div id="simulation" class="tab-content">
+    <h2>Simulation (Coming Soon)</h2>
+    <p>Simulation tools and results will appear here.</p>
+  </div>
+
+  <div id="implementation" class="tab-content">
+    <h2>Implementation (Coming Soon)</h2>
+    <p>Export, upload, and finalize your CAD design.</p>
+  </div>
+
+  <script>
+    const chatBox = document.getElementById("chatBox");
+
+    function openTab(tabId) {
+      const buttons = document.querySelectorAll(".tab-button");
+      const contents = document.querySelectorAll(".tab-content");
+
+      buttons.forEach(btn => btn.classList.remove("active"));
+      contents.forEach(tab => tab.classList.remove("active"));
+
+      document.getElementById(tabId).classList.add("active");
+      event.target.classList.add("active");
+    }
+
+    function sendPrompt() {
+      const userInput = document.getElementById("userInput").value;
+      if (userInput.trim() === "") return;
+
+      chatBox.value += `\nYou: ${userInput}`;
+      document.getElementById("userInput").value = "";
+
+      fetch("http://localhost:5000/api/ai/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt: userInput })
+      })
+        .then(res => res.json())
+        .then(data => {
+          const response = data.response || "[No response]";
+          chatBox.value += `\nDogui: ${response}`;
+          chatBox.scrollTop = chatBox.scrollHeight;
+        })
+        .catch(error => {
+          chatBox.value += `\nDogui: [Error communicating with backend]`;
+          console.error(error);
+        });
+    }
+
+
+    function generateDesign() {
+      fetch("http://localhost:5000/api/ai/run-script", {
+        method: "POST"
+      })
+        .then(res => res.json())
+        .then(data => {
+          alert(data.message || "CAD script generated and executed.");
+          console.log(data.output);  // optional: show backend print messages
+        })
+        .catch(error => {
+          alert("Failed to run the CAD script.");
+          console.error(error);
+        });
+    }
+
+
+    function modifyDesign() {
+      alert("Prompt AI to modify the existing CAD drawing...");
+      // TODO: Extend current drawing session with more AI input
+    }
+
+    function restartSession() {
+      if (confirm("Are you sure you want to restart the session?")) {
+        chatBox.value = "";
+        fetch("http://localhost:5000/api/ai/reset", {
+          method: "POST"
+        });
+        chatBox.value = "Dogui: How can Dogui CAD assist help?";
+      }
+    }
+
+
+    function endSession() {
+      if (confirm("End session without saving?")) {
+        chatBox.value = "Session ended.";
+      }
+    }
+
+    function saveSession() {
+      alert("Saving session to backend database...");
+      // TODO: Send session data to backend for storage
+    }
+
+    function proceedToSimulation() {
+      openTab('simulation');
+    }
+  </script>
+  <script>
+    window.onload = function () {
+      chatBox.value = "Dogui: How can Dogui CAD assist help?";
+    };
+  </script>
+
+</body>
+</html>
