@@ -55,6 +55,8 @@ def get_answer_for_question(question: str, knowledge_base: dict) -> Optional[str
             return q["answer"]
     return None  
 
+""" ------------------- LLM USAGE ------------------- """
+
 # loading assistant page
 @ai_bp.route('/assistant', methods=['GET'])
 def assistant():
@@ -74,9 +76,10 @@ def chatbot():
         # get response, process as needed
         prompt = f"{user_message}"
         full_prompt=f"""
-        You are Dogui AI, an engineering-focused AI meant to create a very descriptive response based of the users question to guide them through their given engineering projects and ideas.
+        You are DOGUI AI, an engineering-focused AI assistant meant to create a very descriptive response based of the users question to guide them through their given engineering projects and ideas.
         Your primary purpose is to craft highly vivid, engaging, and richly detailed responses based on the user's questions.
-        Here is their description"{prompt}". Your response:"""
+        Especially promote the three steps Ideation, Simulation, and Design of the Engineerin Design Process and a guide a user accordingly
+        Here is their message"{prompt}". Your response:"""
 
         response = chatbot_model.generate_text(prompt=full_prompt)
 
@@ -86,3 +89,30 @@ def chatbot():
     except Exception as e:
         print(f"Error: {e}")
         return jsonify({'response': 'An error occurred while processing your request.'})
+
+""" ------------------- IDEATION ------------------- """
+@ai_bp.route('/generate-project-name', methods=['POST'])
+def generate_project_name():
+    try:
+        data = request.get_json()
+        description = data.get('description')
+        
+        if not description:
+            return jsonify({'error': 'No description provided'}), 400
+        
+        prompt = f"""
+        Generate a concise, professional project name (2-4 words max) based on this description:
+        "{description}"
+        
+        Respond ONLY with the project name, no additional text or explanations. Project Name:
+        """
+        
+        response = chatbot_model.generate_text(prompt=prompt)
+        project_name = response.strip().strip('"').strip("'")
+        
+        return jsonify({'project_name': project_name})
+        
+    except Exception as e:
+        print(f"Error generating project name: {e}")
+        return jsonify({'error': 'Failed to generate project name'}), 500
+    
