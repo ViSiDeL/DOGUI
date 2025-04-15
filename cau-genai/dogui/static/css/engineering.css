@@ -13,7 +13,6 @@
     -webkit-user-select: none; /* Safari */
     -moz-user-select: none;    /* Firefox */
     -ms-user-select: none;     /* Internet Explorer/Edge */
-    cursor: default;           /* Keep normal cursor */
     display: inline-block;
     overflow: visible;  /* Hide the part of the text that is not yet revealed */
     white-space: nowrap;
@@ -146,6 +145,132 @@
 .projects-grid a:active {
     text-decoration: none;
     color: inherit;
+}
+
+.project-menuoption {
+    width: auto;
+    display: flex;
+    border-radius: 5px;
+    border: 2px solid var(--dogui-green);
+    gap: 1rem;
+    align-items: center;
+}
+
+.project-menuoption img {
+    width: 3rem;
+    height: auto;
+}
+
+.project-details {
+    margin-bottom: 2rem;
+    border: 1rem var(--dogui-glow);
+}
+
+.project-name{
+    font-size: 2rem !important; 
+    font-weight: bold;
+    width: 100%;
+    margin-bottom: 1rem;
+    padding: 0.5rem;
+    background: transparent;
+    border: none;
+    color: var(--dogui-glow) !important;
+    text-align: center;
+}
+
+.project-description {
+    width: 100%;
+    background: rgba(0,0,0,0.5);
+    border: 1px solid transparent;
+    color: var(--dogui-glow);
+    resize: vertical;
+    text-align: center;
+}
+
+.project-name:disabled,
+.project-description:disabled {
+    border-color: transparent;
+    background: transparent;
+    cursor: default;
+}
+
+.project-name:not(:disabled),
+.project-description:not(:disabled) {
+    border: 1px solid #444;
+    background: rgba(0,0,0,0.3);
+}
+
+.project-details-controls {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+    justify-content: center;
+}
+
+.btn-edit, .btn-save, .btn-cancel {
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    max-width: 15rem;
+}
+
+.btn-save {
+    background-color: #4CAF50;
+}
+
+.btn-cancel {
+    background-color: #f44336;
+}
+
+.tab-button.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+    cursor: not-allowed;
+}
+
+.phase-control {
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    text-align: center;
+}
+.phase-control button {
+    padding: 0.5rem 1rem;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: white;
+    cursor: pointer;
+}
+.phase-control button:hover {
+    background: rgba(255,255,255,0.2);
+}
+.phase-control button.current-phase {
+    background: #4CAF50;
+    font-weight: bold;
+}
+
+.project-meta {
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.7);
+    margin-top: 0.5rem;
+}
+.project-phase {
+    display: inline-block;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    margin-top: 0.3rem;
+}
+.phase-ideation {
+    background: rgba(100, 181, 246, 0.2);
+    border: 1px solid #64b5f6;
+}
+.phase-simulation {
+    background: rgba(156, 204, 101, 0.2);
+    border: 1px solid #9ccc65;
+}
+.phase-implementation {
+    background: rgba(229, 115, 115, 0.2);
+    border: 1px solid #e57373;
 }
 
 @media (max-width: 768px) {
