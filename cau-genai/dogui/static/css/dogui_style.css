@@ -213,8 +213,13 @@ button:active {
         filter: none;
         overflow: hidden;
     }
-    100% {
+    99% {
         width: 100%;
+        filter: drop-shadow(rgba(21, 159, 124, 0.70) 0px 0px 1.54087px) drop-shadow(rgba(53, 159, 132, 0.75) 0px 0px 12.7043px) drop-shadow(rgba(53, 159, 132, 0.44) 0px 0px 38.113px);
+        overflow: visible;
+    }
+    100% {
+        width: fit-content;
         filter: drop-shadow(rgba(21, 159, 124, 0.70) 0px 0px 1.54087px) drop-shadow(rgba(53, 159, 132, 0.75) 0px 0px 12.7043px) drop-shadow(rgba(53, 159, 132, 0.44) 0px 0px 38.113px);
         overflow: visible;
     }

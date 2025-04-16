@@ -264,3 +264,96 @@ def update_project(username, project_id):
     finally:
         if 'connection' in locals():
             connection.close()
+
+
+
+""" ------------------------------ CONTEXT ------------------------------ """
+@project_bp.route('/add-context/<int:project_id>', methods=['POST'])
+def add_context(project_id):
+    session_id = session.get('session_id')
+    if not session_id:
+        return jsonify({'error': 'Unauthorized'}), 401
+    
+    user = design_engine.get_user(session_id)
+    if not user:
+        return jsonify({'error': 'Unauthorized'}), 401
+    
+    context_text = request.json.get('context')
+    if not context_text:
+        return jsonify({'error': 'Context text required'}), 400
+    
+    db_config = load_db_config()
+    try:
+        connection = pymysql.connect(
+            host=db_config['host'],
+            user=db_config['user'],
+            password=db_config['password'],
+            database=db_config['database'],
+            port=int(db_config['port'])
+        )
+        
+        with connection.cursor() as cursor:
+            cursor.execute(
+                "INSERT INTO contexts (project_id, context_text) VALUES (%s, %s)",
+                (project_id, context_text)
+            )
+            connection.commit()
+            
+        return jsonify({'success': True, 'message': 'Context added'})
+        
+    except Exception as e:
+        print(f"Error adding context: {e}")
+        return jsonify({'error': 'Database error'}), 500
+    finally:
+        if 'connection' in locals():
+            connection.close()
+
+@project_bp.route('/get-contexts/<int:project_id>')
+def get_contexts(project_id):
+    session_id = session.get('session_id')
+    if not session_id:
+        return jsonify({'error': 'Unauthorized'}), 401
+    
+    user = design_engine.get_user(session_id)
+    if not user:
+        return jsonify({'error': 'Unauthorized'}), 401
+    
+    db_config = load_db_config()
+    try:
+        connection = pymysql.connect(
+            host=db_config['host'],
+            user=db_config['user'],
+            password=db_config['password'],
+            database=db_config['database'],
+            port=int(db_config['port'])
+        )
+        
+        with connection.cursor(pymysql.cursors.DictCursor) as cursor:
+            # get project info
+            cursor.execute(
+                "SELECT projectName, description FROM projects WHERE ID = %s AND username = %s",
+                (project_id, user.username)
+            )
+            project = cursor.fetchone()
+            
+            if not project:
+                return jsonify({'error': 'Project not found'}), 404
+            
+            # get contexts
+            cursor.execute(
+                "SELECT context_text FROM contexts WHERE project_id = %s ORDER BY created_at DESC",
+                (project_id,)
+            )
+            contexts = cursor.fetchall()
+            
+            return jsonify({
+                'project': project,
+                'contexts': [c['context_text'] for c in contexts]
+            })
+            
+    except Exception as e:
+        print(f"Error getting contexts: {e}")
+        return jsonify({'error': 'Database error'}), 500
+    finally:
+        if 'connection' in locals():
+            connection.close()

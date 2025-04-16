@@ -71,9 +71,9 @@ document.addEventListener('DOMContentLoaded', () => {
             // output message when received
             typingIndicator.querySelector('.message-content').textContent = data.response;
             console.log(data)
-            // 🔊 PLAY AUDIO IF AVAILABLE
+            // PLAY AUDIO IF AVAILABLE
             if (data.audio_url) {
-                console.log("ghfdhdfhf")
+                //console.log("ghfdhdfhf")
                 const audio = new Audio(data.audio_url);
                 audio.play();
 
