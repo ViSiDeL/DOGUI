@@ -3,6 +3,10 @@ from difflib import get_close_matches
 from typing import Optional
 import pymysql
 import json
+import time
+import random
+import string
+import os
 
 from ibm_watsonx_ai import APIClient
 from ibm_watsonx_ai import Credentials
@@ -88,7 +92,7 @@ def assistant():
     if project_id:
         try:
             project_id = int(project_id)
-            project_context = None
+
             # verify user has access to this project
             session_id = session.get('session_id')
             if not session_id:
@@ -119,7 +123,7 @@ def assistant():
                 )
                 project_data = cursor.fetchone()
                 
-            print(project_data)
+            # print(project_data)
 
             if not project_data:
                 flash('Project not found', 'error')
@@ -168,18 +172,19 @@ def chatbot():
             """
         
         full_prompt = f"""
-        You are DOGUI AI, an engineering-focused assistant. Here's the current context:
-        {context_prompt}
+        You are DOGUI AI, an engineering-focused assistant. Act as a professional engineer helping another engineer to complete their projects.
+        Here's the current context: {context_prompt}.
         
         Response Guidelines:
         - Focus on the Engineering Design Process (Ideation, Simulation, Implementation)
         - Consider the project context above
         - Provide detailed, actionable advice. Guide the user through the project creation process if needed
         - Ask clarifying questions when needed. Try to be clear and concise, get your point across to the user quickly
-        - DO NOT RESPOND IN LIST FORMAT. You are having a conversation
+        - DO NOT RESPOND IN a numerical LIST FORMAT. You are having a conversation
         - You can provide exact information, as the user may use you for research purposes
-        - Try your best to give informative responses, priortize making sure your response helps the user towards their goal in someway.
-        - Respond in HTML code, so it can be formatted after.
+        - Priortize making sure your response helps the user towards their goal in someway. 
+        - Feel free to provide outside info that a user inquires about.
+        - Keep things simple. Short and sweet.
         
         The user asks: "{user_message}"
 
@@ -196,19 +201,32 @@ def chatbot():
         converted_voice_choice = languages[voice_choice]
 
         # Watson TTS setup
-        authenticator = IAMAuthenticator(watson_config['IBM_API_KEY'])
+        authenticator = IAMAuthenticator(watson_config['textospeech_apikey'])
         text_to_speech = TextToSpeechV1(authenticator=authenticator)
-        text_to_speech.set_service_url('https://api.au-syd.text-to-speech.watson.cloud.ibm.com/instances/be845ad2-9c3d-4b57-a046-f3b8f6f3bda2')
+        text_to_speech.set_service_url(watson_config['texttospeech_url'])
         
+        # Clean up previous audio file if exists
+        previous_audio = session.get('audio_filename')
+        if previous_audio and os.path.exists(os.path.join('static/audio', previous_audio)):
+            os.remove(os.path.join('static/audio', previous_audio))
+        
+        # Create a unique filename using timestamp and random string
+        unique_filename = f"dogui_audio_{int(time.time())}_{''.join(random.choices(string.ascii_lowercase + string.digits, k=6))}.wav"
+        output_filename = os.path.join('static/audio', unique_filename)
+
         audio = text_to_speech.synthesize(
             text=response,
             voice=converted_voice_choice,
             accept='audio/wav'
         ).get_result().content
 
-        output_filename = 'static/audio/dogui_audio.wav'
+        if not os.path.exists('static/audio'):
+            os.makedirs('static/audio')
+
         with open(output_filename, 'wb') as f:
             f.write(audio)
+        
+        session['audio_filename'] = unique_filename
 
         return jsonify({
                 'response': response,
