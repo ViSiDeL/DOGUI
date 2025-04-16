@@ -177,7 +177,7 @@ def chatbot():
         
         Response Guidelines:
         - Focus on the Engineering Design Process (Ideation, Simulation, Implementation)
-        - Consider the project context above
+        - Consider the project context above. If a task is given try to stay on task while still answering the users prompts
         - Provide detailed, actionable advice. Guide the user through the project creation process if needed
         - Ask clarifying questions when needed. Try to be clear and concise, get your point across to the user quickly
         - DO NOT RESPOND IN a numerical LIST FORMAT. You are having a conversation

@@ -116,32 +116,50 @@ def project_details(username, project_id):
             port=int(db_config['port'])
         )
         
-        with connection.cursor() as cursor:
+        with connection.cursor(pymysql.cursors.DictCursor) as cursor:
+            # Get project info
             cursor.execute(
-                "SELECT projectname, description, phase, init, created_at, last_edited FROM projects WHERE id = %s AND username = %s",
+                """SELECT p.*, 
+                GROUP_CONCAT(c.context_id, '|||', c.context_text SEPARATOR ';;;') AS contexts_data
+                FROM projects p
+                LEFT JOIN contexts c ON p.ID = c.project_id
+                WHERE p.ID = %s AND p.username = %s
+                GROUP BY p.ID""",
                 (project_id, username)
             )
-            project = cursor.fetchone()
+            project_data = cursor.fetchone()
             
-            if not project:
+            if not project_data:
                 flash('Project not found', 'error')
                 return redirect(url_for('project.projects'))
             
-            #print(project)
+            # Parse contexts
+            contexts = []
+            if project_data['contexts_data']:
+                for item in project_data['contexts_data'].split(';;;'):
+                    context_id, text = item.split('|||')
+                    contexts.append({
+                        'id': int(context_id),
+                        'text': text
+                    })
+            
+            project = {
+                'id': project_data['ID'],
+                'name': project_data['projectName'],
+                'description': project_data['description'],
+                'phase': project_data['phase'],
+                'init': project_data['init'],
+                'created_at': project_data['created_at'],
+                'last_edited': project_data['last_edited'],
+                'contexts': contexts
+            }
             
             return render_template(
                 'projects/project_dashboard.html',
                 user=user,
-                project={
-                    'id': project_id,
-                    'name': project[0],
-                    'description': project[1],
-                    'phase': project[2],
-                    'init': project[3], 
-                    'created_at': project[4],
-                    'last_edited': project[5]
-                }
+                project=project
             )
+    
             
     except Exception as e:
         flash('Error loading project', 'error')
@@ -278,7 +296,7 @@ def add_context(project_id):
     if not user:
         return jsonify({'error': 'Unauthorized'}), 401
     
-    context_text = request.json.get('context')
+    context_text = request.form.get('context')
     if not context_text:
         return jsonify({'error': 'Context text required'}), 400
     
@@ -293,13 +311,26 @@ def add_context(project_id):
         )
         
         with connection.cursor() as cursor:
+            # Verify user owns the project
+            cursor.execute(
+                "SELECT 1 FROM projects WHERE ID = %s AND username = %s",
+                (project_id, user.username)
+            )
+            if not cursor.fetchone():
+                return jsonify({'error': 'Project not found'}), 404
+            
+            # Add context
             cursor.execute(
                 "INSERT INTO contexts (project_id, context_text) VALUES (%s, %s)",
                 (project_id, context_text)
             )
+            context_id = cursor.lastrowid
             connection.commit()
             
-        return jsonify({'success': True, 'message': 'Context added'})
+            return jsonify({
+                'id': context_id,
+                'text': context_text
+            })
         
     except Exception as e:
         print(f"Error adding context: {e}")
@@ -353,6 +384,67 @@ def get_contexts(project_id):
             
     except Exception as e:
         print(f"Error getting contexts: {e}")
+        return jsonify({'error': 'Database error'}), 500
+    finally:
+        if 'connection' in locals():
+            connection.close()
+
+@project_bp.route('/update-context/<int:context_id>', methods=['POST'])
+def update_context(context_id):
+    # Authentication check
+    session_id = session.get('session_id')
+    if not session_id:
+        return jsonify({'error': 'Unauthorized'}), 401
+    
+    user = design_engine.get_user(session_id)
+    if not user:
+        return jsonify({'error': 'Unauthorized'}), 401
+    
+    # Get updated text from JSON request body
+    data = request.get_json()
+    if not data or 'text' not in data:
+        return jsonify({'error': 'Text content required'}), 400
+    
+    new_text = data['text']
+    if not new_text.strip():
+        return jsonify({'error': 'Context text cannot be empty'}), 400
+    
+    db_config = load_db_config()
+    try:
+        connection = pymysql.connect(
+            host=db_config['host'],
+            user=db_config['user'],
+            password=db_config['password'],
+            database=db_config['database'],
+            port=int(db_config['port'])
+        )
+        
+        with connection.cursor() as cursor:
+            # Verify user owns the context (through project ownership)
+            cursor.execute(
+                """SELECT 1 FROM contexts c
+                JOIN projects p ON c.project_id = p.ID
+                WHERE c.context_id = %s AND p.username = %s""",
+                (context_id, user.username)
+            )
+            if not cursor.fetchone():
+                return jsonify({'error': 'Context not found'}), 404
+            
+            # Update context
+            cursor.execute(
+                "UPDATE contexts SET context_text = %s WHERE context_id = %s",
+                (new_text, context_id)
+            )
+            connection.commit()
+            
+            return jsonify({
+                'success': True,
+                'id': context_id,
+                'text': new_text
+            })
+            
+    except Exception as e:
+        print(f"Error updating context: {e}")
         return jsonify({'error': 'Database error'}), 500
     finally:
         if 'connection' in locals():

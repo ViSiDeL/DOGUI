@@ -59,6 +59,25 @@
                 </div>
             </form>
 
+            <div class="context-section">
+                <p style="font-size: 1rem; text-align: left; opacity: 70%;">Project Context:</p>
+                <div class="context-list">
+                    {% for context in project.contexts %}
+                    <div class="context-item" data-context-id="{{ context.id }}">
+                        <div class="context-text">{{ context.text }}</div>
+                        <div class="context-actions">
+                            <button class="btn-edit-context">Edit</button>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                
+                <form id="add-context-form" method="POST" action="/add-context/{{ project.id }}">
+                    <textarea name="context" placeholder="Add new context (e.g., research findings, requirements, constraints)" required></textarea>
+                    <button type="submit">Add Context</button>
+                </form>
+            </div>
+
             <div class="projects-grid">
                 <button onclick="launchAssistant('solution brainstorming')" class="project-card glow project-menuoption">
                     <img src="/static/img/navicons/brain.png" alt="Asset">
@@ -223,6 +242,7 @@
         }
     });
 </script>
+    <script type="module" src="/static/js/context.js"></script>
 
 <script>
     function launchAssistant(contextType) {
