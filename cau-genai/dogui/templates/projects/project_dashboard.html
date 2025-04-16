@@ -60,15 +60,15 @@
             </form>
 
             <div class="projects-grid">
-                <button onclick="window.location.href='#'" class="project-card glow project-menuoption">
+                <button onclick="launchAssistant('solution brainstorming')" class="project-card glow project-menuoption">
                     <img src="/static/img/navicons/brain.png" alt="Asset">
                     <div class="project-desc">Solution Brainstorming</div>
                 </button>
-                <button onclick="window.location.href='#'" class="project-card glow project-menuoption">
+                <button onclick="launchAssistant('market research')" class="project-card glow project-menuoption">
                     <img src="/static/img/navicons/research.png" alt="Project Logo">
                     <div class="project-desc">Market Research</div>
                 </button>
-                <button onclick="window.location.href='/assistant'" class="project-card glow project-menuoption">
+                <button onclick="launchAssistant('')" class="project-card glow project-menuoption">
                     <img src="/static/img/dogui_ai_logo.png">
                     <div class="project-desc">DOGUI Assistant</div>
                 </button>
@@ -115,6 +115,10 @@
                     <img src="/static/img/navicons/cad.png" alt="Project Logo">
                     <div class="project-desc">CAD Assist</div>
                 </button>
+                <button onclick="launchAssistant('sustainability analysis')" class="project-card glow project-menuoption">
+                    <img src="/static/img/navicons/leaf.png">
+                    <div class="project-desc">Sustainability Analysis</div>
+                </button>
             </div>
             <div class="phase-control">
                 <form method="POST" action="/update-project/{{ user.username }}/{{ project.id }}">
@@ -128,11 +132,11 @@
 
         <div id="implementation-content" class="tab-pane {% if project.phase == 'implementation' %}active{% endif %}">
             <div class="projects-grid">
-                <button onclick="window.location.href='/assets'" class="project-card glow project-menuoption">
+                <button onclick="launchAssistant('cost analysis')" class="project-card glow project-menuoption">
                     <img src="/static/img/navicons/money.png" alt="Asset">
                     <div class="project-desc">Cost Analysis</div>
                 </button>
-                <button onclick="window.location.href='/assets/cad-assist'" class="project-card glow project-menuoption">
+                <button onclick="launchAssistant('code assist')" class="project-card glow project-menuoption">
                     <img src="/static/img/navicons/code.png" alt="Project Logo">
                     <div class="project-desc">Code Assist</div>
                 </button>
@@ -218,5 +222,11 @@
             });
         }
     });
+</script>
+
+<script>
+    function launchAssistant(contextType) {
+        window.location.href = `/assistant?project_id={{ project.id }}&context=${contextType}`;
+    }
 </script>
 {% endblock %}
