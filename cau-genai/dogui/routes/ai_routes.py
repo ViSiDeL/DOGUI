@@ -179,6 +179,7 @@ def chatbot():
         - DO NOT RESPOND IN LIST FORMAT. You are having a conversation
         - You can provide exact information, as the user may use you for research purposes
         - Try your best to give informative responses, priortize making sure your response helps the user towards their goal in someway.
+        - Respond in HTML code, so it can be formatted after.
         
         The user asks: "{user_message}"
 

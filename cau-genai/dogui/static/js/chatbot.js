@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ message: message, voice: "English" }) // Voice should match keys in your Python `languages` dictionary
+                body: JSON.stringify({ message: message, voice: "English" }) // Voice should match keys in your Python 'languages' dictionary
             });
 
             const data = await response.json();
@@ -77,7 +77,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 const audio = new Audio(data.audio_url);
                 audio.play();
 
-                // Optional: Add an icon or visual cue
                 const speakerIcon = document.createElement("span");
                 speakerIcon.textContent = " 🔊";
                 typingIndicator.querySelector('.message-content').appendChild(speakerIcon);
