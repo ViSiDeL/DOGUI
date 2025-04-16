@@ -40,7 +40,7 @@
                 <div class="project-details">
                     <input type="text" name="name" value="{{ project.name }}" class="project-name" disabled>
                     <p style="font-size: 1rem; text-align: center; opacity: 70%;">Details:</p>
-                    <textarea name="description" class="project-description" disabled>{{ project.description }}</textarea>
+                    <textarea name="description" class="project-description" disabled>"{{ project.description }}"</textarea>
                     <div class="project-meta">
                         <span>Created: {{ project.created_at.strftime('%b %d, %Y %I:%M %p') }}</span>
                         <span> • </span>

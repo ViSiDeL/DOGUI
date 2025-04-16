@@ -147,7 +147,9 @@ def generate_project_name():
         Generate a concise, professional project name (2-4 words max) based on this description:
         "{description}"
         
-        Respond ONLY with the project name, no additional text or explanations. Project Name:
+        Respond ONLY with the project name, no additional text or explanations.
+        Try to make the name trendy, unique, but still short and descriptive. You can add spaces if necessary.
+        Project Name:
         """
         
         response = chatbot_model.generate_text(prompt=prompt)
