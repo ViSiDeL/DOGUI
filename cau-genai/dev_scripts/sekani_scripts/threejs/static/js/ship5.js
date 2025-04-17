@@ -69,7 +69,7 @@ scene.add(htmlScreen);
 const gltfLoader = new GLTFLoader();
 let shipModel = null;
 
-gltfLoader.load('./models/ship.glb', (gltf) => {
+gltfLoader.load('./models/Modeling.glb', (gltf) => {
     shipModel = gltf.scene;
     shipModel.position.set(0, 0, 0);
     scene.add(shipModel);
