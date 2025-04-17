@@ -17,7 +17,7 @@ conversation_history = []
 # Route to serve your frontend page
 @app.route('/')
 def serve_html():
-    return render_template('cad.html')
+    return render_template('cad1.html')
 
 @app.route('/api/ai/draw-square', methods=['POST'])
 def draw_square():

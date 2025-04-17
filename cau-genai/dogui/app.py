@@ -13,9 +13,9 @@ from routes.ai_routes import ai_bp
 from routes.test_routes import test_bp
 from routes.project_routes import project_bp
 from routes.asset_routes import asset_bp
+from routes.cad_assist.ai_chat_server import cad_bp
 
 # DOGUI CLASS IMPORTS
-from models.engine import DesignEngine
 from engine_instance import design_engine
 
 """
@@ -33,6 +33,7 @@ app.register_blueprint(ai_bp)
 app.register_blueprint(test_bp)
 app.register_blueprint(project_bp)
 app.register_blueprint(asset_bp)
+app.register_blueprint(cad_bp)
 
 """
 ------------------ METHODS/FUNCTIONS ------------------
@@ -53,6 +54,11 @@ app.register_blueprint(asset_bp)
 @app.route('/home')
 def home():
     return render_template('index.html')
+
+# spaceship
+@app.route('/ship')
+def ship():
+    return render_template('/ship/ship.html')
 
 # dashboard
 @app.route('/dashboard')
