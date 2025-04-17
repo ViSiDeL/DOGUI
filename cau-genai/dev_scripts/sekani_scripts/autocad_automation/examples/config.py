@@ -29,3 +29,17 @@ class ProjectConfig:
         with open(filepath, "r") as f:
             data = json.load(f)
         return cls(**data)
+
+    def generate_ai_prompt(self, scope_details):
+        return f"""
+        Project Name: {self.name}
+        Project Type:{self.type}
+        Dimensions: {self.width} x {self.height} {self.unit}
+        
+        Purpose: {scope_details['purpose']}
+        Scope: {scope_details['scope']}
+        Desired Features: {', '.join(scope_details['features'])}
+        Description: {scope_details['description']}
+        
+        Generate a Python script using pyautocad that creates a preliminary model based on these details.
+        """
