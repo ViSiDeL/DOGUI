@@ -14,6 +14,20 @@
     <div class="chat-header">
         <img class="ai-logo" src="/static/img/dogui_ai_logo.png" alt="DOGUI AI Logo">
         <h1>Assistant Chat</h1>
+        <div class="assistant-header">
+            {% if project_context %}
+            <div class="project-context-banner">
+                Assisting with: 
+                <a href="/project/{{ project_context.username }}/{{ project_context.id }}"
+                   class="project-link">
+                    <strong>{{ project_context.name }}</strong>
+                </a>
+                {% if project_context.context_type %}
+                - <em>{{ project_context.context_type|title }}</em>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
     </div>
 
     <!-- chat display area -->

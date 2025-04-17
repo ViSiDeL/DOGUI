@@ -17,17 +17,12 @@
         <div class="step active">
             <h3>Choose CAD Software</h3>
             <div class="options-grid">
-                <form method="" action="">
-                    <input type="hidden" name="asset_type" value="drawing">
-                    <input type="hidden" name="creation_method" value="upload">
-                    <button type="submit" class="option-card">
-                        <div class="option-icon">
-                            <img src="/static/img/navicons/blueprint.png" alt="AutoCAD">
-                        </div>
-                        <div class="option-label">AutoCAD</div>
-                    </button>
-                </form>
-                
+                <button onclick="window.location.href='/cad_assist'" class="option-card">
+                    <div class="option-icon">
+                        <img src="/static/img/navicons/blueprint.png" alt="AutoCAD">
+                    </div>
+                    <div class="option-label">AutoCAD</div>
+                </button>
                 <form method="" action="">
                     <input type="hidden" name="asset_type" value="drawing">
                     <input type="hidden" name="creation_method" value="CAD">
