@@ -376,18 +376,18 @@
             // Insert before the "Add Asset" card
             assetsGrid.insertBefore(assetCard, addAssetBtn);
             
-            // Add event listener to new remove button
-            assetCard.querySelector('.remove-asset-btn').addEventListener('click', function() {
-                if (confirm('Remove this asset from the project?')) {
-                    fetch(`/project/${projectId}/remove-asset/${asset.id}`, {
-                        method: 'DELETE'
-                    }).then(response => {
-                        if (response.ok) {
-                            assetCard.remove();
-                        }
-                    });
-                }
-            });
+            // // Add event listener to new remove button
+            // assetCard.querySelector('.remove-asset-btn').addEventListener('click', function() {
+            //     if (confirm('Remove this asset from the project?')) {
+            //         fetch(`/project/${projectId}/remove-asset/${asset.id}`, {
+            //             method: 'DELETE'
+            //         }).then(response => {
+            //             if (response.ok) {
+            //                 assetCard.remove();
+            //             }
+            //         });
+            //     }
+            // });
         }
     });
 </script>
