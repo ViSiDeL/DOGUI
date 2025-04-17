@@ -161,9 +161,6 @@
                                class="download-btn" title="Download {{ asset.asset_name }}">
                                 <img src="/static/img/navicons/download.png" alt="Download">
                             </a>
-                            <button class="remove-asset-btn" data-asset-id="{{ asset.id }}" title="Remove from project">
-                                <img src="/static/img/navicons/trash.png" alt="Remove">
-                            </button>
                         </div>
                     </div>
                     {% endfor %}
@@ -352,34 +349,32 @@
         
         // Helper function to add new asset to UI
         function addAssetToUI(asset) {
+            console.log(asset)
             const assetsGrid = document.querySelector('.assets-grid');
             const assetCard = document.createElement('div');
             assetCard.className = 'asset-card glow';
             assetCard.innerHTML = `
                 <div class="asset-icon">
-                    ${asset.asset_type === 'image' ? 
-                        `<img src="/static/assets/images/${asset.asset_url}" alt="${asset.asset_name}">` : 
-                        asset.asset_type === 'model' ? 
+                    ${asset.type === 'image' ? 
+                        `<img src="/static/assets/images/${asset.filename}" alt="${asset.name}">` : 
+                        asset.type === 'model' ? 
                         `<img src="/static/img/navicons/cube.png" alt="3D Model">` :
                         `<img src="/static/img/navicons/drawing.png" alt="CAD Drawing">`}
                 </div>
                 <div class="asset-info">
-                    <h3>${asset.asset_name}</h3>
-                    <span class="asset-type ${asset.asset_type}">${asset.asset_type.charAt(0).toUpperCase() + asset.asset_type.slice(1)}</span>
+                    <h3>${asset.name}</h3>
+                    <span class="asset-type ${asset.type}">${asset.type.charAt(0).toUpperCase() + asset.type.slice(1)}</span>
                 </div>
                 <div class="asset-actions">
-                    <a href="/asset/download/${asset.asset_type}/${asset.asset_url}" 
-                    class="download-btn" title="Download ${asset.asset_name}">
+                    <a href="/asset/download/${asset.type}/${asset.filename}" 
+                    class="download-btn" title="Download ${asset.name}">
                         <img src="/static/img/navicons/download.png" alt="Download">
                     </a>
-                    <button class="remove-asset-btn" data-asset-id="${asset.id}" title="Remove from project">
-                        <img src="/static/img/navicons/trash.png" alt="Remove">
-                    </button>
                 </div>
             `;
             
             // Insert before the "Add Asset" card
-            assetsGrid.insertBefore(assetCard, addAssetBtn.parentNode);
+            assetsGrid.insertBefore(assetCard, addAssetBtn);
             
             // Add event listener to new remove button
             assetCard.querySelector('.remove-asset-btn').addEventListener('click', function() {
