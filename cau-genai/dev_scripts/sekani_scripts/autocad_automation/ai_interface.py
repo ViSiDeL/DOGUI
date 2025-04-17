@@ -4,7 +4,10 @@ from ibm_watsonx_ai import Credentials
 from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
 import os
 from datetime import datetime
+from scripts.generated_script import save_script_to_file  # Importing from generated_script
+import re
 
+# Load Watson configuration
 def load_watson_config():
     with open('config/watson_info.json') as f:
         return json.load(f)
@@ -22,50 +25,83 @@ model = ModelInference(
     project_id=watson_config["project_id"],
     params={
         "decoding_method": "greedy",
-        "max_new_tokens": 1500,   # Increase max tokens to allow more output
+        "max_new_tokens": 1500,
         "min_new_tokens": 100,
-        # "temperature": 0.3,       # Lower for more factual/controlled output
         "repetition_penalty": 1.1
     }
 )
+
 def clean_response(raw_code):
-    for marker in ['```python', '```', '***INSTRUCTION', '***TASK', '***RESPONSE']:
-        raw_code = raw_code.replace(marker, '')
+    # Remove any unwanted markers like instructions and response labels
+    raw_code = raw_code.replace('### Instruction:', '')  # Remove instructions
+    raw_code = raw_code.replace('### Response:', '')  # Remove response labels
+    raw_code = raw_code.strip()  # Clean up leading and trailing spaces
+
+    # Optionally, remove other unwanted parts like extra symbols or irrelevant text
+    raw_code = raw_code.replace('***INSTRUCTION', '')  # Remove any instructions
+    raw_code = raw_code.replace('***TASK', '')  # Remove any tasks
+
+    # Make sure it's clear and ready for display (cleaning any remaining stray characters)
+    raw_code = raw_code.replace('\n', ' ').strip()  # Flatten any newlines for better readability
 
     return raw_code
 
-def save_script_to_file(script_code: str, project_name="dogui_script"):
-    directory = "C:\\Users\\sekani_b\\Desktop\\GitHub\\Projects\\IBM GEN AI\\CAU-GenAI\\cau-genai\\dev_scripts\\sekani_scripts\\autocad_automation\\scripts"
-    os.makedirs(directory, exist_ok=True)
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    filename = f"{project_name}_{timestamp}.py"
-    filepath = os.path.join(directory, filename)
 
-    with open(filepath, "w") as file:
-        file.write(script_code)
+# Function to start an interactive conversation with the AI
+# def call_ai_model(prompt: str, history: list = None) -> str:
+#     history = history or []
 
-    print(f"✅ DOGUI.AI-generated script saved to: {filepath}")
+#     # Conversation-based prompt flow to guide design
+#     full_prompt = f"""
+#     You are Dogui CAD Assistant, an AI that helps engineers and students refine and design 2D and 3D CAD drawings.
 
+#     Based on the users description ask the user questions and use the answers to help guide them through the design process.
 
+#     The user will describe what they want to design, and you should ask the necessary questions to gather relevant details.
+#     You can also give feedback on their design and ask for clarifications.
 
-def call_ai_model(prompt: str, history: list = None) -> str:
-    full_prompt = f"""
-    You are Dogui CAD Assistant, an AI that helps engineers and students generate 2D CAD drawings using the pyautocad library.
-    Your task is to take the details and information provided by the user and return the pyautocad commands needed to generate that CAD design.
+#     Here is the user's design description: {prompt}
 
-    Please create the pyautocad commands needed to generate the CAD drawing using the provided description. Here is the provided description: {prompt}
+#     Please engage the user interactively and guide them through the design process. Do not include "***RESPONSE" OR "***INSTRUCTIONS" in your response:
 
-    Your response should be outputted like: "Dogui: " and should not use any github markup! . Your response: 
-    """
-    # print("🧠 Prompt being sent to model:\n", full_prompt)
+#     Your response: " "
+#     """
+
+#     history.append(full_prompt + "\n")
+
+#     try:
+#         response = model.generate_text(full_prompt)
+#         clean = clean_response(response)
+#         history.append(response + "\n")
+#         document_prompt(history)  # Document the conversation history for later reference
+#         return clean  # Return the interactive response (feedback or question)
+#     except Exception as e:
+#         print(f"❌ Error generating response: {e}")
+#         return "# AI generation failed. Please try again."
+
+def call_ai_model(history: list) -> str:
+    # Join the conversation history into a single string for the AI model
+    full_prompt = "\n".join(history)  # Use the entire conversation history
+    
+    full_prompt += "\nHow can Dogui CAD assist help?"  # Optional: AI asks first question for new conversations
+    
     try:
         response = model.generate_text(full_prompt)
         clean = clean_response(response)
-        save_script_to_file(clean)
         return clean
     except Exception as e:
         print(f"❌ Error generating response: {e}")
         return "# AI generation failed. Please try again."
+
+
+def document_prompt(history: list):
+    directory = os.path.join(os.path.dirname(__file__), 'templates', 'documents')
+    os.makedirs(directory, exist_ok=True)
+    filename = "documentation.txt"
+    filepath = os.path.join(directory, filename)
+    with open(filepath, 'w') as file:
+        file.write("".join(history))
+        print(f"{filename} saved to {filepath}.")
 
 
 '''

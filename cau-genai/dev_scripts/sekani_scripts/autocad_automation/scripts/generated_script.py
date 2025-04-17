@@ -1,13 +1,34 @@
-from pyautocad import Autocad, APoint
-import pythoncom
 import os
 from datetime import datetime
+from pyautocad import Autocad, APoint
+import pythoncom
+
+import pythoncom
+from pyautocad import Autocad
 
 def initialize_autocad():
-    pythoncom.CoInitialize()
-    acad = Autocad(create_if_not_exists=True)
-    acad.visible = True
-    return acad
+    try:
+        # Initialize COM
+        pythoncom.CoInitializeEx(pythoncom.COINIT_MULTITHREADED)
+
+        # Initialize AutoCAD COM object
+        acad = Autocad(create_if_not_exists=True)
+
+        # Make sure AutoCAD is visible
+        acad.visible = True
+
+        # Create a new document (This avoids using ActiveDocument directly)
+        acad.Application.Documents.Add()  # Add a new drawing
+        acad.model = acad.ActiveDocument.ModelSpace  # Access the model space of the active document
+
+        # Return the AutoCAD instance
+        return acad
+    except Exception as e:
+        print(f"❌ Error initializing AutoCAD: {str(e)}")
+        return None
+
+def draw(acad):
+    pass
 
 def draw_square(acad, side_length=100):
     p1 = APoint(0, 0)
@@ -23,7 +44,7 @@ def draw_square(acad, side_length=100):
     acad.model.AddText("2D Square", APoint(side_length/4, side_length/2), 5)
 
 def save_drawing(acad, project_name="2D_Square"):
-    directory = "C:\\Users\\sekani_b\\Desktop\\GitHub\\Projects\\IBM GEN AI\\CAU-GenAI\\cau-genai\\dev_scripts\\sekani_scripts\\autocad_automation\\assets"
+    directory = os.path.join(os.path.dirname(__file__), 'assets')
     os.makedirs(directory, exist_ok=True)
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     filename = f"{project_name}_{timestamp}.dwg"
@@ -31,7 +52,18 @@ def save_drawing(acad, project_name="2D_Square"):
     acad.doc.SaveAs(filepath)
     print(f"✅ Saved: {filepath}")
 
+def save_script_to_file(script_code: str, project_name="dogui_script"):
+    directory = os.path.join(os.path.dirname(__file__), 'scripts')
+    os.makedirs(directory, exist_ok=True)
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    filename = f"{project_name}_{timestamp}.py"
+    filepath = os.path.join(directory, filename)
+    with open(filepath, "w") as file:
+        file.write(script_code)
+
+    print(f"✅ DOGUI.AI-generated script saved to: {filepath}")
+
 if __name__ == "__main__":
     acad = initialize_autocad()
     draw_square(acad)
-    save_drawing(acad)
+    # save_drawing(acad)
