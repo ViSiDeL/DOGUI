@@ -327,7 +327,76 @@ def generate():
     
     except Exception as e:
         return jsonify({'error': str(e), 'status': 'error'}), 500
+
+@asset_bp.route('/project/<int:project_id>/add-asset/<int:asset_id>', methods=['POST'])
+def add_asset_to_project(project_id, asset_id):
+    session_id = session.get('session_id')
+    if not session_id:
+        return jsonify({'error': 'Unauthorized'}), 401
+    user = design_engine.get_user(session_id)
+    if not user:
+        return jsonify({'error': 'Unauthorized'}), 401
     
+    db_config = load_db_config()
+    try:
+        connection = pymysql.connect(
+            host=db_config['host'],
+            user=db_config['user'],
+            password=db_config['password'],
+            database=db_config['database'],
+            port=int(db_config['port'])
+        )
+        
+        with connection.cursor() as cursor:
+            # verify user ownership
+            cursor.execute(
+                """SELECT 1 FROM projects p
+                WHERE p.ID = %s AND p.username = %s""",
+                (project_id, user.username)
+            )
+            if not cursor.fetchone():
+                return jsonify({'error': 'Project not found'}), 404
+            
+            # verify user access
+            cursor.execute(
+                """SELECT 1 FROM assets 
+                WHERE id = %s AND (user_id = %s OR user_id IS NULL)""",
+                (asset_id, user.user_id)
+            )
+            if not cursor.fetchone():
+                return jsonify({'error': 'Asset not found or unauthorized'}), 404
+            
+            # add association
+            cursor.execute(
+                "INSERT INTO project_assets (project_id, asset_id) VALUES (%s, %s)",
+                (project_id, asset_id)
+            )
+            connection.commit()
+            
+            # get asset details
+            cursor.execute(
+                """SELECT a.id, a.asset_url, a.asset_name, a.asset_type 
+                FROM assets a WHERE a.id = %s""",
+                (asset_id,)
+            )
+            asset = cursor.fetchone()
+            
+            return jsonify({
+                'id': asset[0],
+                'filename': asset[1],
+                'name': asset[2],
+                'type': asset[3]
+            })
+            
+    except pymysql.err.IntegrityError:
+        return jsonify({'error': 'Asset already in project'}), 400
+    except Exception as e:
+        print(f"Error adding asset to project: {e}")
+        return jsonify({'error': 'Database error'}), 500
+    finally:
+        if 'connection' in locals():
+            connection.close()
+
 @asset_bp.route('/cad-assist')
 def cad_assist():
     session_id = session.get('session_id')

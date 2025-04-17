@@ -117,7 +117,7 @@ def project_details(username, project_id):
         )
         
         with connection.cursor(pymysql.cursors.DictCursor) as cursor:
-            # Get project info
+            # project info
             cursor.execute(
                 """SELECT p.*, 
                 GROUP_CONCAT(c.context_id, '|||', c.context_text SEPARATOR ';;;') AS contexts_data
@@ -133,7 +133,7 @@ def project_details(username, project_id):
                 flash('Project not found', 'error')
                 return redirect(url_for('project.projects'))
             
-            # Parse contexts
+            # parse contexts
             contexts = []
             if project_data['contexts_data']:
                 for item in project_data['contexts_data'].split(';;;'):
@@ -142,7 +142,30 @@ def project_details(username, project_id):
                         'id': int(context_id),
                         'text': text
                     })
+
+            # project assets
+            cursor.execute(
+                """SELECT a.id, a.asset_url, a.asset_name, a.asset_type 
+                FROM assets a
+                JOIN project_assets pa ON a.id = pa.asset_id
+                WHERE pa.project_id = %s""",
+                (project_id,)
+            )
+            project_assets = cursor.fetchall()
             
+            # other available assets (unused user assets, public assets)
+            cursor.execute(
+                """SELECT a.id, a.asset_url, a.asset_name, a.asset_type 
+                FROM assets a
+                WHERE a.id NOT IN (
+                    SELECT asset_id FROM project_assets WHERE project_id = %s
+                )
+                AND (a.user_id = %s OR a.user_id IS NULL)""",
+                (project_id, user.user_id)
+            )
+            available_assets = cursor.fetchall()
+
+            # build project object (TODO: store in class)
             project = {
                 'id': project_data['ID'],
                 'name': project_data['projectName'],
@@ -151,7 +174,9 @@ def project_details(username, project_id):
                 'init': project_data['init'],
                 'created_at': project_data['created_at'],
                 'last_edited': project_data['last_edited'],
-                'contexts': contexts
+                'contexts': contexts,
+                'assets': project_assets,
+                'available_assets': available_assets
             }
             
             return render_template(
