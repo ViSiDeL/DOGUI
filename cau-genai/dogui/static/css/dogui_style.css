@@ -23,7 +23,11 @@
 body, html {
     height: 100%;
     width: 100%;
-    overflow: hidden;
+    overflow: hidden; /* Prevent scrolling */
+}
+
+a:visited {
+    text-decoration: none;
 }
 
 .content {
@@ -36,7 +40,7 @@ body, html {
     background-size: cover; 
     justify-content: center; 
     align-items: center; 
-    overflow: auto;
+    overflow: hidden;
     display: flex;
 }
 
@@ -107,26 +111,27 @@ body, html {
     padding: 30px; 
     margin: 20px; 
     color: var(--dogui-glow); 
-    min-width: 400px; /* Limit width for better readability */
-    max-width: 100%;
+    min-width: 400px;
+    max-width: 70%;
     text-align: center;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
-    z-index: 2;
-    position: relative;
+    z-index: 2; 
+    position: relative; 
+    margin-top: 2rem;
+    max-height: 90%;
 }
 
 h1 {
-    font-size: rem;
+    font-size: 2rem;
     margin-bottom: 20px;
 }
-
-
 
 
 /* forms / inputs */
 
 input[type="text"],
-input[type="password"] {
+input[type="password"],
+textarea {
     width: 100%; 
     padding: 12px 20px; 
     border: 2px solid #ccc; 
@@ -138,7 +143,8 @@ input[type="password"] {
 }
 
 input[type="text"]:focus,
-input[type="password"]:focus {
+input[type="password"]:focus,
+textarea:focus {
     border-color: var(--dogui-glow); 
     box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
     outline: none; 
@@ -152,18 +158,32 @@ button {
     border-radius: 8px; 
     font-size: 1rem; 
     cursor: pointer; 
-    transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth transitions */
+    transition: all 0.3s ease;
     width: 100%; 
 }
 
 button:hover {
-    background-color: var(--dogui-glow); /* Darken green on hover */
-    transform: scale(1.05); /* Slightly enlarge button */
-    color: black;
+    transform: scale(1.05);
+    box-shadow: 0 5px 15px rgba(62, 148, 126, 0.3);
+    border-color: var(--dogui-glow);
 }
 
 button:active {
     transform: scale(1); 
+}
+
+.dogui-option {
+    background-color: rgba(0, 0, 0, 0.7);
+    width: 20rem;
+    border-radius: 10px;
+    padding: 20px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid var(--dogui-green);
+}
+
+.dogui-option:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(62, 148, 126, 0.3);
 }
 
 /* other */
@@ -193,9 +213,122 @@ button:active {
         filter: none;
         overflow: hidden;
     }
-    100% {
+    99% {
         width: 100%;
         filter: drop-shadow(rgba(21, 159, 124, 0.70) 0px 0px 1.54087px) drop-shadow(rgba(53, 159, 132, 0.75) 0px 0px 12.7043px) drop-shadow(rgba(53, 159, 132, 0.44) 0px 0px 38.113px);
         overflow: visible;
     }
+    100% {
+        width: fit-content;
+        filter: drop-shadow(rgba(21, 159, 124, 0.70) 0px 0px 1.54087px) drop-shadow(rgba(53, 159, 132, 0.75) 0px 0px 12.7043px) drop-shadow(rgba(53, 159, 132, 0.44) 0px 0px 38.113px);
+        overflow: visible;
+    }
+}
+
+/* scrollbar */
+.page-content::-webkit-scrollbar {
+    width: 12px;
+}
+.page-content::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.3); 
+    border-radius: 10px;
+}
+.page-content::-webkit-scrollbar-thumb {
+    background: var(--dogui-green);
+    border-radius: 10px;
+    border: 2px solid rgba(0, 0, 0, 0.3);
+    box-shadow: 0 0 10px var(--dogui-glow);
+    transition: background 0.3s ease;
+}
+.page-content::-webkit-scrollbar-thumb:hover {
+    background: var(--dogui-glow);
+    box-shadow: 0 0 15px var(--dogui-glow);
+}
+.page-content {
+    scrollbar-width: thin;
+    scrollbar-color: var(--dogui-green) rgba(0, 0, 0, 0.3);
+}
+
+/* Project Header */
+.project-header {
+    position: absolute;
+    top: 3rem;
+    left: 2rem;
+    z-index: 10;
+}
+
+.project-header h1 {
+    font-size: 1.8rem;
+    color: var(--dogui-glow);
+    filter: drop-shadow(rgba(21, 159, 124, 0.95) 0px 0px 2.54087px) 
+            drop-shadow(rgba(53, 159, 132, 0.75) 0px 0px 12.7043px) 
+            drop-shadow(rgba(53, 159, 132, 0.44) 0px 0px 38.113px);
+}
+
+/* Phase Tabs */
+.phase-tabs {
+    display: flex;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--dogui-green);
+}
+
+.tab-button {
+    padding: 10px 20px;
+    background: none;
+    border: none;
+    color: var(--dogui-green);
+    font-size: 1.2rem;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.tab-button:hover {
+    color: var(--dogui-glow);
+}
+
+.tab-button.active {
+    color: var(--dogui-glow);
+    border-bottom: 3px solid var(--dogui-glow);
+}
+
+/* Tab Content */
+.tab-content {
+    padding: 20px;
+}
+
+.tab-pane {
+    display: none;
+}
+
+.tab-pane.active {
+    display: block;
+}
+
+/* Ideation Form */
+#ideation-form textarea {
+    width: 100%;
+    height: 200px;
+    padding: 15px;
+    margin-top: 1rem;
+    border: 1px solid var(--dogui-green);
+    border-radius: 5px;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    font-size: 1rem;
+    margin-bottom: 15px;
+    resize: vertical;
+}
+
+#ideation-form button {
+    width: auto;
+    padding: 10px 30px;
+}
+
+/* Under Construction */
+.under-construction {
+    text-align: center;
+    padding: 50px;
+    color: var(--dogui-glow);
+    font-size: 1.5rem;
 }

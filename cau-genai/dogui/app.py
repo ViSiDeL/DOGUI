@@ -3,7 +3,7 @@ IMPORTS
 """
 
 
-from flask import Flask, render_template, send_from_directory, session, redirect, url_for
+from flask import Flask, request, render_template, send_from_directory, session, redirect, url_for
 import os
 import random
 
@@ -12,9 +12,9 @@ from routes.user_routes import user_bp
 from routes.ai_routes import ai_bp
 from routes.test_routes import test_bp
 from routes.project_routes import project_bp
+from routes.asset_routes import asset_bp
 
 # DOGUI CLASS IMPORTS
-from models.engine import DesignEngine
 from engine_instance import design_engine
 
 """
@@ -25,11 +25,13 @@ app = Flask(__name__)
 
 # creating secret key for session management
 app.config['SECRET_KEY'] = os.urandom(24)
+
 # register blueprints for other routes
 app.register_blueprint(user_bp)
 app.register_blueprint(ai_bp)
 app.register_blueprint(test_bp)
 app.register_blueprint(project_bp)
+app.register_blueprint(asset_bp)
 
 """
 ------------------ METHODS/FUNCTIONS ------------------
@@ -58,7 +60,7 @@ def dashboard():
     if session_id:
         user = design_engine.get_user(session_id)
         if user:
-            return render_template('design/dashboard.html', user=user)
+            return render_template('dashboard.html', user=user)
     
     # redirect to login if no active session
     return redirect(url_for('user.login'))
