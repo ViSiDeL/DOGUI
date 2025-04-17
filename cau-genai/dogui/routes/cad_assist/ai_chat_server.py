@@ -1,25 +1,22 @@
-from flask import Flask, request, jsonify, render_template
+from flask import Blueprint, request, jsonify, render_template
 from flask_cors import CORS
-from ai_interface import call_ai_model, clean_response  # Importing from ai_interface
+from routes.cad_assist.ai_interface import call_ai_model, clean_response  # Importing from ai_interface
 import os
-import scripts.generated_script as script  # Importing generated_script
+import routes.cad_assist.scripts.generated_script as script  # Importing generated_script
 
-# Point to the templates/ directory where your HTML file is stored
-base_dir = os.path.dirname(os.path.abspath(__file__))
-template_dir = os.path.join(base_dir, 'templates')
 
-app = Flask(__name__, template_folder=template_dir)
-CORS(app, resources={r"/api/*": {"origins": "*"}})
+cad_bp = Blueprint('cad', __name__)
+CORS(cad_bp, resources={r"/api/*": {"origins": "*"}})
 
 # Store conversation history globally
 conversation_history = []
 
 # Route to serve your frontend page
-@app.route('/')
+@cad_bp.route('/cad_assist')
 def serve_html():
-    return render_template('cad1.html')
+    return render_template('/cad_assist/cad.html')
 
-@app.route('/api/ai/draw-square', methods=['POST'])
+@cad_bp.route('/api/ai/draw-square', methods=['POST'])
 def draw_square():
     try:
         instance = script.initialize_autocad()
@@ -36,7 +33,7 @@ def draw_square():
             "message": f"❌ Failed to generate CAD design: {str(e)}"
         }), 500
 
-@app.route('/api/ai/save-script', methods=['POST'])
+@cad_bp.route('/api/ai/save-script', methods=['POST'])
 def save_script():
     try:
         return jsonify({
@@ -50,7 +47,7 @@ def save_script():
         }), 500
 
 
-@app.route('/api/ai/init-cad', methods=['POST'])
+@cad_bp.route('/api/ai/init-cad', methods=['POST'])
 def initialize():
     try:
         acad = script.initialize_autocad()
@@ -69,7 +66,7 @@ def initialize():
             "message": f"❌ Failed to initialize CAD: {str(e)}"
         }), 500
 
-@app.route('/api/ai/run-simulation', methods=['POST'])
+@cad_bp.route('/api/ai/run-simulation', methods=['POST'])
 def run_simulation():
     try:
         # Analyze the uploaded CAD file or the current drawing
@@ -88,7 +85,7 @@ def run_simulation():
         }), 500
 
 # API route for chatting with the AI
-@app.route('/api/ai/chat', methods=['POST'])
+@cad_bp.route('/api/ai/chat', methods=['POST'])
 def chat():
     global conversation_history  # Use global conversation history
 
@@ -122,8 +119,3 @@ def simulate_cad_design():
     # Logic for analyzing CAD design or DWG file can be added here
     # This could involve checking for certain dimensions, patterns, or shapes
     return "The wall dimensions look correct. However, the door placement could be improved for better accessibility."
-
-if __name__ == "__main__":
-    app.run(debug=True, port=5000)
-
-
