@@ -36,9 +36,9 @@ function addContextEventListeners(item) {
         editContext(item);
     });
     
-    item.querySelector('.btn-delete-context').addEventListener('click', () => {
-        deleteContext(item);
-    });
+    // item.querySelector('.btn-delete-context').addEventListener('click', () => {
+    //     deleteContext(item);
+    // });
 }
 
 

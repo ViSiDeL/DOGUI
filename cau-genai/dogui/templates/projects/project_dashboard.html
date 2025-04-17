@@ -4,6 +4,7 @@
 
 {% block css %}
     <link rel="stylesheet" href="/static/css/engineering.css">
+    <link rel="stylesheet" href="/static/css/assets.css">
 {% endblock %}
 
 {% block nav %}
@@ -126,10 +127,6 @@
                         <div class="project-desc">Create 3D Model</div>
                     </button>
                 </form>
-                <button onclick="window.location.href='/assets'" class="project-card glow project-menuoption">
-                    <img src="/static/img/navicons/upload.png" alt="Asset">
-                    <div class="project-desc">Add Asset</div>
-                </button>
                 <button onclick="window.location.href='/assets/cad-assist'" class="project-card glow project-menuoption">
                     <img src="/static/img/navicons/cad.png" alt="Project Logo">
                     <div class="project-desc">CAD Assist</div>
@@ -139,6 +136,61 @@
                     <div class="project-desc">Sustainability Analysis</div>
                 </button>
             </div>
+
+            <div class="project-assets-section">
+                <p style="font-size: 1rem; text-align: left; opacity: 70%;">Project Assets</p>
+                
+                <div class="assets-grid">
+                    {% for asset in project.assets %}
+                    <div class="asset-card glow">
+                        <div class="asset-icon">
+                            {% if asset.asset_type == 'image' %}
+                                <img src="/static/assets/images/{{ asset.asset_url }}" alt="{{ asset.asset_name }}">
+                            {% elif asset.asset_type == 'model' %}
+                                <img src="/static/img/navicons/cube.png" alt="3D Model">
+                            {% else %}
+                                <img src="/static/img/navicons/drawing.png" alt="CAD Drawing">
+                            {% endif %}
+                        </div>
+                        <div class="asset-info">
+                            <h3>{{ asset.asset_name }}</h3>
+                            <span class="asset-type {{ asset.asset_type }}">{{ asset.asset_type|capitalize }}</span>
+                        </div>
+                        <div class="asset-actions">
+                            <a href="{{ url_for('asset.download_asset', asset_type=asset.asset_type, filename=asset.asset_url) }}" 
+                               class="download-btn" title="Download {{ asset.asset_name }}">
+                                <img src="/static/img/navicons/download.png" alt="Download">
+                            </a>
+                            <button class="remove-asset-btn" data-asset-id="{{ asset.id }}" title="Remove from project">
+                                <img src="/static/img/navicons/trash.png" alt="Remove">
+                            </button>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    
+                    <div class="asset-card add-asset glow" id="add-asset-btn">
+                        <div class="asset-icon">
+                            <img src="/static/img/navicons/upload.png" alt="Add Asset">
+                        </div>
+                        <div class="asset-info">
+                            <h3>Add Asset to Project</h3>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- asset selection dropdown -->
+                <div class="asset-selector" id="asset-selector" style="display: none;">
+                    <select id="available-assets">
+                        <option value="">Select an asset to add...</option>
+                        {% for asset in project.available_assets %}
+                        <option value="{{ asset.id }}">{{ asset.asset_name }} ({{ asset.asset_type }})</option>
+                        {% endfor %}
+                    </select>
+                    <button id="confirm-add-asset">Add Selected Asset</button>
+                    <button id="cancel-add-asset">Cancel</button>
+                </div>
+            </div>
+
             <div class="phase-control">
                 <form method="POST" action="/update-project/{{ user.username }}/{{ project.id }}">
                     <input type="hidden" name="phase" value="simulation">
@@ -242,11 +294,106 @@
         }
     });
 </script>
-    <script type="module" src="/static/js/context.js"></script>
+<script type="module" src="/static/js/context.js"></script>
+
 
 <script>
     function launchAssistant(contextType) {
         window.location.href = `/assistant?project_id={{ project.id }}&context=${contextType}`;
     }
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const projectId = parseInt("{{ project.id }}");
+        const addAssetBtn = document.getElementById('add-asset-btn');
+        const assetSelector = document.getElementById('asset-selector');
+        const availableAssets = document.getElementById('available-assets');
+        const confirmAddBtn = document.getElementById('confirm-add-asset');
+        const cancelAddBtn = document.getElementById('cancel-add-asset');
+        
+        // Toggle asset selector
+        addAssetBtn.addEventListener('click', function() {
+            assetSelector.style.display = assetSelector.style.display === 'none' ? 'block' : 'none';
+        });
+        
+        cancelAddBtn.addEventListener('click', function() {
+            assetSelector.style.display = 'none';
+            availableAssets.value = '';
+        });
+        
+        // Add asset to project
+        confirmAddBtn.addEventListener('click', async function() {
+            const assetId = availableAssets.value;
+            if (!assetId) return;
+            
+            try {
+                const response = await fetch(`/assets/project/${projectId}/add-asset/${assetId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    const newAsset = await response.json();
+                    addAssetToUI(newAsset);
+                    assetSelector.style.display = 'none';
+                    availableAssets.value = '';
+                } else {
+                    alert('Error adding asset');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Failed to add asset');
+            }
+        });
+        
+        
+        // Helper function to add new asset to UI
+        function addAssetToUI(asset) {
+            const assetsGrid = document.querySelector('.assets-grid');
+            const assetCard = document.createElement('div');
+            assetCard.className = 'asset-card glow';
+            assetCard.innerHTML = `
+                <div class="asset-icon">
+                    ${asset.asset_type === 'image' ? 
+                        `<img src="/static/assets/images/${asset.asset_url}" alt="${asset.asset_name}">` : 
+                        asset.asset_type === 'model' ? 
+                        `<img src="/static/img/navicons/cube.png" alt="3D Model">` :
+                        `<img src="/static/img/navicons/drawing.png" alt="CAD Drawing">`}
+                </div>
+                <div class="asset-info">
+                    <h3>${asset.asset_name}</h3>
+                    <span class="asset-type ${asset.asset_type}">${asset.asset_type.charAt(0).toUpperCase() + asset.asset_type.slice(1)}</span>
+                </div>
+                <div class="asset-actions">
+                    <a href="/asset/download/${asset.asset_type}/${asset.asset_url}" 
+                    class="download-btn" title="Download ${asset.asset_name}">
+                        <img src="/static/img/navicons/download.png" alt="Download">
+                    </a>
+                    <button class="remove-asset-btn" data-asset-id="${asset.id}" title="Remove from project">
+                        <img src="/static/img/navicons/trash.png" alt="Remove">
+                    </button>
+                </div>
+            `;
+            
+            // Insert before the "Add Asset" card
+            assetsGrid.insertBefore(assetCard, addAssetBtn.parentNode);
+            
+            // Add event listener to new remove button
+            assetCard.querySelector('.remove-asset-btn').addEventListener('click', function() {
+                if (confirm('Remove this asset from the project?')) {
+                    fetch(`/project/${projectId}/remove-asset/${asset.id}`, {
+                        method: 'DELETE'
+                    }).then(response => {
+                        if (response.ok) {
+                            assetCard.remove();
+                        }
+                    });
+                }
+            });
+        }
+    });
 </script>
 {% endblock %}
