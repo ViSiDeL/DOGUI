@@ -15,7 +15,6 @@ from routes.project_routes import project_bp
 from routes.asset_routes import asset_bp
 
 # DOGUI CLASS IMPORTS
-from models.engine import DesignEngine
 from engine_instance import design_engine
 
 """

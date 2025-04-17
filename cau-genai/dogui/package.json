@@ -10,6 +10,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@types/three": "^0.175.0",
     "three": "^0.174.0"
   }
 }
