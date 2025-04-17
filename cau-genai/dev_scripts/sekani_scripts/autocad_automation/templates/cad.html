@@ -49,6 +49,77 @@
       margin-right: 1em;
       padding: 0.5em 1em;
     }
+
+        /* Styling for the overall container */
+    #splitScreen {
+        display: flex;
+        justify-content: space-between;
+        gap: 2%;
+        margin-top: 20px;
+    }
+
+    /* AutoCAD Viewer */
+    .viewer-container {
+        width: 48%;
+        background-color: #f1f1f1;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        padding: 10px;
+        text-align: center;
+        height: 500px; /* Fixed height for AutoCAD viewer */
+        overflow: hidden;
+    }
+
+    .viewer-container img {
+        max-width: 100%; /* Ensure image scales correctly */
+        max-height: 100%;
+        object-fit: contain;
+    }
+
+    /* Chatbox container */
+    #chatBoxContainer {
+        width: 48%;
+        background-color: #f1f1f1;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        padding: 10px;
+        height: 500px; /* Fixed height for chat */
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    /* Styling for the file preview section */
+    .file-preview-container {
+        margin-top: 20px;
+        padding: 10px;
+        background-color: #f9f9f9;
+        border-radius: 8px;
+        border: 1px solid #ddd;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        max-width: 100%; /* Ensure it doesn't overflow */
+    }
+
+    /* Ensure image preview is constrained in size */
+    #filePreview img {
+        max-width: 100%;
+        max-height: 400px; /* Set max height for the image */
+        object-fit: contain; /* Ensure image fits within the container without distortion */
+        margin-top: 10px; /* Add margin between text and image */
+    }
+
+    /* Styling for uploaded file label */
+    #filePreview p {
+        font-size: 16px;
+        color: #333;
+        text-align: center;
+        margin-top: 10px;
+    }
+
+
   </style>
 </head>
 <body>
@@ -64,7 +135,7 @@
 
   <div id="ideation" class="tab-content active">
     <h2>CAD Ideation</h2>
-    <textarea id="chatBox" placeholder="Conversation with AI model..."></textarea><br>
+    <textarea id="chatBox" placeholder="Conversation with AI model..." readonly></textarea><br>
     <div style="margin-top: 1em;">
       <textarea id="userInput" placeholder="Describe your design..." rows="3" style="width: 90%; font-size: 16px; padding: 10px;"></textarea>
     </div>
@@ -72,27 +143,160 @@
       <button onclick="sendPrompt()">Send</button>
     </div>
     <br><br>
-    <button onclick="generateDesign()">Generate CAD Design</button>
-    <button onclick="modifyDesign()">Modify Existing Design</button>
-    <button onclick="restartSession()">Restart Session</button>
-    <button onclick="endSession()">End Without Saving</button>
-    <button onclick="saveSession()">Save Session</button>
-    <button onclick="proceedToSimulation()">Proceed to Simulation</button>
+    <div style="margin-top: 2em;">
+      <button onclick="initCad()">Initialize CAD Session</button>
+    </div>
   </div>
 
   <div id="simulation" class="tab-content">
-    <h2>Simulation (Coming Soon)</h2>
-    <p>Simulation tools and results will appear here.</p>
+    <h2>Simulation</h2>
+    <p>Upload your CAD design or image for simulation:</p>
+    
+    <!-- File Upload -->
+    <input type="file" id="cadFile" accept=".dwg,.dxf,.jpg,.jpeg,.png" onchange="handleFileUpload(event)">
+    <button onclick="runSimulation()">Run Simulation</button>
+
+    <!-- Display Area for the CAD file or image -->
+    <div id="filePreviewArea" class="file-preview-container">
+        <p><b>Uploaded Design:</b></p>
+        <div id="filePreview"></div>
+        <button id="saveAssetButton" style="display:none;" onclick="saveAsset()">Save Asset</button> <!-- Save Asset Button -->
+    </div>
+
+    <!-- AutoCAD Viewer and Chatbox -->
+    <div id="splitScreen">
+        <div id="cadViewer" class="viewer-container">
+            <p><b>AutoCAD Viewer:</b></p>
+            <!-- Placeholder for AutoCAD preview (could integrate later for live AutoCAD rendering) -->
+            <div id="filePreview" class="file-preview-container"></div>
+        </div>
+
+        <div id="chatBoxContainer" style="width: 48%; float: right;">
+            <textarea id="chatBox" placeholder="Chat with AI during simulation..." readonly></textarea><br>
+            <textarea id="userInput" placeholder="Describe your design or provide feedback..." rows="3" style="width: 90%; font-size: 16px; padding: 10px;"></textarea><br>
+            <button onclick="sendPrompt()">Send</button> <!-- Send user input to backend -->
+        </div>
+    </div>
+
+    <div style="clear: both;"></div>
+
+    <div id="simulationResults">
+        <h3>Simulation Feedback:</h3>
+        <pre id="feedback"></pre>
+    </div>
   </div>
 
-  <div id="implementation" class="tab-content">
-    <h2>Implementation (Coming Soon)</h2>
-    <p>Export, upload, and finalize your CAD design.</p>
-  </div>
+
+
 
   <script>
-    const chatBox = document.getElementById("chatBox");
 
+    // Function to handle file uploads (CAD or image)
+    function handleFileUpload(event) {
+      const file = event.target.files[0];
+      const filePreview = document.getElementById("filePreview");
+      const saveButton = document.getElementById("saveAssetButton");
+
+      if (file) {
+          const reader = new FileReader();
+
+          // Check if the file is an image (JPG, PNG, etc.)
+          if (file.type.startsWith('image/')) {
+              reader.onload = function(e) {
+                  // Show image preview under the AutoCAD viewer
+                  filePreview.innerHTML = `<img src="${e.target.result}" class="preview-image" />`;  // Show image preview
+              };
+          } 
+          // Check if the file is a DWG or DXF file (CAD files)
+          else if (file.name.endsWith('.dwg') || file.name.endsWith('.dxf')) {
+              reader.onload = function(e) {
+                  // For now, just show a message about the uploaded CAD file
+                  filePreview.innerHTML = `<p>DWG/DXF file uploaded: ${file.name}</p>`;  // Placeholder text for DWG files
+              };
+          } 
+          else {
+              filePreview.innerHTML = `<p>File type not supported for preview. Please upload an image or CAD file (DWG/DXF).</p>`;
+          }
+
+          // Display the Save Asset button once the file is uploaded
+          saveButton.style.display = "block";  // Make the button visible
+
+          reader.readAsDataURL(file);  // Read the file as a data URL for preview
+        }
+    }
+
+    // Function to save the asset (upload or store it somewhere)
+    function saveAsset() {
+      const filePreview = document.getElementById("filePreview");
+      const message = filePreview.innerHTML;  // Get the content of the preview (either image or file name)
+
+      // Here you can implement saving logic, e.g., saving the asset to a database or server
+      alert("Saving asset: " + message);  // Placeholder for actual save functionality
+  }
+
+
+
+
+
+
+    // Function to simulate the uploaded CAD design
+    function runSimulation() {
+      fetch("http://localhost:5000/api/ai/run-simulation", { method: "POST" })
+        .then(res => res.json())
+        .then(data => {
+          document.getElementById("feedback").textContent = data.message;
+          alert("✅ Simulation complete! Check the feedback.");
+        })
+        .catch(() => alert("Simulation failed."));
+    }
+
+
+
+    let conversationHistory = [];  // Store the conversation history globally
+
+    // When the page loads, ensure that the chatbox is initialized properly
+    window.onload = function () {
+        const chatBox = document.getElementById("chatBox");
+        chatBox.value = "Dogui: How can Dogui CAD assist help?\n";  // Initial message from AI
+    };
+
+    // Send the user's input to the backend and update the chatbox with the AI's response
+    function sendPrompt() {
+      const userInput = document.getElementById("userInput").value;
+      if (userInput.trim() === "") return;
+
+      const chatBox = document.getElementById("chatBox");
+
+      // Append the user's message to the chatbox and update the conversation history
+      chatBox.value += `\nYou: ${userInput}`;
+      conversationHistory.push(`You: ${userInput}`);
+      document.getElementById("userInput").value = "";  // Clear input box
+
+      // Send the conversation history to the backend
+      fetch("http://localhost:5000/api/ai/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ prompt: userInput })
+      })
+      .then(res => res.json())
+      .then(data => {
+          // Extract the AI's response
+          const response = data.response || "[No response]";
+          chatBox.value += `\nDogui: ${response}\n`;  // Append AI's response to chatbox
+
+          // Add the AI's response to conversation history
+          conversationHistory.push(`Dogui: ${response}`);
+
+          // Scroll to the bottom of the chatbox
+          chatBox.scrollTop = chatBox.scrollHeight;
+      })
+      .catch(error => {
+          chatBox.value += `\nDogui: [Error communicating with backend]`;  // Error message in chatbox
+          console.error(error);
+      });
+    }
+
+    // Ensure that when switching to the simulation tab, the chatbox content persists
     function openTab(tabId) {
       const buttons = document.querySelectorAll(".tab-button");
       const contents = document.querySelectorAll(".tab-content");
@@ -102,85 +306,23 @@
 
       document.getElementById(tabId).classList.add("active");
       event.target.classList.add("active");
-    }
 
-    function sendPrompt() {
-      const userInput = document.getElementById("userInput").value;
-      if (userInput.trim() === "") return;
-
-      chatBox.value += `\nYou: ${userInput}`;
-      document.getElementById("userInput").value = "";
-
-      fetch("http://localhost:5000/api/ai/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt: userInput })
-      })
-        .then(res => res.json())
-        .then(data => {
-          const response = data.response || "[No response]";
-          chatBox.value += `\nDogui: ${response}`;
-          chatBox.scrollTop = chatBox.scrollHeight;
-        })
-        .catch(error => {
-          chatBox.value += `\nDogui: [Error communicating with backend]`;
-          console.error(error);
-        });
-    }
-
-
-    function generateDesign() {
-      fetch("http://localhost:5000/api/ai/run-script", {
-        method: "POST"
-      })
-        .then(res => res.json())
-        .then(data => {
-          alert(data.message || "CAD script generated and executed.");
-          console.log(data.output);  // optional: show backend print messages
-        })
-        .catch(error => {
-          alert("Failed to run the CAD script.");
-          console.error(error);
-        });
-    }
-
-
-    function modifyDesign() {
-      alert("Prompt AI to modify the existing CAD drawing...");
-      // TODO: Extend current drawing session with more AI input
-    }
-
-    function restartSession() {
-      if (confirm("Are you sure you want to restart the session?")) {
-        chatBox.value = "";
-        fetch("http://localhost:5000/api/ai/reset", {
-          method: "POST"
-        });
-        chatBox.value = "Dogui: How can Dogui CAD assist help?";
+      // Ensure chatbox in the simulation tab shows the current conversation
+      if (tabId === 'simulation') {
+          const chatBox = document.getElementById("chatBox");
+          chatBox.value = conversationHistory.join("\n");  // Restore the conversation history
       }
     }
 
 
-    function endSession() {
-      if (confirm("End session without saving?")) {
-        chatBox.value = "Session ended.";
-      }
-    }
 
-    function saveSession() {
-      alert("Saving session to backend database...");
-      // TODO: Send session data to backend for storage
-    }
 
-    function proceedToSimulation() {
-      openTab('simulation');
+    function initCad() {
+      fetch("/api/ai/init-cad", { method: "POST" })
+        .then(res => res.json())
+        .then(data => alert(data.message))
+        .catch(() => alert("Failed to initialize CAD session."));
     }
   </script>
-  <script>
-    window.onload = function () {
-      chatBox.value = "Dogui: How can Dogui CAD assist help?";
-    };
-  </script>
-
 </body>
-</html>
+</html
