@@ -49,7 +49,7 @@ scene.add(hemiLight);
 
 
 // Background
-new THREE.TextureLoader().load('./static/img/bkg.jpg', texture => {
+new THREE.TextureLoader().load('/static/ship/static/img/bkg.jpg', texture => {
     scene.background = texture;
 });
 
@@ -81,7 +81,7 @@ scene.add(htmlScreen);
 const gltfLoader = new GLTFLoader();
 let shipModel = null;
 
-gltfLoader.load('./models/ship9.glb', (gltf) => {
+gltfLoader.load('/static/ship/models/ship9.glb', (gltf) => {
     shipModel = gltf.scene;
     shipModel.position.set(0, 0, 0);
     scene.add(shipModel);

@@ -55,6 +55,11 @@ app.register_blueprint(cad_bp)
 def home():
     return render_template('index.html')
 
+# spaceship
+@app.route('/ship')
+def ship():
+    return render_template('/ship/ship.html')
+
 # dashboard
 @app.route('/dashboard')
 def dashboard():
