@@ -2,10 +2,10 @@ import pymysql
 
 try:
     conn = pymysql.connect(
-        host="visidel.org",
+        host="[SECRET]",
         user="[SECRET]",
         password="[SECRET]",
-        port=[SECRET],
+        port="[SECRET]",
         database="[SECRET]"
     )
     print("Connected successfully!")

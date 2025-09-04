@@ -64,7 +64,7 @@ def chat_bot():
     # "presence_penalty": 0,
     # "temperature": 0.7,  # Increased temperature for varietywhat
     # "top_p": 0.9         # Adjusted for a broader token selection
-    }
+    },
 
         project_id="[SECRET]"  # Found in IBM Cloud
     )
