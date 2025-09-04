@@ -1,10 +1,12 @@
-# Design-Oriented Graphical User Interface (DOGUI)
+# Design-Oriented Graphical User Interface for Engineers (DOGUI.ai)
+DOGUI.ai - Clark Atlanta University's Generative AI Software System for education, developed in partnership with IBM.
 
-DOGUI - Clark Atlanta University's Generative AI Software System for education, developed in partnership with IBM.
+Fully developed by CAU's Dual Degree Engineering students, members of the Visualization, Simulation, and Design Laboratory. 
 
-Fully developed by CAU's Dual Degree Engineering students, members of the Visualization, Simulation, and Design Laboratory. View more info at http://visidel.org/.
+View more info at [http://visidel.org/](https://visidel.org/dogui).
 
-In collaboration with IBM.
+![icon](https://github.com/user-attachments/assets/e72ac820-6ea0-4eeb-a680-78417c19991a)
+
 
 ## Repository Structure
 
