@@ -5,7 +5,7 @@ Fully developed by CAU's Dual Degree Engineering students, members of the Visual
 
 View more info at [http://visidel.org/](https://visidel.org/dogui).
 
-![icon](https://github.com/user-attachments/assets/e72ac820-6ea0-4eeb-a680-78417c19991a)
+<img width="300" height="300" alt="dogui_ai_logo" src="https://github.com/user-attachments/assets/c0e792b5-ce02-40e2-9059-9ff7aec53d21" />
 
 
 ## Repository Structure
