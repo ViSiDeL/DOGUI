@@ -56,7 +56,7 @@ new THREE.TextureLoader().load('/static/ship/static/img/bkg.jpg', texture => {
 // HTML Screen Setup
 function createHTMLScreen() {
     const iframe = document.createElement('iframe');
-    iframe.src = 'http://127.0.0.1:5000/';
+    iframe.src = 'http://127.0.0.1:4242/';
     iframe.style.width = '1924px';
     iframe.style.height = '988px';
     iframe.style.border = 'none';
