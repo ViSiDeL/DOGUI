@@ -1,31 +1,36 @@
-import os
+import os, sys
 from datetime import datetime
 from pyautocad import Autocad, APoint
-import pythoncom
 
-import pythoncom
-from pyautocad import Autocad
+if sys.platform == 'win32':
+    try:
+        import pythoncom
+    except ImportError as e:
+        print(f"warning: required windows-only modules not found: {e}")
 
 def initialize_autocad():
-    try:
-        # Initialize COM
-        pythoncom.CoInitializeEx(pythoncom.COINIT_MULTITHREADED)
+    if sys.platform == 'win32':
+        try:
+            # Initialize COM
+            pythoncom.CoInitializeEx(pythoncom.COINIT_MULTITHREADED)
 
-        # Initialize AutoCAD COM object
-        acad = Autocad(create_if_not_exists=True)
+            # Initialize AutoCAD COM object
+            acad = Autocad(create_if_not_exists=True)
 
-        # Make sure AutoCAD is visible
-        acad.visible = True
+            # Make sure AutoCAD is visible
+            acad.visible = True
 
-        # Create a new document (This avoids using ActiveDocument directly)
-        acad.Application.Documents.Add()  # Add a new drawing
-        acad.model = acad.ActiveDocument.ModelSpace  # Access the model space of the active document
+            # Create a new document (This avoids using ActiveDocument directly)
+            acad.Application.Documents.Add()  # Add a new drawing
+            acad.model = acad.ActiveDocument.ModelSpace  # Access the model space of the active document
 
-        # Return the AutoCAD instance
-        return acad
-    except Exception as e:
-        print(f"❌ Error initializing AutoCAD: {str(e)}")
-        return None
+            # Return the AutoCAD instance
+            return acad
+        except Exception as e:
+            print(f"❌ Error initializing AutoCAD: {str(e)}")
+            return None
+    else:
+        print("running on a non-windows platform. windows-specific functionality not available.")
 
 def draw(acad):
     pass
