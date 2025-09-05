@@ -1,10 +1,10 @@
 import os, sys
 from datetime import datetime
-from pyautocad import Autocad, APoint
 
 if sys.platform == 'win32':
     try:
         import pythoncom
+        from pyautocad import Autocad, APoint
     except ImportError as e:
         print(f"warning: required windows-only modules not found: {e}")
 
@@ -28,7 +28,6 @@ def initialize_autocad():
             return acad
         except Exception as e:
             print(f"❌ Error initializing AutoCAD: {str(e)}")
-            return None
     else:
         print("running on a non-windows platform. windows-specific functionality not available.")
 
@@ -69,6 +68,9 @@ def save_script_to_file(script_code: str, project_name="dogui_script"):
     print(f"✅ DOGUI.AI-generated script saved to: {filepath}")
 
 if __name__ == "__main__":
-    acad = initialize_autocad()
-    draw_square(acad)
-    # save_drawing(acad)
+    if sys.platform == 'win32':
+        try:
+            acad = initialize_autocad()
+            draw_square(acad)
+        except Exception as e:
+            print(f"warning: running on a non-windows platform. windows-specific functionality not available: {e}")
