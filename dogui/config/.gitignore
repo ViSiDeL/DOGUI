@@ -3,4 +3,5 @@ env
 *.env
 apple.py
 !db_connection_template.json
+!watson_info_template.json
 !knowledge_base.json

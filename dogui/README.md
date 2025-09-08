@@ -1,24 +1,29 @@
-# dogui
+# Installing and Running DOGUI
 
-A Flask-based web application with Node.js integration.
+Follow the instructions below to install a local version of DOGUI.
 
 ## **Installation & Setup**
 
 ### **Prerequisites**
 
-Ensure you have the following installed:
+Ensure you have the following:
 
 - [Python 3.11](https://www.python.org/downloads/) (comes by default with Microsoft Store installations)
 - [Node.js](https://nodejs.org/) (includes `npm`)
+- Acess to a MySQL Database with the proper table architecture
+  - Contact our DB admins to gain access to a test DOGUI sql DB to use. ([James Whitfield](https://github.com/whitfija) or [Brooklyn Luckett](https://github.com/BrooklynL16))
 
 ### **1. Clone the Repository**
 
 First, clone the repository from GitHub:
 
 ```bash
-git clone <your-repo-url>
+git clone https://github.com/ViSiDeL/DOGUI.git
 
-# cd into the dogui folder
+# navigate into repo
+cd DOGUI
+
+# navigate into the dogui folder, which contains the application
 cd dogui
 ```
 
@@ -36,7 +41,7 @@ python3 -m venv venv
 source venv/bin/activate
 ```
 
-If you run into an error stating that Permission is denied, run the following command:
+**WINDOWS**: If you run into an error stating that Permission is denied, run the following command:
 
 ```bash
 
@@ -80,15 +85,19 @@ venv\Scripts\activate
 npm install 
 ```
 
-**NOTE** - If you run into an error stating that you are not allowed to run scripts on the system, run the following command:
+**WINDOWS** - If you run into an error stating that you are not allowed to run scripts on the system, run the following command:
 
 ```bash
 Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 ```
 
-### **5.: Store SQL Credentials**
+### **5.: Store Configuration info**
 
-Modify the SQL connection file with your MySQL credentials:
+DOGUI uses configuration files stored in /config to access various resources, this info is needed for various DOGUI features. Reach out to the development team to recieve premade configs that will grant access to a demo SQL table and Watson resources.
+
+To understand how to set up the database and api connections, please see the [configuration files readme](./config/README.md). Summarized below:
+
+**Modify the SQL connection file with your MySQL credentials:**
 
 ```bash
 {
@@ -102,6 +111,20 @@ Modify the SQL connection file with your MySQL credentials:
 
 Save, and rename this file to db_connection.json
 
+**Modify the Watson info config file with your Watson credentials:**
+
+```bash
+{
+    "IBM_API_KEY": "", # MODIFY: enter your IBM Cloud API key that grants access to Watson, Speech to Text, and Text to Speech
+    "model_id": "ibm/granite-8b-code-instruct", # KEEP/MODIFY: uses granite 8b code instruct model by default. feel free to change to any llms available on watson
+    "project_id": "", # MODIFY: enter you watson project id
+    "url": "", # MODIFY: enter your IBM url (i.e. "https://us-south.ml.cloud.ibm.com")
+    "texttospeech_url": "", # MODIFY: enter your full texttospeech url (i.e. "https://api.us-east.text-to-speech.watson.cloud.ibm.com/instances/full-instance-id",)
+}
+```
+
+Save, and rename this file to watson_info.json
+
 ### **6. Run the Flask Application**
 
 Start the Flask server by running:
@@ -110,17 +133,17 @@ Start the Flask server by running:
 python app.py
 ```
 
-The server will start on http://127.0.0.1:5000.
+The server will start on http://127.0.0.1:4242.
 
 ### **7. Access the Application**
 
 Open your browser and visit:
 
 ```bash
-http://127.0.0.1:5000
+http://127.0.0.1:4242
 ```
 
-### **Project Structure**
+## **Project Structure**
 
 ```
 plaintext
@@ -142,19 +165,25 @@ dogui/
 
 ## **Tips**
 
-### Any time you want to run the website, run app.py inside the venv that you setup:
+### Running the website
 
-# cd into the dogui folder
+ Any time you want to run the website, run app.py inside the venv that you setup. First, navigate into the dogui folder:
 
+```bash
 cd /dogui
+```
 
-# then activate source
+then activate source
 
+```bash
 venv\Scripts\activate
+```
 
-# then run the file
+then run the main script file
 
+```bash
 python app.py
+```
 
 ### If you add new Python packages, update requirements.txt:
 
@@ -162,13 +191,13 @@ python app.py
 pip freeze > requirements.txt
 ```
 
-### To add new Node modules, use:
+## To add new Node modules, use:
 
 ```bash
 npm install <module-name> --save
 ```
 
-### If you have multiple versions of python installed, instead of the command:
+## If you have multiple versions of python installed, instead of the command:
 
 ```bash
 python
