@@ -201,7 +201,7 @@ def chatbot():
         converted_voice_choice = languages[voice_choice]
 
         # Watson TTS setup
-        authenticator = IAMAuthenticator(watson_config['textospeech_apikey'])
+        authenticator = IAMAuthenticator(watson_config['IBM_API_KEY'])
         text_to_speech = TextToSpeechV1(authenticator=authenticator)
         text_to_speech.set_service_url(watson_config['texttospeech_url'])
         
