@@ -3,8 +3,10 @@ import pymysql
 import json
 from models.user import User
 from engine_instance import design_engine
+from werkzeug.security import generate_password_hash, check_password_hash
 
 user_bp = Blueprint('user', __name__)
+DEFAULT_ROLE = "Engineer"
 
 # loading db config
 def load_db_config():
@@ -20,33 +22,57 @@ def register():
         username = request.form['username']
         password = request.form['password']
         
+        # pass hashing
+        hashed_password = generate_password_hash(password)
+
         # connect to database using config
         db_config = load_db_config()
-        connection = pymysql.connect(
-            host=db_config['host'],
-            user=db_config['user'],
-            password=db_config['password'],
-            database=db_config['database'],
-            port=int(db_config['port'])
-        )
-        cursor = connection.cursor()
+        connection = None
+        cursor = None
+        try:
+            connection = pymysql.connect(
+                host=db_config['host'],
+                user=db_config['user'],
+                password=db_config['password'],
+                database=db_config['database'],
+                port=int(db_config['port'])
+            )
+            cursor = connection.cursor()
+            
+            # check if the username already exists
+            cursor.execute("SELECT * FROM users WHERE username = %s", (username,))
+            existing_user = cursor.fetchone()
+            
+            if existing_user:
+                flash('Username already exists!', 'danger')
+                return redirect(url_for('user.register'))
+            
+            # insert new user
+            cursor.execute("INSERT INTO users (username, password) VALUES (%s, %s)", (username, hashed_password))
+            connection.commit()
+
+            # finish
+            flash('User registered successfully!', 'success')
+
+            # get user id
+            user_id = cursor.lastrowid
+
+            # log in
+            session['session_id'] = str(user_id)
+            design_engine.add_user(session['session_id'], user_id=user_id, username=username, role=DEFAULT_ROLE)
+            flash('Login successful!', 'success')
+            print(f"User '{username}' (ID: {user_id}) has logged in.")
+            return redirect(url_for('dashboard'))
         
-        # check if the username already exists
-        cursor.execute("SELECT * FROM users WHERE username = %s", (username,))
-        existing_user = cursor.fetchone()
-        
-        if existing_user:
-            flash('Username already exists!', 'danger')
-            return redirect(url_for('user.register'))
-        
-        # insert new user
-        cursor.execute("INSERT INTO users (username, password) VALUES (%s, %s)", (username, password))
-        connection.commit()
-        cursor.close()
-        connection.close()
-        
-        flash('User registered successfully!', 'success')
-        return redirect(url_for('user.login'))
+        except Exception as e:
+            flash(f'An error occurred: {e}', 'danger')
+            if connection:
+                connection.rollback()
+        finally:
+            if cursor:
+                cursor.close()
+            if connection:
+                connection.close()
     
     return render_template('accounts/register.html')
 
@@ -58,10 +84,12 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
+        
         # connect to database using config
-
+        db_config = load_db_config()
+        connection = None
+        cursor = None
         try:
-            db_config = load_db_config()
             connection = pymysql.connect(
                 host=db_config['host'],
                 user=db_config['user'],
@@ -69,42 +97,37 @@ def login():
                 database=db_config['database'],
                 port=int(db_config['port'])
             )
-            print("Database connection successful!") 
-        except pymysql.Error as err:
-            print(f"Database connection failed: {err}")
-            flash(f"Database error: {err}", "danger")
-            return redirect(url_for('user.login'))
-        except Exception as err:
-            print(f"Database connection failed: {err}")
-            flash(f"Database error: {err}", "danger")
-            return redirect(url_for('user.login'))
+            cursor = connection.cursor(pymysql.cursors.DictCursor)
 
-        cursor = connection.cursor()
-        
-        # check if username and password match
-        cursor.execute("SELECT * FROM users WHERE username = %s AND password = %s", (username, password))
-        user = cursor.fetchone()
-        
-        cursor.close()
-        connection.close()
+            # find the user by username
+            cursor.execute("SELECT * FROM users WHERE username = %s", (username,))
+            user = cursor.fetchone()
 
-        if user:
-            print("test")
-            # print(user)
-            user_id, username, pwd, role = user
+            if user:
+                user_id = user['id']
+                username = user['username']
 
-            # create session
-            session['session_id'] = str(user_id)
-            design_engine.add_user(session['session_id'], user_id=user_id, username=username, role=role)
-
-            flash('Login successful!', 'success')
-            print(f"User '{username}' (ID: {user_id}, Role: {role}) has logged in.")
-            return redirect(url_for('dashboard'))
-        else:
-            flash('Invalid username or password!', 'danger')
-            return redirect(url_for('user.login'))
+                # check against stored hash
+                if check_password_hash(user['password'], password):
+                    # log in
+                    session['session_id'] = str(user_id)
+                    design_engine.add_user(session['session_id'], user_id=user_id, username=username, role=DEFAULT_ROLE)
+                    flash('Login successful!', 'success')
+                    print(f"User '{username}' (ID: {user_id}) has logged in.")
+                    return redirect(url_for('dashboard'))
+                else:
+                    flash('Invalid username or password!', 'danger')
+            else:
+                flash('Invalid username or password!', 'danger')
     
-    print("enmd")
+        except Exception as e:
+            flash(f'An error occurred: {e}', 'danger')
+        finally:
+            if 'cursor' in locals() and cursor:
+                cursor.close()
+            if 'connection' in locals() and connection:
+                connection.close()
+
     return render_template('accounts/login.html')
 
 
