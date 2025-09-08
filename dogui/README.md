@@ -1,4 +1,4 @@
-# dogui
+# Installing and Running DOGUI
 
 Follow the instructions below to install a local version of DOGUI.
 
