@@ -1,12 +1,12 @@
 # Design-Oriented Graphical User Interface for Engineers (DOGUI.ai)
+
 DOGUI.ai - Clark Atlanta University's Generative AI Software System for education, developed in partnership with IBM.
 
-Fully developed by CAU's Dual Degree Engineering students, members of the Visualization, Simulation, and Design Laboratory. 
+Fully developed by CAU's Dual Degree Engineering students, members of the Visualization, Simulation, and Design Laboratory.
 
 View more info at [http://visidel.org/](https://visidel.org/dogui).
 
 <img width="300" height="300" alt="dogui_ai_logo" src="https://github.com/user-attachments/assets/c0e792b5-ce02-40e2-9059-9ff7aec53d21" />
-
 
 ## Repository Structure
 
@@ -14,7 +14,7 @@ Below is an overview of the folder structure and what each directory contains.
 
 ### dogui
 
-This folder contains the core application scripts, see dogui/README.md for setup instructions
+This folder contains the core application scripts, see [dogui/README.md](./dogui/README.md) for setup instructions
 
 ### dev
 
