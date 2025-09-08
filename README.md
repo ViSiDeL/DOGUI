@@ -14,7 +14,7 @@ Below is an overview of the folder structure and what each directory contains.
 
 ### dogui
 
-This folder contains the core application scripts, see dogui/README.md for setup instructions
+This folder contains the core application scripts, see [dogui/README.md](./dogui/README.md) for setup instructions
 
 ### dev
 
