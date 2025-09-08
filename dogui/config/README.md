@@ -37,3 +37,9 @@ this folder holds the template files you'll use to connect the app to its servic
   ```
 
 **important:** for security, your `.gitignore` file is set up so that your personal `db_connection.json` and `watson_info.json` files are never uploaded to the repository.
+
+---
+
+### other config files
+
+* **`knowledge_base.json`**: this file is used to store constant knowledge for the chatbot. When a matching base query is found it will output as defined. (unused in live demo, but available for development use)
