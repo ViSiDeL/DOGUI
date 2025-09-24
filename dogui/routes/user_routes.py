@@ -66,6 +66,7 @@ def register():
         
         except Exception as e:
             flash(f'An error occurred: {e}', 'danger')
+            print(f'An error occurred: {e}')
             if connection:
                 connection.rollback()
         finally:
@@ -122,6 +123,7 @@ def login():
     
         except Exception as e:
             flash(f'An error occurred: {e}', 'danger')
+            print(f'An error occurred: {e}')
         finally:
             if 'cursor' in locals() and cursor:
                 cursor.close()
