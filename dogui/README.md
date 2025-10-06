@@ -10,7 +10,7 @@ Ensure you have the following:
 
 - [Python 3.11](https://www.python.org/downloads/) (comes by default with Microsoft Store installations)
 - [Node.js](https://nodejs.org/) (includes `npm`)
-- Acess to a MySQL Database with the proper table architecture
+- Access to a MySQL Database with the proper table architecture
   - Contact our DB admins to gain access to a test DOGUI sql DB to use. ([James Whitfield](https://github.com/whitfija) or [Brooklyn Luckett](https://github.com/BrooklynL16))
 
 ### **1. Clone the Repository**
