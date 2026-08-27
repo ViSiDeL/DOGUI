@@ -1,2 +1,6 @@
+[project]
+name = "DOGUI"
+version = "0.1.0"
+
 [tool.uv.workspace]
 members = ["src/api", "src/model-gen"]
