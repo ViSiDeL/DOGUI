@@ -1,3 +1,0 @@
-pyautocad
-pywin32
-ezdxf

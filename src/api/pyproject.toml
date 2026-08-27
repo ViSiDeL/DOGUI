@@ -1,0 +1,14 @@
+[project]
+name = "dogui-api"
+dependencies = [
+    "flask==3.1.2",
+    "flask-cors==5.0.1",
+    "ibm-watsonx-ai==1.3.3",
+    "ibm-watson==9.0.0",
+    "pymysql==1.1.1",
+    "python-dotenv==1.1.1",
+    "dogui-modelgen",
+]
+
+[tool.uv.sources]
+dogui-modelgen = { workspace = true }
