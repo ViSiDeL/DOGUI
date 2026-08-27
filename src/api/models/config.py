@@ -12,7 +12,7 @@ DB_NAME = os.getenv("DB_NAME")
 DB_PORT = os.getenv("DB_PORT", "3306")
 if not os.getenv("DB_URL"):
     DB_URL = f"mysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
-    
+
 # asset source
 # local or cloud
 # - local uses the local filesystem, 
@@ -25,3 +25,7 @@ ASSET_PUBLIC_URL = os.getenv("ASSET_PUBLIC_URL", "")
 
 # flask app port
 PORT = int(os.getenv("PORT", "8080"))
+
+# ai 
+INFERENCE_API_KEY = os.getenv("INFERENCE_API_KEY")
+INFERENCE_URL = os.getenv("INFERENCE_URL", "https://api-inference.huggingface.co/v1/generate")

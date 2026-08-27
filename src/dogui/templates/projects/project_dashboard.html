@@ -1,6 +1,6 @@
 {% extends "dogui.html" %}
 
-{% block title %}{{ project.name }} | {% endblock %}
+{% block title %}{{ project.projectName }} | {% endblock %}
 
 {% block css %}
     <link rel="stylesheet" href="/static/css/engineering.css">
@@ -10,7 +10,7 @@
 {% block nav %}
 {% include 'includes/user-nav.html' %}
 <div class="project-header">
-    <h1>{{ project.name }}</h1>
+    <h1>{{ project.projectName }}</h1>
 </div>
 {% endblock %}
 
@@ -31,15 +31,16 @@
         <div id="ideation-content" class="tab-pane {% if project.phase == 'ideation' %}active{% endif %}">
             {% if project.init == 0 %}
             <p id="ideation-prompt">Please describe your new project:</p>
-            <form id="ideation-form" method="POST" action="/update-project/{{ user.username }}/{{ project.id }}">
+            <form id="ideation-form" method="POST" action="/update-project/{{ user.username }}/{{ project.ID }}">
                 <textarea name="description" rows="1" placeholder="Describe your project in detail..."></textarea>
+                <input type="hidden" name="init" value="1">
                 <button type="submit">Initialize Project</button>
             </form>
             {% else %}
 
-            <form id="project-details-form" method="POST" action="/update-project/{{ user.username }}/{{ project.id }}">
+            <form id="project-details-form" method="POST" action="/update-project/{{ user.username }}/{{ project.ID }}">
                 <div class="project-details">
-                    <input type="text" name="name" value="{{ project.name }}" class="project-name" disabled>
+                    <input type="text" name="name" value="{{ project.projectName }}" class="project-name" disabled>
                     <p style="font-size: 1rem; text-align: center; opacity: 70%;">Details:</p>
                     <textarea name="description" class="project-description" disabled>"{{ project.description }}"</textarea>
                     <div class="project-meta">
@@ -73,7 +74,7 @@
                     {% endfor %}
                 </div>
                 
-                <form id="add-context-form" method="POST" action="/add-context/{{ project.id }}">
+                <form id="add-context-form" method="POST" action="/add-context/{{ project.ID }}">
                     <textarea name="context" placeholder="Add new context (e.g., research findings, requirements, constraints)" required></textarea>
                     <button type="submit">Add Context</button>
                 </form>
@@ -92,7 +93,7 @@
                     <img src="/static/img/dogui_ai_logo.png">
                     <div class="project-desc">DOGUI Assistant</div>
                 </button>
-                <form method="POST" action="/update-project/{{ user.username }}/{{ project.id }}">
+                <form method="POST" action="/update-project/{{ user.username }}/{{ project.ID }}">
                     <input type="hidden" name="description" value="{{ project.description }}"></input>
                     <input type="hidden" name="regen" value="true"></input>
                     <button type="submit" class="project-card glow project-menuoption">
@@ -103,7 +104,7 @@
             </div>
 
             <div class="phase-control">
-                <form method="POST" action="/update-project/{{ user.username }}/{{ project.id }}">
+                <form method="POST" action="/update-project/{{ user.username }}/{{ project.ID }}">
                     <input type="hidden" name="phase" value="ideation">
                     <button type="submit" {% if project.phase == 'ideation' %}class="current-phase"{% endif %}>
                         {% if project.phase == 'ideation' %}Currently in Ideation{% else %}Set to Ideation Phase{% endif %}
@@ -189,7 +190,7 @@
             </div>
 
             <div class="phase-control">
-                <form method="POST" action="/update-project/{{ user.username }}/{{ project.id }}">
+                <form method="POST" action="/update-project/{{ user.username }}/{{ project.ID }}">
                     <input type="hidden" name="phase" value="simulation">
                     <button type="submit" {% if project.phase == 'simulation' %}class="current-phase"{% endif %}>
                         {% if project.phase == 'simulation' %}Currently in Simulation{% else %}Set to Simulation Phase{% endif %}
@@ -213,7 +214,7 @@
                 <p>More implementation features coming soon!</p>
             </div>
             <div class="phase-control">
-                <form method="POST" action="/update-project/{{ user.username }}/{{ project.id }}">
+                <form method="POST" action="/update-project/{{ user.username }}/{{ project.ID }}">
                     <input type="hidden" name="phase" value="implementation">
                     <button type="submit" {% if project.phase == 'implementation' %}class="current-phase"{% endif %}>
                         {% if project.phase == 'implementation' %}Currently in Implementation{% else %}Set to Implementation Phase{% endif %}
@@ -249,6 +250,8 @@
     // project detail edits
     document.addEventListener('DOMContentLoaded', function() {
         const form = document.getElementById('project-details-form');
+        if (!form) return;
+
         const nameInput = form.querySelector('.project-name');
         const descInput = form.querySelector('.project-description');
         const editBtn = form.querySelector('.btn-edit');
@@ -270,7 +273,7 @@
             cancelBtn.addEventListener('click', function() {
                 nameInput.disabled = true;
                 descInput.disabled = true;
-                nameInput.value = "{{ project.name }}";
+                nameInput.value = "{{ project.projectName }}";
                 descInput.value = "{{ project.description }}";
                 editBtn.style.display = 'block';
                 saveBtn.style.display = 'none';
@@ -296,13 +299,13 @@
 
 <script>
     function launchAssistant(contextType) {
-        window.location.href = `/assistant?project_id={{ project.id }}&context=${contextType}`;
+        window.location.href = `/assistant?project_id={{ project.ID }}&context=${contextType}`;
     }
 </script>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const projectId = parseInt("{{ project.id }}");
+        const projectId = parseInt("{{ project.ID }}");
         const addAssetBtn = document.getElementById('add-asset-btn');
         const assetSelector = document.getElementById('asset-selector');
         const availableAssets = document.getElementById('available-assets');

@@ -1,46 +1,28 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash, session, jsonify
+from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify, g
 from api.models.project import ProjectService
-from api.engine_instance import design_engine
+from api.models.inference import generate_text
+from src.api.models.session import login_required
 
 project_bp = Blueprint('project', __name__)
 
 @project_bp.route('/projects')
+@login_required
 def projects():
-    session_id = session.get('session_id')
-    if not session_id:
-        return redirect(url_for('user.login'))
-    user = design_engine.get_user(session_id)
-    if not user:
-        return redirect(url_for('user.login'))
+    user = g.user
     projects = ProjectService.list_projects(user.username)
     return render_template('projects/project_manager.html', user=user, projects=projects)
 
-@project_bp.route('/new-project', methods=['GET', 'POST'])
+@project_bp.route('/new-project')
+@login_required
 def new_project():
-    session_id = session.get('session_id')
-    if not session_id:
-        return redirect(url_for('user.login'))
-    user = design_engine.get_user(session_id)
-    if not user:
-        return redirect(url_for('user.login'))
-
-    if request.method == 'POST':
-        # Create a new project using service
-        description = request.form.get('description')
-        project_id = ProjectService.create_project(user.username, description)
-        return redirect(url_for('project.project_details', username=user.username, project_id=project_id))
-
-    # GET – just show the "new project" form
-    return render_template('projects/new_project.html', user=user)
+    user = g.user
+    project_id = ProjectService.create_project(user.username, description="")
+    return redirect(url_for('project.project_details', username=user.username, project_id=project_id))
 
 @project_bp.route('/project/<username>/<project_id>')
+@login_required
 def project_details(username, project_id):
-    session_id = session.get('session_id')
-    if not session_id:
-        return redirect(url_for('user.login'))
-    user = design_engine.get_user(session_id)
-    if not user:
-        return redirect(url_for('user.login'))
+    user = g.user
     project_data = ProjectService.get_project_with_contexts(int(project_id), user.username)
     if not project_data:
         flash('Project not found', 'error')
@@ -48,28 +30,79 @@ def project_details(username, project_id):
     return render_template('projects/project_dashboard.html', user=user, project=project_data)
 
 @project_bp.route('/update-project/<username>/<int:project_id>', methods=['POST'])
+@login_required
 def update_project(username, project_id):
-    session_id = session.get('session_id')
-    if not session_id:
-        return redirect(url_for('user.login'))
-    user = design_engine.get_user(session_id)
-    if not user or user.username != username:
+    user = g.user
+    if user.username != username:
         return redirect(url_for('user.login'))
 
-    # In a full implementation you would validate changes and call a service.
-    # For now simply flash success and redirect.
-    flash('Project updated successfully', 'success')
+    # first-time init or explicit "regenerate name" both (re)generate a name from the description
+    is_naming_action = 'description' in request.form and (
+        'init' in request.form or 'regen' in request.form
+    )
+
+    updates = {}
+
+    if is_naming_action:
+        description = request.form['description'].strip()
+        if not description:
+            flash('Description cannot be empty', 'error')
+            return redirect(url_for('project.project_details', username=username, project_id=project_id))
+
+        prompt = f"""
+        Generate a concise, professional project name (2-4 words max) based on this description:
+        "{description}"
+
+        Respond ONLY with the project name, no additional text or explanations.
+        Try to make the name trendy, unique, but still short and descriptive. You can add spaces if necessary.
+        Project Name:
+        """
+
+        try:
+            project_name = generate_text(prompt=prompt).strip().strip('"').strip("'")
+            if not project_name:
+                project_name = f"Project {project_id}"
+        except Exception as e:
+            print(f"Error generating project name: {e}")
+            project_name = f"Project {project_id}"
+
+        updates.update({
+            'project_name': project_name,
+            'description': description,
+            'phase': 'ideation',
+            'init': 1,
+        })
+        flash('Project initialized successfully!', 'success')
+    else:
+        if 'name' in request.form and request.form['name'].strip():
+            updates['project_name'] = request.form['name'].strip()
+        if 'description' in request.form and request.form['description'].strip():
+            updates['description'] = request.form['description'].strip()
+        if 'phase' in request.form:
+            updates['phase'] = request.form['phase']
+        if 'init' in request.form and request.form['init'].strip():
+            updates['init'] = int(request.form['init'])
+
+        if not updates:
+            flash('No changes detected', 'info')
+            return redirect(url_for('project.project_details', username=username, project_id=project_id))
+
+    success = ProjectService.update_project(
+        project_id=project_id,
+        username=username,
+        **updates
+    )
+
+    if not success:
+        flash('Error updating project or you are not authorized.', 'error')
+    elif not is_naming_action:
+        flash('Project updated successfully', 'success')
+
     return redirect(url_for('project.project_details', username=username, project_id=project_id))
 
 @project_bp.route('/add-context/<int:project_id>', methods=['POST'])
+@login_required
 def add_context(project_id):
-    session_id = session.get('session_id')
-    if not session_id:
-        return jsonify({'error': 'Unauthorized'}), 401
-    user = design_engine.get_user(session_id)
-    if not user:
-        return jsonify({'error': 'Unauthorized'}), 401
-
     context_text = request.form.get('context')
     if not context_text:
         return jsonify({'error': 'Context text required'}), 400
@@ -77,31 +110,35 @@ def add_context(project_id):
     return jsonify({'id': context_id, 'text': context_text})
 
 @project_bp.route('/get-contexts/<int:project_id>')
+@login_required
 def get_contexts(project_id):
-    session_id = session.get('session_id')
-    if not session_id:
-        return jsonify({'error': 'Unauthorized'}), 401
-    user = design_engine.get_user(session_id)
-    if not user:
-        return jsonify({'error': 'Unauthorized'}), 401
-
-    # Placeholder – in production call ProjectService to fetch contexts.
-    return jsonify({'project': 'ok', 'contexts': []})
+    user = g.user
+    try:
+        contexts = ProjectService.get_contexts(project_id, user.username)
+        if not contexts:
+            return jsonify({'error': 'No contexts found'}), 404
+        return jsonify({'contexts': contexts})
+    except Exception as e:
+        print(f"Error getting contexts: {e}")
+        return jsonify({'error': 'Database error'}), 500
 
 @project_bp.route('/update-context/<int:context_id>', methods=['POST'])
+@login_required
 def update_context(context_id):
-    session_id = session.get('session_id')
-    if not session_id:
-        return jsonify({'error': 'Unauthorized'}), 401
-    user = design_engine.get_user(session_id)
-    if not user:
-        return jsonify({'error': 'Unauthorized'}), 401
+    user = g.user
 
+    # verify ownership of context
+    if not ProjectService.is_context_owned(context_id, user.username):
+        return jsonify({'error': 'Context not found or not owned'}), 403
+
+    # new text
     data = request.get_json()
     if not data or 'text' not in data:
         return jsonify({'error': 'Text content required'}), 400
     new_text = data['text']
     if not new_text.strip():
         return jsonify({'error': 'Context text cannot be empty'}), 400
-    # Placeholder – call a service to persist the update.
+    success = ProjectService.update_context(context_id, new_text)
+    if not success:
+        return jsonify({'error': 'Failed to update context'}), 500
     return jsonify({'success': True, 'id': context_id, 'text': new_text})

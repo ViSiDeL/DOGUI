@@ -4,12 +4,13 @@ from __future__ import annotations
 import os
 import requests
 
-DEFAULT_MODEL = "nemotron-3-nano-30b-a3b"
+from api.models.config import INFERENCE_API_KEY, INFERENCE_URL
+DEFAULT_MODEL = "nvidia/nemotron-3-nano-30b-a3b"
 
 def _get_api_key() -> str:
-    key = os.getenv("NVIDIA_API_KEY")
+    key = INFERENCE_API_KEY
     if not key:
-        raise RuntimeError("NVIDIA_API_KEY environment variable is not set.")
+        raise RuntimeError("INFERENCE_API_KEY environment variable is not set.")
     return key
 
 def _get_model() -> str:
@@ -23,7 +24,7 @@ def generate_text(
     max_tokens: int = 900,
 ) -> str:
     """
-    send prompt to the NVIDIA inference endpoint, return generated text
+    send prompt to the NVIDIA-hosted chat-completions endpoint, return generated text
     """
     api_key = _get_api_key()
     headers = {
@@ -32,28 +33,26 @@ def generate_text(
     }
     payload = {
         "model": model or _get_model(),
-        "prompt": prompt,
+        "messages": [{"role": "user", "content": prompt}],
         "max_tokens": max_tokens,
         "temperature": 0.0,
         "top_p": 1.0,
-        "frequency_penalty": 0.0,
-        "presence_penalty": 0.0,
-        "stop": None,
+        "stream": False,
     }
 
     response = requests.post(
-        "https://integrate.api.nvidia.com/v1/completions",
+        INFERENCE_URL,
         headers=headers,
         json=payload,
         timeout=60,
     )
     if response.status_code != 200:
         raise RuntimeError(
-            f"NVIDIA inference API request failed ({response.status_code}): {response.text}"
+            f"inference API request failed ({response.status_code}) for URL {response.url}: {response.text}"
         )
     data = response.json()
     try:
-        generated_text = data["choices"][0]["text"]
+        generated_text = data["choices"][0]["message"]["content"]
     except (KeyError, IndexError) as exc:
         raise RuntimeError(f"unexpected API response structure: {data}") from exc
 

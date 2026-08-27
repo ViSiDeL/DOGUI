@@ -99,3 +99,104 @@ class ProjectService:
                     (project_id, asset_id)
                 )
                 conn.commit()
+
+    @staticmethod
+    def update_project(
+        project_id: int,
+        username: str,
+        *,
+        project_name: str | None = None,
+        description: str | None = None,
+        phase: str | None = None,
+        init: int | None = None,
+    ) -> bool:
+        """ update supplied fields for a project, returns True if row was updated """
+        with get_connection() as conn:
+            with conn.cursor() as cur:
+                set_clause_parts = []
+                params = []
+
+                if project_name is not None:
+                    set_clause_parts.append("projectName = %s")
+                    params.append(project_name)
+
+                if description is not None:
+                    set_clause_parts.append("description = %s")
+                    params.append(description)
+
+                if phase is not None:
+                    set_clause_parts.append("phase = %s")
+                    params.append(phase)
+
+                if init is not None:
+                    set_clause_parts.append("init = %s")
+                    params.append(init)
+
+                if not set_clause_parts:          # nothing to change
+                    return False
+
+                params.extend([project_id, username])
+
+                query = (
+                    f"UPDATE projects SET {', '.join(set_clause_parts)} "
+                    "WHERE ID = %s AND username = %s"
+                )
+                cur.execute(query, params)
+                conn.commit()
+
+                return cur.rowcount == 1
+
+    @staticmethod
+    def get_contexts(
+        project_id: int, username: str
+    ) -> List[Dict[str, Any]]:
+        """
+        Return all contexts belonging to ``project_id`` that belong to ``username``.
+        Result is a list of dicts: ``{'id': <context_id>, 'text': <context_text>}``,
+        ordered by creation date (newest first).
+        """
+        with get_connection() as conn:
+            with conn.cursor() as cur:
+                cur.execute(
+                    """
+                    SELECT context_id, context_text
+                    FROM contexts
+                    WHERE project_id = %s AND username = %s
+                    ORDER BY created_at DESC
+                    """,
+                    (project_id, username)
+                )
+                rows = cur.fetchall()
+                return [{"id": r["context_id"], "text": r["context_text"]} for r in rows]
+
+    @staticmethod
+    def update_context(context_id: int, context_text: str) -> bool:
+        """
+        Update the ``context_text`` for a given ``context_id``.
+        Returns ``True`` if exactly one row was modified, otherwise ``False``.
+        """
+        with get_connection() as conn:
+            with conn.cursor() as cur:
+                cur.execute(
+                    "UPDATE contexts SET context_text = %s WHERE context_id = %s",
+                    (context_text, context_id)
+                )
+                conn.commit()
+                return cur.rowcount == 1
+
+    @staticmethod
+    def is_context_owned(context_id: int, username: str) -> bool:
+        """
+        Verify that the given ``context_id`` belongs to a project owned by ``username``.
+        Returns ``True`` if the context exists and is owned by the user, otherwise ``False``.
+        """
+        with get_connection() as conn:
+            with conn.cursor() as cur:
+                cur.execute(
+                    """
+                    SELECT 1 FROM contexts c
+                    JOIN projects p ON c.project_id = p.ID
+                    WHERE c.context_id = %s AND p.username = %s
+                    """
+                    , (context_id, username))
+                return cur.fetchone() is not None
