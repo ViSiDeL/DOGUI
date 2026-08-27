@@ -8,4 +8,5 @@ dependencies = [
     "python-dotenv",
     "dogui-modelgen",
     "requests",
+    "google-cloud-storage>=3.13.1",
 ]

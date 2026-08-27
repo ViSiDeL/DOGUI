@@ -4,7 +4,7 @@ from flask import Blueprint, render_template, request, session, redirect, url_fo
 import pymysql
 
 from api.models.inference import generate_text
-from engine_instance import design_engine
+from api.engine_instance import design_engine
 
 ai_bp = Blueprint('ai', __name__)
 

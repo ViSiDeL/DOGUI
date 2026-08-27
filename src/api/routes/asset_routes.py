@@ -1,7 +1,6 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash, session, jsonify
-from engine_instance import design_engine
-from ..models.asset import AssetService, allowed_file
-from werkzeug.utils import secure_filename
+from flask import Blueprint, render_template, request, redirect, url_for, flash, session, jsonify, send_from_directory
+from api.engine_instance import design_engine
+from api.models.asset import AssetService, _allowed_type
 import os
 
 asset_bp = Blueprint('asset', __name__, url_prefix='/assets')
@@ -46,21 +45,13 @@ def upload_asset(asset_type):
             flash('No file selected', 'error')
             return redirect(request.url)
 
-        if file and allowed_file(file.filename, asset_type):
-            filename = secure_filename(file.filename)
-            asset_name = request.form.get('asset_name', filename.rsplit('.', 1)[0])
+        if file and _allowed_type(file.filename, asset_type):
+            asset_name = request.form.get('asset_name', file.filename.rsplit('.', 1)[0])
             is_public = 'is_public' in request.form
 
-            # Save file to static directory
-            upload_folder = os.path.join('static', 'assets', f"{asset_type}s")
-            os.makedirs(upload_folder, exist_ok=True)
-            filepath = os.path.join(upload_folder, filename)
-            file.save(filepath)
-
-            # Persist metadata via service
-            AssetService.upload_asset(
+            upload_id = AssetService.upload_asset(
                 asset_type=asset_type,
-                filename=filename,
+                file_obj=file,
                 asset_name=asset_name,
                 is_public=is_public,
                 user_id=user.user_id if not is_public else None,
@@ -79,17 +70,8 @@ def download_asset(asset_type, filename):
     if not user:
         return redirect(url_for('user.login'))
 
-    # Permission check – placeholder logic
-    allowed_path = os.path.join('static', 'assets', f"{asset_type}s", filename)
-    if not os.path.isfile(allowed_path):
-        flash('Asset not found or permission denied', 'error')
-        return redirect(url_for('asset.assets'))
-
-    return send_from_directory(
-        directory=os.path.dirname(allowed_path),
-        path=filename,
-        as_attachment=True
-    )
+    download_url = AssetService.get_download_url(filename, asset_type)
+    return redirect(download_url)
 
 @asset_bp.route('/generate-model')
 def generate_model():

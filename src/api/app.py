@@ -1,8 +1,4 @@
-"""
-IMPORTS
-"""
-
-
+""" DOGUI flask application """
 from flask import Flask, request, render_template, send_from_directory, session, redirect, url_for
 import os
 import random
@@ -17,13 +13,14 @@ from api.routes.asset_routes import asset_bp
 # DOGUI CLASS IMPORTS
 from api.engine_instance import design_engine
 
-"""
-SETUP
-"""
+""" SETUP """
 
-app = Flask(__name__)
+DOGUI_SITE_PATH = os.path.join(os.path.dirname(__file__), '..', 'dogui')
+TEMPLATE_PATH = os.path.join(DOGUI_SITE_PATH, 'templates')
+STATIC_PATH = os.path.join(DOGUI_SITE_PATH, 'static')
+app = Flask(__name__, template_folder=TEMPLATE_PATH, static_folder=STATIC_PATH)
 
-# creating secret key for session management
+# for session management
 app.config['SECRET_KEY'] = os.urandom(24)
 
 # register blueprints for other routes
@@ -33,21 +30,10 @@ app.register_blueprint(test_bp)
 app.register_blueprint(project_bp)
 app.register_blueprint(asset_bp)
 
-"""
------------------- METHODS/FUNCTIONS ------------------
-"""
 
+""" ------------------ ROUTES ------------------ """
 
-"""
------------------- STARTUP ROUTINE ------------------
-"""
-
-
-"""
------------------- ROUTES ------------------
-"""
-
-# home route - handles navigation to home page via /home or / (default)
+# /home or /
 @app.route('/')
 @app.route('/home')
 def home():

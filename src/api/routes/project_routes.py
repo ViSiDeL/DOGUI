@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session, jsonify
-from ..models.project import ProjectService
-from engine_instance import design_engine
+from api.models.project import ProjectService
+from api.engine_instance import design_engine
 
 project_bp = Blueprint('project', __name__)
 

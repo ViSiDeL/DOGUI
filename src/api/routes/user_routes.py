@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session
-from ..models.auth import AuthService
-from engine_instance import design_engine
+from api.models.auth import AuthService
+from api.engine_instance import design_engine
 
 user_bp = Blueprint('user', __name__)
 DEFAULT_ROLE = "Engineer"
@@ -10,9 +10,11 @@ def register():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        # Use service for registration
+        
+        # register 
         user_id = AuthService.register(username, password)
-        # After registration, log the user in
+
+        # login if successful
         session['session_id'] = str(user_id)
         flash('User registered successfully!', 'success')
         print(f"User '{username}' (ID: {user_id}) has registered.")
