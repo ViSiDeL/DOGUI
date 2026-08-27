@@ -8,14 +8,14 @@ import os
 import random
 
 # ROUTES
-from src.api.routes.user_routes import user_bp
-from src.api.routes.ai_routes import ai_bp
-from src.api.routes.test_routes import test_bp
-from src.api.routes.project_routes import project_bp
-from src.api.routes.asset_routes import asset_bp
+from api.routes.user_routes import user_bp
+from api.routes.ai_routes import ai_bp
+from api.routes.test_routes import test_bp
+from api.routes.project_routes import project_bp
+from api.routes.asset_routes import asset_bp
 
 # DOGUI CLASS IMPORTS
-from src.api.engine_instance import design_engine
+from api.engine_instance import design_engine
 
 """
 SETUP

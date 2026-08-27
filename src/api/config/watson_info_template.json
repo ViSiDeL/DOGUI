@@ -1,7 +1,0 @@
-{
-    "IBM_API_KEY": "IBMAPIKEY",
-    "model_id": "ibm/granite-8b-code-instruct",
-    "project_id": "PROJECTID",
-    "url": "URL",
-    "texttospeech_url": "INSTANCEURL"
-}

@@ -1,5 +1,5 @@
 import re
-from ibm_watsonx_ai.foundation_models import ModelInference
+from api.models.inference import generate_text
 
 def _clean_generated_code(raw_code: str) -> str:
     unwanted_patterns = [
@@ -22,11 +22,15 @@ def _clean_generated_code(raw_code: str) -> str:
         cleaned += ';'
     return cleaned
 
-def generate_threejs_snippet(model_inference: ModelInference, user_description: str) -> str:
+def generate_threejs_snippet(user_description: str) -> str:
+
     prompt = f"""
-    You are a three.js generator...
-    Here is their description "{user_description}".
-    ...
-    """
-    response = model_inference.generate(prompt=prompt)
-    return _clean_generated_code(response['results'][0]['generated_text'])
+You are a three.js generator.
+Here is their description: "{user_description}".
+
+Generate a concise, syntactically correct three.js snippet that fulfills the description.
+Provide only the JavaScript code without extra explanations or markdown fences.
+Respond with raw JavaScript statements (e.g., creating a scene, camera, renderer, etc.).
+"""
+    response_text = generate_text(prompt=prompt, max_tokens=900)
+    return _clean_generated_code(response_text)

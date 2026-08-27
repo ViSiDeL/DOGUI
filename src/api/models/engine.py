@@ -1,7 +1,5 @@
 """
-
-Design Engine class - Core design engine responsible for controlling the workflow and managing data flow
-
+design engine
 """
 
 from models.user import User
@@ -12,18 +10,6 @@ class DesignEngine:
         self.system_status = system_status
         self.active_module = active_module
         self.current_users = {}
-
-    def initialize_system(self):
-        pass
-
-    def control_workflow(self):
-        pass
-
-    def manage_data_flow(self):
-        pass
-
-    def optimize_process(self):
-        pass
 
     """
     USER MANAGEMENT

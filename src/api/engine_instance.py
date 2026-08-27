@@ -3,7 +3,7 @@ Create a single instance of the engine on app launch
 Separate file so all other files can access it
 """
 
-from models.engine import DesignEngine
+from api.models.engine import DesignEngine
 import uuid
 
 # generates randome engine id, starts engine

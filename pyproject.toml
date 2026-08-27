@@ -4,3 +4,7 @@ version = "0.1.0"
 
 [tool.uv.workspace]
 members = ["src/api", "src/model-gen"]
+
+[tool.uv.sources]
+dogui-modelgen = {workspace = true}
+dogui-api = {path = "src/api"}
