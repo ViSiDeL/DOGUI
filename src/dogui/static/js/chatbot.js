@@ -5,6 +5,30 @@ document.addEventListener('DOMContentLoaded', () => {
     const chatMessages = document.getElementById('chat-messages');
     let recognition;
 
+    // escape raw text so it can never be interpreted as HTML
+    function escapeHtml(str) {
+        const div = document.createElement('div');
+        div.textContent = str;
+        return div.innerHTML;
+    }
+
+    // markdown -> sanitized HTML, for AI responses only
+    function renderMarkdown(markdownText) {
+        const rawHtml = marked.parse(markdownText, { breaks: true });
+        return DOMPurify.sanitize(rawHtml);
+    }
+
+    // set a message bubble's content. AI responses are parsed as markdown;
+    // user-typed text is always escaped and shown as plain text (with
+    // newlines preserved) so it's never interpreted as HTML/markdown.
+    function setMessageContent(contentEl, message, isMarkdown) {
+        if (isMarkdown) {
+            contentEl.innerHTML = renderMarkdown(message);
+        } else {
+            contentEl.innerHTML = escapeHtml(message).replace(/\n/g, '<br>');
+        }
+    }
+
     // check if browser supports speech --> init if supported
     const isSpeechRecognitionSupported = () => {
         return 'webkitSpeechRecognition' in window || 'SpeechRecognition' in window;
@@ -68,8 +92,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const data = await response.json();
 
-            // output message when received
-            typingIndicator.querySelector('.message-content').textContent = data.response;
+            // output message when received, rendered as markdown
+            setMessageContent(typingIndicator.querySelector('.message-content'), data.response, true);
             console.log(data)
             // PLAY AUDIO IF AVAILABLE
             if (data.audio_url) {
@@ -105,8 +129,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const content = document.createElement('div');
         content.classList.add('message-content');
-        const formattedMessage = message.replace(/\n/g, '<br>');
-        content.innerHTML = formattedMessage;
+        setMessageContent(content, message, false);
         messageElement.appendChild(content)
         
         chatMessages.appendChild(messageElement);

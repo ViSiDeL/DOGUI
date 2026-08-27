@@ -4,6 +4,7 @@ from api.models.inference import generate_text
 from src.api.models.session import login_required
 from src.api.models.project import ProjectService
 from src.api.models.prompt import build_chat_prompt
+from src.api.models.history import ChatHistoryService
 
 ai_bp = Blueprint('ai', __name__)
 
@@ -35,6 +36,11 @@ def assistant():
             if not project_data:
                 flash('Project not found', 'error')
                 return redirect(url_for('project.projects'))
+
+            previous_context = session.get('current_project') or {}
+            if previous_context.get('id') != project_data['ID']:
+                ChatHistoryService.clear_history(user.username)
+
             project_context = {
                 'id': project_data['ID'],
                 'name': project_data['projectName'],
@@ -62,12 +68,17 @@ def chatbot():
         return jsonify({'response': 'No message received.'})
 
     try:
+        user = g.user
         project_context = session.get('current_project', {})
-
-        # Build the final prompt using the utility
-        full_prompt = build_chat_prompt(project_context, user_message)
+        
+        base_prompt = build_chat_prompt(project_context, user_message)
+        history_text = ChatHistoryService.as_prompt_text(user.username)
+        full_prompt = f"{history_text}\n\n{base_prompt}" if history_text else base_prompt
 
         response = generate_text(prompt=full_prompt)
+
+        ChatHistoryService.add_message(user.username, 'user', user_message)
+        ChatHistoryService.add_message(user.username, 'assistant', response)
 
         # voice_choice handling (optional, kept for compatibility)
         # voice_choice = voice_choice.capitalize()
@@ -83,6 +94,19 @@ def chatbot():
     except Exception as e:
         print(f"Error in chatbot response: {e}")
         return jsonify({'response': 'Error generating response. Please try again.'})
+
+
+@ai_bp.route('/chatbot/history')
+@login_required
+def chatbot_history():
+    return jsonify({'history': ChatHistoryService.get_history(g.user.username)})
+
+
+@ai_bp.route('/chatbot/clear', methods=['POST'])
+@login_required
+def chatbot_clear():
+    ChatHistoryService.clear_history(g.user.username)
+    return jsonify({'success': True})
 
 
 """ ------------------- IDEATION ------------------- """

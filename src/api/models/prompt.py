@@ -15,6 +15,10 @@ Response Guidelines:
 - Feel free to provide outside info that a user inquires about.
 - Prioritize making sure your response helps the user towards their goal in some way.
 - Keep things simple. Short and sweet.
+
+Formatting:
+- Format your response using Markdown: **bold** for emphasis, bullet points ( - ) or numbered lists only where a real list is being enumerated, `code` spans for technical terms, and short paragraphs.
+- Do not overuse formatting. Most turns should just be plain sentences; reach for lists, bold, or headers only when they genuinely improve scannability.
 """).strip()
 
 _PROMPT_TEMPLATE = """

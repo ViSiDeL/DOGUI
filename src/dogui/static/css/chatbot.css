@@ -75,6 +75,109 @@
     text-align: right;
 }
 
+/* Markdown rendering inside chat bubbles */
+.message-content > *:first-child {
+    margin-top: 0;
+}
+.message-content > *:last-child {
+    margin-bottom: 0;
+}
+
+.message-content p {
+    margin: 0.5em 0;
+}
+
+.message-content strong {
+    color: var(--dogui-glow);
+    font-weight: bold;
+}
+
+.message-content em {
+    font-style: italic;
+}
+
+.message-content ul,
+.message-content ol {
+    margin: 0.5em 0;
+    padding-left: 1.4em;
+}
+
+.message-content li {
+    margin: 0.25em 0;
+}
+
+.ai-message .message-content ul,
+.ai-message .message-content ol {
+    text-align: left;
+}
+
+.message-content h1,
+.message-content h2,
+.message-content h3,
+.message-content h4 {
+    margin: 0.6em 0 0.3em;
+    line-height: 1.2;
+    color: var(--dogui-glow);
+}
+.message-content h1 { font-size: 1.3em; }
+.message-content h2 { font-size: 1.2em; }
+.message-content h3 { font-size: 1.1em; }
+.message-content h4 { font-size: 1em; }
+
+.message-content code {
+    background-color: rgba(255, 255, 255, 0.15);
+    border-radius: 4px;
+    padding: 0.15em 0.4em;
+    font-family: 'Courier New', monospace;
+    font-size: 0.9em;
+}
+
+.message-content pre {
+    background-color: rgba(0, 0, 0, 0.35);
+    border-radius: 8px;
+    padding: 10px 12px;
+    overflow-x: auto;
+    margin: 0.5em 0;
+    text-align: left;
+}
+
+.message-content pre code {
+    background-color: transparent;
+    padding: 0;
+}
+
+.message-content blockquote {
+    border-left: 3px solid var(--dogui-green);
+    margin: 0.5em 0;
+    padding-left: 0.8em;
+    color: rgba(255, 255, 255, 0.75);
+    text-align: left;
+}
+
+.message-content a {
+    color: var(--dogui-glow);
+    text-decoration: underline;
+}
+
+.message-content hr {
+    border: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    margin: 0.6em 0;
+}
+
+.message-content table {
+    border-collapse: collapse;
+    margin: 0.5em 0;
+    width: 100%;
+}
+
+.message-content th,
+.message-content td {
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 4px 8px;
+    text-align: left;
+}
+
 #chat-input-container {
     padding: 10px;
     background-color: rgba(0, 0, 0, 0.5);
