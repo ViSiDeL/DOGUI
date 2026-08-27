@@ -2,7 +2,21 @@
 design engine
 """
 
-from models.user import User
+class User:
+    def __init__(self, user_id: int, username: str, role: str):
+        self.user_id = user_id
+        self.username = username
+        self.role = role
+        self.session_id = None
+
+    # login routine
+    def login(self, session):
+        self.session_id = session
+
+    # logout routine
+    def logout(self):
+        pass
+
 
 class DesignEngine:
     def __init__(self, engine_id: int, system_status: str, active_module: str):

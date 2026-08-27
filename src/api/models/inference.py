@@ -4,9 +4,7 @@ from __future__ import annotations
 import os
 import requests
 
-# NVIDIA API
 DEFAULT_MODEL = "nemotron-3-nano-30b-a3b"
-
 
 def _get_api_key() -> str:
     key = os.getenv("NVIDIA_API_KEY")
