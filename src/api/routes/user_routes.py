@@ -10,7 +10,7 @@ def register():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        
+
         # register 
         user_id = AuthService.register(username, password)
 
@@ -29,11 +29,17 @@ def login():
         user_id = AuthService.login(username, password)
         if user_id:
             session['session_id'] = str(user_id)
+            user_info = AuthService.get_user_info(user_id)
+            if user_info:
+                db_username, db_role = user_info
+            else:
+                db_username, db_role = username, "Engineer"
+            design_engine.add_user(session['session_id'], user_id, db_username, db_role)
             flash('Login successful!', 'success')
-            print(f"User '{username}' (ID: {user_id}) has logged in.")
+            print(f"User '{db_username}' (ID: {user_id}) has logged in.")
             return redirect(url_for('dashboard'))
         else:
-            flash('Invalid username or password!', 'danger')
+            flash('invalid username or password!', 'danger')
     return render_template('accounts/login.html')
 
 @user_bp.route('/logout')

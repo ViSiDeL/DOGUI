@@ -28,9 +28,20 @@ class AuthService:
                 rows = cur.fetchall()
                 if not rows:
                     return None
-                user_id, stored_hash = rows[0]["id"], rows[0]["password"]
+                user_id, stored_hash = rows[0]
                 if check_password_hash(stored_hash, password):
                     return user_id
+                return None
+
+    @staticmethod
+    def get_user_info(user_id: int) -> Optional[tuple]:
+        """fetch (username, role) for a given user_id; returns None if not found"""
+        with get_connection() as conn:
+            with conn.cursor() as cur:
+                cur.execute("SELECT username, role FROM users WHERE id = %s", (user_id,))
+                row = cur.fetchone()
+                if row:
+                    return row[0], row[1]  # (username, role)
                 return None
 
     @staticmethod
