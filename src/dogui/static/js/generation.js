@@ -1,7 +1,4 @@
 // generation.js - Handles Three.js scene and AI generation
-import * as THREE from "three";
-import {OrbitControls} from "three-orbitcontrols";
-
 class ModelGenerator {
     constructor() {
         this.scene = null;

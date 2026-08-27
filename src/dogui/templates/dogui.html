@@ -7,14 +7,7 @@
     <title>{% block title %}{% endblock %}DOGUI.ai</title>
     <link rel="stylesheet" href="/static/css/dogui_style.css">
     {% block css %}{% endblock %}
-    <script type="importmap">
-        {
-            "imports": {
-                "three": "/node_modules/three/build/three.module.js",
-                "three-orbitcontrols": "/node_modules/three/examples/jsm/controls/OrbitControls.js"
-            }
-        }
-    </script>
+    <script type="module" src="/static/js/three.bundle.js"></script>
 </head>
 <body>
     <div class="content">

@@ -1,6 +1,3 @@
-import * as THREE from "three";
-import {OrbitControls} from "three-orbitcontrols";
-
 let mouseX = 0;
 let mouseY = 0;
 let targetX = 0;
